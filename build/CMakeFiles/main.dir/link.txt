@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/main.dir/main.cpp.o CMakeFiles/main.dir/learning/learning.cpp.o CMakeFiles/main.dir/auth/auth.cpp.o CMakeFiles/main.dir/db/db.cpp.o -o main

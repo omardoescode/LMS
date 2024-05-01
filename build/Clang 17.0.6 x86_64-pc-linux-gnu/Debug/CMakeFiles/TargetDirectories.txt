@@ -1,0 +1,4 @@
+/home/omar/reposotories/lms/build/Clang 17.0.6 x86_64-pc-linux-gnu/Debug/CMakeFiles/main.dir
+/home/omar/reposotories/lms/build/Clang 17.0.6 x86_64-pc-linux-gnu/Debug/CMakeFiles/tests.dir
+/home/omar/reposotories/lms/build/Clang 17.0.6 x86_64-pc-linux-gnu/Debug/CMakeFiles/edit_cache.dir
+/home/omar/reposotories/lms/build/Clang 17.0.6 x86_64-pc-linux-gnu/Debug/CMakeFiles/rebuild_cache.dir

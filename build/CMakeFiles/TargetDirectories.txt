@@ -1,0 +1,4 @@
+/home/omar/reposotories/lms/build/CMakeFiles/main.dir
+/home/omar/reposotories/lms/build/CMakeFiles/tests.dir
+/home/omar/reposotories/lms/build/CMakeFiles/edit_cache.dir
+/home/omar/reposotories/lms/build/CMakeFiles/rebuild_cache.dir

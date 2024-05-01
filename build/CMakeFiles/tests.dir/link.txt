@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/tests.dir/tests/tests.cpp.o CMakeFiles/tests.dir/learning/learning.cpp.o CMakeFiles/tests.dir/auth/auth.cpp.o CMakeFiles/tests.dir/db/db.cpp.o -o tests
