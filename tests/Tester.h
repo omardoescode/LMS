@@ -1,10 +1,11 @@
 #include <iostream>
 #include <string>
+
 class Tester {
 public:
   Tester() { count = 0; }
-  void operator()(bool (*func)(), std::string test_name,
-                  std::string wrong_message) {
+  void operator()(bool (*func)(), std::string_view test_name,
+                  std::string_view wrong_message) {
     count++;
     if (!func()) {
       std::cerr << test_name << ": " << wrong_message << std::endl;
@@ -15,7 +16,7 @@ public:
               << std::endl;
   }
 
-  void operator()(bool (*func)(), std::string test_name) {
+  void operator()(bool (*func)(), std::string_view test_name) {
     operator()(func, test_name,
                "Testcase #" + std::to_string(count) + " failed");
   }
