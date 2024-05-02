@@ -1,7 +1,7 @@
 CMakeFiles/tests.dir/auth/auth.cpp.o: \
  /home/omar/reposotories/lms/auth/auth.cpp /usr/include/stdc-predef.h \
  /home/omar/reposotories/lms/auth/auth.h \
- /home/omar/reposotories/lms/auth/../db/db.h /usr/include/c++/13.2.1/any \
+ /home/omar/reposotories/lms/db/db.h /usr/include/c++/13.2.1/any \
  /usr/include/c++/13.2.1/initializer_list \
  /usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
  /usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
@@ -114,4 +114,4 @@ CMakeFiles/tests.dir/auth/auth.cpp.o: \
  /usr/include/c++/13.2.1/bits/stl_vector.h \
  /usr/include/c++/13.2.1/bits/stl_bvector.h \
  /usr/include/c++/13.2.1/bits/vector.tcc \
- /home/omar/reposotories/lms/auth/../learning/learning.h
+ /home/omar/reposotories/lms/learning/learning.h

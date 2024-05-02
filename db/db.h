@@ -15,7 +15,6 @@ public:
   friend class database;
   virtual ~database_item() = default;
 };
-
 class database {
 public:
   // Default operations for singletons
