@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 project(lsm)
 
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/thirdparty/SQLiteCpp)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+set(libraries SQLiteCpp sqlite3 pthread dl)
 set(sources
     auth/administrator.cpp
     auth/administrator.h
@@ -28,3 +31,6 @@ add_executable(tests tests/tests.cpp ${sources})
 
 target_include_directories(main PUBLIC ${PROJECT_SOURCE_DIR})
 target_include_directories(tests PUBLIC ${PROJECT_SOURCE_DIR})
+
+target_link_libraries(main ${libraries})
+target_link_libraries(tests ${libraries})
