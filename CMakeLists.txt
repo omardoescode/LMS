@@ -21,7 +21,8 @@ set(sources
     learn/course_registration.h
     db/database.cpp
     db/database.h
-    db/database_item.h)
+    db/database_item.h
+    utils/exceptions.h)
 add_executable(main main.cpp ${sources})
 add_executable(tests tests/tests.cpp ${sources})
 

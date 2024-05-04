@@ -1,4 +1,5 @@
 #include "db/database.h"
+#include "db/database_item.h"
 #include <string_view>
 namespace db {
 database::database() {
@@ -8,6 +9,11 @@ database::database() {
 };
 void database::initialize_db(std::string_view connection_key) {
   _connection_key = connection_key;
+  // TODO
+}
+std::vector<db::database_item>
+database::get(std::string table_name,
+              std::map<std::string, std::string> properties) {
   // TODO
 }
 } // namespace db

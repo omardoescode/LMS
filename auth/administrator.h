@@ -1,5 +1,6 @@
 #pragma once
 #include "auth/user.h"
+#include "db/database.h"
 #include "learn/course.h"
 #include "learn/course_registration.h"
 namespace auth {
@@ -7,10 +8,13 @@ namespace auth {
 class administrator : public user {
 public:
   // Constructors
-  administrator(
-      std::string_view username, std::string_view email,
-      std::string_view password); // auto added to database after initialization
-  administrator(std::string id);
+  // auto added to database after initialization
+  administrator(std::string_view username, std::string_view email,
+                std::string_view password);
+
+  // Get from database
+  // Raise utils::custom_exception("Administrator not found") if not there
+  administrator(std::string_view id);
 
   // Specific Functions
   // This is the only way to add students and instructors to the database
@@ -36,7 +40,8 @@ public:
 
   // Given a student and a course, add this student to the course
   // by creating a course registration and saving it to the database
-  // HINT: Create the course registrationon and pass it the above funciton
+  // HINT: Create the course registration, save it to DB, and pass it the above
+  // funciton
   bool register_course_for_student(std::string_view course_id,
                                    std::string_view student_id);
 

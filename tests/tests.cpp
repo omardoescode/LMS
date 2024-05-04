@@ -26,8 +26,7 @@ bool test_any_cast() {
 }
 
 bool test_string_view() {
-  std::string text = "Hello World";
-  std::string_view textv(text);
+  std::string_view textv("Hello");
   return textv.substr(0, 5) == "Hello";
 }
 

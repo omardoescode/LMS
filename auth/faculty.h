@@ -1,8 +1,8 @@
 #pragma once
-#include "auth/admininstrator.h"
+#include "auth/administrator.h"
 #include "auth/instructor.h"
 #include "auth/student.h"
-#include "db/db.h"
+#include "db/database_item.h"
 #include <vector>
 namespace auth {
 class faculty : public db::database_item {
@@ -15,6 +15,11 @@ public:
   std::vector<auth::instructor> get_instructors() const;
   std::vector<auth::student> get_students() const;
   std::vector<learn::course> get_courses() const;
+
+  // Overridden Functions
+  bool add_to_database() override;
+  bool remove_from_database() override;
+  bool update_in_database(std::map<std::string, std::any> props) override;
 
 private:
   std::string _name;

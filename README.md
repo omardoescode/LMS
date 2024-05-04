@@ -11,7 +11,18 @@ cmake -S . -B ./build
 3. To run the project, use the following commands
 
 ```
-cmake --build ./build
+cmake --build ./build --target main
 ./build/main # for UNIX-Based OS like macos or linux
 ./build/main.exe # for Windows users
 ```
+
+4. To run tests
+
+```
+cmake --build ./build --target tests
+./build/tests # for UNIX-Based OS like macos or linux
+./build/tests.exe # for Windows users
+```
+
+**NOTE**: For CLion users, Clion auto-handles the entire process of running
+cmake and building prior to running the program

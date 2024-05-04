@@ -1,12 +1,17 @@
 #pragma once
-#include "db/db.h"
+#include "db/database_item.h"
 namespace auth {
 class user : public db::database_item {
 public:
   // Consturctor
-  user(std::string username, std::string email,
-       std::string password);     //  Will include adding it to the database
-  explicit user(std::string _id); // Load from the database
+  // Will be used for construction of the subclasses
+  // Simply assigning parameters to properties of the object using member
+  // initializer list
+  user(std::string username, std::string email, std::string password);
+
+  // Intialize as well
+  // Used for subclasses
+  explicit user(std::string_view id) : database_item(id){};
 
   // Getters
   std::string get_username() const { return _username; }
@@ -14,14 +19,18 @@ public:
 
   // Setters
   // When applied, we need to update in DB as well
-  bool set_username(std::string_view);
-  bool set_email(std::string_view);
+  bool set_username(std::string_view new_username);
+  bool set_email(std::string_view new_email);
 
   // Helpful Functions
   bool check_password(std::string password);
-  bool saved_in_db() const { return _id != ""; }
+
+  // Overriden Functions
+  virtual bool add_to_database() = 0;
+  virtual bool remove_from_database() = 0;
+  virtual bool update_in_database(std::map<std::string, std::any> props) = 0;
 
 protected:
-  std::string _id, _name, _username, _password_hash, _email, _faculty;
+  std::string _name, _username, _password_hash, _email, _faculty;
 };
 } // namespace auth
