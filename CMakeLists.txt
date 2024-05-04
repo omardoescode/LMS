@@ -2,7 +2,26 @@ cmake_minimum_required(VERSION 3.5)
 project(lsm)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-set(sources learning/learning.cpp auth/auth.cpp db/db.cpp)
+set(sources
+    auth/administrator.cpp
+    auth/administrator.h
+    auth/instructor.cpp
+    auth/instructor.h
+    auth/user.cpp
+    auth/user.h
+    auth/student.cpp
+    auth/student.h
+    learn/assignment.cpp
+    learn/assignment.h
+    learn/assignment_submission.cpp
+    learn/assignment_submission.h
+    learn/course.cpp
+    learn/course.h
+    learn/course_registration.cpp
+    learn/course_registration.h
+    db/database.cpp
+    db/database.h
+    db/database_item.h)
 add_executable(main main.cpp ${sources})
 add_executable(tests tests/tests.cpp ${sources})
 
