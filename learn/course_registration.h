@@ -13,7 +13,7 @@ public:
   // Getters
   learn::course get_course() const;
   auth::student get_student() const;
-  CourseRegistrationState get_state() { return _state; }
+  CourseRegistrationState get_state() const { return _state; }
 
   // Setters (save in db)
   bool set_state(CourseRegistrationState state);

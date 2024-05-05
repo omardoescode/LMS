@@ -3,6 +3,7 @@
 #include "auth/instructor.h"
 #include "auth/student.h"
 #include "db/database_item.h"
+#include <memory>
 #include <vector>
 namespace auth {
 class faculty : public db::database_item {
@@ -12,9 +13,9 @@ public:
 
   // Search in DB and return the values where faculty is this instance
   auth::administrator get_administrator() const;
-  std::vector<auth::instructor> get_instructors() const;
-  std::vector<auth::student> get_students() const;
-  std::vector<learn::course> get_courses() const;
+  std::vector<std::unique_ptr<auth::instructor>> get_instructors() const;
+  std::vector<std::unique_ptr<auth::student>> get_students() const;
+  std::vector<std::unique_ptr<learn::course>> get_courses() const;
 
   // Overridden Functions
   bool add_to_database() override;
