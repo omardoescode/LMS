@@ -17,9 +17,9 @@ public:
   std::vector<learn::course> get_courses() const;
 
   // Overridden Functions
-  bool add_to_database() override;
-  bool remove_from_database() override;
-  bool update_in_database(std::map<std::string, std::any> props) override;
+  bool add_to_database(SQLite::Database& db) override;
+  bool remove_from_database(SQLite::Database& db) override;
+  bool update_in_database(SQLite::Database& db, std::map<std::string, std::any> props) override;
 
 private:
   std::string _name;

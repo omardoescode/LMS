@@ -1,4 +1,5 @@
 #pragma once
+#include "SQLiteCpp/Backup.h"
 #include "db/database_item.h"
 #include "utils/exceptions.h"
 #include <any>
@@ -31,9 +32,9 @@ public:
   }
 
   // Using Polymorphism for more clean code
-  bool add_item(db::database_item &item) { return item.add_to_database(); }
+  bool add_item(db::database_item &item) { return item.add_to_database(_db); }
   bool remove_item(db::database_item &item) {
-    return item.remove_from_database();
+    return item.remove_from_database(_db);
   }
 
   // Updating the object given the properties we want to update
@@ -43,7 +44,7 @@ public:
   // proper type in item.update_in_database
   bool update_item(db::database_item &item,
                    std::map<std::string, std::any> new_props) {
-    return item.update_in_database(std::move(new_props));
+    return item.update_in_database(_db, std::move(new_props));
   }
 
   std::list<database_item> get(std::string table_name,
@@ -83,9 +84,9 @@ public:
 
 private:
   // initialize_db
-  void initialize_db(std::string_view connection_key);
+  void initialize_db();
 
-  std::string _connection_key;
+  SQLite::Database _db;
   database(); // A singleton Class
 };
 } // namespace db

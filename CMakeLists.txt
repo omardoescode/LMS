@@ -4,7 +4,7 @@ project(lsm)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/thirdparty/SQLiteCpp)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-set(libraries SQLiteCpp sqlite3 pthread dl)
+set(libraries SQLiteCpp sqlite3 pthread)
 set(sources
     auth/administrator.cpp
     auth/administrator.h

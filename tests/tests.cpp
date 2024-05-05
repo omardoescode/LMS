@@ -1,5 +1,6 @@
 // Scoped Pointer Tests
 #include "tests/Tester.h"
+#include "auth/student.h"
 #include <any>
 #include <db/database.h>
 #include <string>
@@ -25,6 +26,11 @@ bool test_any_cast() {
   }
 }
 
+bool add_student_to_db_test() {
+  auth::student example = auth::student("23-101283", "Mohammad", "mohammadmosalamy@gmail.com", "Moha09");
+  return db::database::get_instance().add_item(example) && example.saved_in_db();
+}
+
 bool test_string_view() {
   std::string_view textv("Hello");
   return textv.substr(0, 5) == "Hello";
@@ -36,6 +42,7 @@ int main() {
   test(test_db, "test access for database"s);
   test(test_any_cast, "test std::any casting"s);
   test(test_string_view, "test std::string_view equality"s);
+  test(add_student_to_db_test, "test Adding a student to db"s);
 
   return 0;
 }
