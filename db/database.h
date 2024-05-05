@@ -1,6 +1,9 @@
 #pragma once
 #include "db/database_item.h"
+#include "utils/exceptions.h"
 #include <any>
+#include <initializer_list>
+#include <list>
 #include <map>
 #include <string>
 #include <vector>
@@ -12,9 +15,6 @@
  * db::database::get_instance().update_item(<administrator_object>,
  * <hash_map_like{username: "omar"}>
  * );
- *
- * When updating the value of a list, get the old list, add the new element to
- * it, and pass it back in the props map
  */
 namespace db {
 class database {
@@ -46,10 +46,40 @@ public:
     return item.update_in_database(std::move(new_props));
   }
 
-  // This function takes the name of the table and the props of the specific
-  // values we want and return them from the database in a vector
-  std::vector<db::database_item> get(std::string,
-                                     std::map<std::string, std::string>);
+  std::list<database_item> get(std::string table_name,
+                               std::map<std::string, std::string> &props);
+
+  // Write more functions that are more helpful in terms of the other one
+  // Template ones must be defined and declared in the same place
+  // template <typename T>
+  // T get_elem_by_id(std::string table_name, std::string_view _id) {
+  //   std::map<std::string, std::string> props;
+  //   props["_id"] = _id;
+  //   auto vals = db::database::get_instance().get(table_name, props);
+  //   if (vals.empty())
+  //     throw utils::custom_exception{"No professor has this id"};
+  //   if (auto casted = dynamic_cast<T>(vals.front()))
+  //     return casted;
+  //   throw utils::custom_exception{"Casting failed"};
+  // }
+  //
+  // template <typename T>
+  // T get_elems_by_id(std::string &table_name, std::vector<std::string> &ids) {
+  //   std::list<T> res;
+  //   for (auto &id : ids)
+  //     res.push_back(
+  //         db::database::get_instance().get_elem_by_id<T>(table_name, id));
+  //   return res;
+  // }
+  //
+  // template <typename T>
+  // T get_elems_by_id(std::string table_name, std::list<std::string> ids) {
+  //   std::list<T> res;
+  //   for (auto &id : ids)
+  //     res.push_back(
+  //         db::database::get_instance().get_elem_by_id<T>(table_name, id));
+  //   return res;
+  // }
 
 private:
   // initialize_db

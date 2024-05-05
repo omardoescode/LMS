@@ -1,6 +1,7 @@
 #pragma once
 #include "db/database_item.h"
 #include "learn/assignment.h"
+#include <list>
 #include <vector>
 // To prevent looping includes, instead of including it there
 namespace auth {
@@ -13,8 +14,8 @@ public:
   // Getters
   int get_credit_hours() const { return _credit_hours; }
   auth::instructor get_professor() const;
-  std::vector<auth::instructor> get_teaching_assistants() const;
-  std::vector<auth::student> get_students() const;
+  std::list<auth::instructor> get_teaching_assistants() const;
+  std::list<auth::student> get_students() const;
   std::string get_textbook() const { return _textbook; }
 
   // Setters
@@ -22,7 +23,7 @@ public:
   bool set_credit_hours(int new_value);
   // Helpful Functions
   // Search in database for assignments that have this course
-  std::vector<learn::assignment> get_assigments() const;
+  std::list<learn::assignment> get_assigments() const;
 
   // Calculations
   double get_average_grade(learn::assignment &assignment) const {
@@ -42,7 +43,8 @@ public:
 private:
   int _credit_hours;
   std::string _professor, _textbook;
-  std::vector<std::string> _teacing_assistants; // Up to 6 teaching assistants
+  std::vector<std::string> _teaching_assistants,
+      _students; // Up to 6 teaching assistants
 };
 
 } // namespace learn

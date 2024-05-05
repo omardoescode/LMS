@@ -1,3 +1,4 @@
+#pragma once
 // Define a new exception class that inherits from
 // std::exception
 #include <exception>

@@ -136,7 +136,7 @@ AlwaysBreakBeforeMultilineStrings: false
 
 # AlwaysBreakTemplateDeclarations (bool)
 # If true, always break after the template<...> of a template declaration.
-AlwaysBreakTemplateDeclarations: false
+AlwaysBreakTemplateDeclarations: true 
 
 # BinPackArguments (bool)
 # If false, a function call’s arguments will either be all on the same line or will have one line each.
