@@ -14,7 +14,7 @@ public:
 
   explicit student(std::string id); // Load from database Getters
   std::string get_id() const { return _id; }
-  std::vector<learn::course> get_courses() const;
+  std::vector<std::unique_ptr<learn::course>> get_courses() const;
 
   // Specific Functions
   // If the course is not registered, raise utils::custom_exceptions{"Course not

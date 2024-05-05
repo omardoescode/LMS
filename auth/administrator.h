@@ -3,6 +3,7 @@
 #include "db/database.h"
 #include "learn/course.h"
 #include "learn/course_registration.h"
+#include <memory>
 namespace auth {
 
 class administrator : public user {
@@ -33,7 +34,8 @@ public:
 
   // lists all the course registrations for all the students in
   // the same faculty with type AwaitingApproval
-  std::vector<learn::course_registration> list_pending_registrations() const;
+  std::vector<std::unique_ptr<learn::course_registration>>
+  list_pending_registrations() const;
 
   // takes a course registration and changes its value to Enrolled
   bool register_course_for_student(learn::course_registration &);

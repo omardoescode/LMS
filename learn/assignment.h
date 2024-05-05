@@ -1,5 +1,6 @@
 #pragma once
 #include "db/database_item.h"
+#include <memory>
 #include <vector>
 namespace learn {
 enum class AssigmentType { PAPER, ONLINE };
@@ -13,7 +14,8 @@ public:
   AssigmentType get_type() const { return _type; }
 
   // Search in DB and get the submission of this assignment
-  std::vector<learn::assignment_submission> get_submission() const;
+  std::vector<std::unique_ptr<learn::assignment_submission>>
+  get_submission() const;
 
   // Calculations
   double get_average_grade() const;

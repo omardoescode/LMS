@@ -6,6 +6,7 @@
 #include <initializer_list>
 #include <list>
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -47,8 +48,8 @@ public:
     return item.update_in_database(_db, std::move(new_props));
   }
 
-  std::list<database_item> get(std::string table_name,
-                               std::map<std::string, std::string> &props);
+  std::list<std::unique_ptr<database_item>>
+  get(std::string table_name, std::map<std::string, std::string> &props);
 
   // Write more functions that are more helpful in terms of the other one
   // Template ones must be defined and declared in the same place

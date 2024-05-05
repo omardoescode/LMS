@@ -2,6 +2,7 @@
 #include "db/database_item.h"
 #include "learn/assignment.h"
 #include <list>
+#include <memory>
 #include <vector>
 // To prevent looping includes, instead of including it there
 namespace auth {
@@ -14,8 +15,8 @@ public:
   // Getters
   int get_credit_hours() const { return _credit_hours; }
   auth::instructor get_professor() const;
-  std::list<auth::instructor> get_teaching_assistants() const;
-  std::list<auth::student> get_students() const;
+  std::list<std::unique_ptr<auth::instructor>> get_teaching_assistants() const;
+  std::list<std::unique_ptr<auth::student>> get_students() const;
   std::string get_textbook() const { return _textbook; }
 
   // Setters
