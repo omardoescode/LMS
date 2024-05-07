@@ -60,7 +60,7 @@ PointerAlignment: Left
 
 # AccessModifierOffset (int)
 # The extra indent or outdent of access modifiers, e.g. public:.
-AccessModifierOffset: 0
+AccessModifierOffset: -4
 
 # AlignAfterOpenBracket (BracketAlignmentStyle)
 # If true, horizontally aligns arguments after an open bracket.
@@ -300,7 +300,7 @@ MaxEmptyLinesToKeep: 2
 #   NI_None (in configuration: None) Don’t indent in namespaces.
 #   NI_Inner (in configuration: Inner) Indent only in inner namespaces (nested in other namespaces).
 #   NI_All (in configuration: All) Indent in all namespaces.
-NamespaceIndentation: NI_None
+#NamespaceIndentation: NI_None
 
 # ObjCBlockIndentWidth (unsigned)
 # The number of characters to use for indentation of ObjC blocks.
