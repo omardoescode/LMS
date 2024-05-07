@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <initializer_list>
+
 namespace utils {
 template <typename T>
 class custom_array {
@@ -29,7 +30,7 @@ public:
     }
 
     // Functionalities
-    T& at (int);
+    T& at (int) const;
     void push_back (T value);
     void pop_back ();
     void resize (int);
@@ -39,8 +40,8 @@ public:
     void erase (int, int);
     void insert (int, T);
 
-    T& front ();
-    T& back ();
+    T& front () const;
+    T& back () const;
 
     // Operators
     T& operator[] (int);
@@ -59,7 +60,7 @@ private:
     void reallocate ();
     void reallocate (int);
 
-    bool valid_index (int);
+    bool valid_index (int) const;
 };
 
 // Implementation
@@ -119,12 +120,12 @@ void custom_array<T>::reallocate (int offset) {
 }
 
 template <typename T>
-bool custom_array<T>::valid_index (int index) {
+bool custom_array<T>::valid_index (int index) const {
     return index >= 0 && index < _size;
 }
 // Functionalities
 template <typename T>
-T& custom_array<T>::at (int index) {
+T& custom_array<T>::at (int index) const {
     if (!valid_index (index))
         throw utils::custom_exception{ "Invalid index" };
 
@@ -163,12 +164,12 @@ void custom_array<T>::reserve (int offset) {
 }
 
 template <typename T>
-T& custom_array<T>::front () {
+T& custom_array<T>::front () const {
     return at (0);
 }
 
 template <typename T>
-T& custom_array<T>::back () {
+T& custom_array<T>::back () const {
     return at (_size - 1);
 }
 
