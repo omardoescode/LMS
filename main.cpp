@@ -1,4 +1,4 @@
 #include "db/database.h"
-auto main () -> int {
-    //    db::database::get_instance ();
+auto main() -> int {
+  //    db::database::get_instance ();
 }
