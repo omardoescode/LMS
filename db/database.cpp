@@ -2,6 +2,7 @@
 
 #include "SQLiteCpp/Database.h"
 
+#include <fstream>
 #include <iostream>
 #include <string_view>
 namespace db {
@@ -10,25 +11,52 @@ database::database()
                            SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE)) {
   initialize_db();
 };
+
+void database::refresh_and_seed_db() {
+    // Refresh database structure by deleting all existing tables, if any, and creating new tables.
+    _db.exec ("PRAGMA writable_schema = 1;delete from sqlite_master where type in ('table', 'index', 'trigger');PRAGMA writable_schema = 0;VACUUM;PRAGMA INTEGRITY_CHECK;");
+    initialize_db();
+
+    // Seed database
+    // TODO: MAKE IT RUN IN DEBUG MODE ONLY AND MAKE IT RUN ONCE ONLY AS LONG AS NO CHANGES HAPPEN TO TABLE STRUCTURE
+    // TODO: READ THESE CONSTANTS FROM A CONSTATS FILE
+    const int NUM_TABLES = 7;
+    std::string tables[NUM_TABLES] = {"Users", "Students", "Instructors", "Administrators", "Courses", "Instructors_Courses", "Students_Courses"};
+
+    std::cout << "SEEDING DATABASE P.S. THIS MAY TAKE A WHILE" << std::endl;
+    for(int i = 0; i < NUM_TABLES; i++) {
+        std::ifstream ifs("../db/SeedingData/" + tables[i] +".sql");
+        std::string seed_query( (std::istreambuf_iterator<char>(ifs) ),(std::istreambuf_iterator<char>()) );
+        _db.exec(seed_query);
+        std::cout << (i+1) << " out of " << NUM_TABLES << " Table(s) done." << std::endl;
+    }
+    std::cout << "DATABASE SEEDED SUCCESSFULLY" << std::endl;
+    std::cout << "NOTICE: If no other changes are going to happen to the database structure, please consider not passing true to the get_instance() method." << std::endl;
+
+}
+
 void database::initialize_db() {
-  _db.exec("CREATE TABLE IF NOT EXISTS Users (user_id INTEGER PRIMARY KEY, "
-           "password_hash VARCHAR(32), email VARCHAR(255), faculty "
-           "VARCHAR(255), name VARCHAR(255))");
-  _db.exec(
-      "CREATE TABLE IF NOT EXISTS Students (student_id VARCHAR(9) PRIMARY KEY, "
-      "user_id INTEGER, FOREIGN KEY(user_id) REFERENCES Users(user_id))");
-  _db.exec("CREATE TABLE IF NOT EXISTS Students_Courses (student_id "
+
+    // Create all tables as per database design
+    _db.exec("CREATE TABLE IF NOT EXISTS Users (user_id INTEGER PRIMARY KEY, "
+        "password_hash VARCHAR(32), email VARCHAR(255), faculty "
+        "VARCHAR(255), name VARCHAR(255))");
+    _db.exec(
+"CREATE TABLE IF NOT EXISTS Students (student_id VARCHAR(9) PRIMARY KEY, "
+        "user_id INTEGER, FOREIGN KEY(user_id) REFERENCES Users(user_id))");
+    _db.exec("CREATE TABLE IF NOT EXISTS Students_Courses (student_id "
            "VARCHAR(9), course_id INTEGER, state TEXT)");
-  _db.exec("CREATE TABLE IF NOT EXISTS Instructors (instructor_id VARCHAR(255) "
+    _db.exec("CREATE TABLE IF NOT EXISTS Instructors (instructor_id VARCHAR(255) "
            "PRIMARY KEY, is_teaching_assistant BOOL, user_id INTEGER, FOREIGN "
-           "KEY(user_id) REFERENCES Users(id))");
-  _db.exec("CREATE TABLE IF NOT EXISTS Instructors_Courses (instructor_id "
+           "KEY(user_id) REFERENCES Users(user_id))");
+    _db.exec("CREATE TABLE IF NOT EXISTS Instructors_Courses (instructor_id "
            "VARCHAR(255), course_id INTEGER)");
-  _db.exec("CREATE TABLE IF NOT EXISTS Administrators (administrator_id "
+    _db.exec("CREATE TABLE IF NOT EXISTS Administrators (administrator_id "
            "VARCHAR(255) PRIMARY KEY, user_id INTEGER, FOREIGN KEY(user_id) "
-           "REFERENCES Users(id))");
+           "REFERENCES Users(user_id))");
   _db.exec("CREATE TABLE IF NOT EXISTS Courses (course_id INTEGER PRIMARY KEY, "
            "name VARCHAR(255), credit_hours INTEGER, text_book VARCHAR(255))");
+
 
   /*
   _db.exec ("INSERT INTO Users(password_hash, email) VALUES('test',

@@ -27,8 +27,10 @@ public:
   void operator=(const database &) = delete;
 
   // The only way to get through database is through this function
-  static database &get_instance() {
+  static database &get_instance(bool refresh_and_seed = false) {
     static database instance;
+    if(refresh_and_seed)
+        instance.refresh_and_seed_db ();
     return instance;
   }
 
@@ -86,6 +88,7 @@ public:
 private:
   // initialize_db
   void initialize_db();
+  void refresh_and_seed_db();
 
   SQLite::Database _db;
   database(); // A singleton Class
