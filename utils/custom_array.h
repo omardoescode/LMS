@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <initializer_list>
+#include <utility>
 
 namespace utils {
 template <typename T>
@@ -9,7 +10,7 @@ class custom_array {
 public:
     // Constructors
     custom_array ();
-    custom_array (int);
+    explicit custom_array (int);
     custom_array (std::initializer_list<T>);
 
     // Copy Constructor
@@ -196,9 +197,13 @@ void custom_array<T>::erase (int index) {
 }
 template <typename T>
 void custom_array<T>::insert (int index, T value) {
+    if (index > _size)
+        throw utils::custom_exception{
+            "You cannot insert to an index > size()"
+        };
     push_back (value);
     for (int i = _size - 1; i < index; i--)
-        swap (_elems[i], _elems[i - 1]);
+        std::swap (_elems[i], _elems[i - 1]);
 }
 // Operators Overloading
 template <typename T>
