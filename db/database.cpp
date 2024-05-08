@@ -14,6 +14,7 @@ database::database()
 
 void database::refresh_and_seed_db() {
     // Refresh database structure by deleting all existing tables, if any, and creating new tables.
+    std::cout << "REFRESHING DATABASE STRUCTURE" << std::endl;
     _db.exec ("PRAGMA writable_schema = 1;delete from sqlite_master where type in ('table', 'index', 'trigger');PRAGMA writable_schema = 0;VACUUM;PRAGMA INTEGRITY_CHECK;");
     initialize_db();
 
@@ -31,12 +32,12 @@ void database::refresh_and_seed_db() {
         std::cout << (i+1) << " out of " << NUM_TABLES << " Table(s) done." << std::endl;
     }
     std::cout << "DATABASE SEEDED SUCCESSFULLY" << std::endl;
-    std::cout << "NOTICE: If no other changes are going to happen to the database structure, please consider not passing true to the get_instance() method." << std::endl;
 
 }
 
 void database::initialize_db() {
 
+    std::cout << "INITIALIZING DATABASE" << std::endl;
     // Create all tables as per database design
     _db.exec("CREATE TABLE IF NOT EXISTS Users (user_id INTEGER PRIMARY KEY, "
         "password_hash VARCHAR(32), email VARCHAR(255), faculty "
