@@ -1,5 +1,7 @@
 #pragma once
 #include "SQLiteCpp/Database.h"
+#include "auth/role.h"
+#include "db/database.h"
 #include "db/database_item.h"
 
 namespace auth {
@@ -25,11 +27,24 @@ class user : public db::database_item {
 
     // Setters
     // When applied, we need to update in DB as well
-    bool set_username (std::string_view new_username);
-    bool set_email (std::string_view new_email);
+    bool set_username (std::string_view new_username) {
+        _username = new_username;
+        std::map<std::string, std::any> map;
+        map["username"] = new_username;
+        db::database::get_instance ().update_item (*this, map);
+    }
+    bool set_email (std::string_view new_email) {
+        _email = new_email;
+        std::map<std::string, std::any> map;
+        map["email"] = new_email;
+        db::database::get_instance ().update_item (*this, map);
+    }
 
     // Helpful Functions
-    bool check_password (std::string password);
+    bool check_password (std::string password) const {
+        std::hash<std::string> hasher;
+        return _password_hash == std::to_string (hasher (password));
+    }
 
     // Overriden Functions
     virtual bool add_to_database (SQLite::Database& db)      = 0;
@@ -39,5 +54,6 @@ class user : public db::database_item {
 
     protected:
     std::string _name, _username, _password_hash, _email, _faculty;
+    Role _role;
 };
 } // namespace auth

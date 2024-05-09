@@ -2,8 +2,7 @@
 #include "SQLiteCpp/Database.h"
 #include "auth/user.h"
 #include "learn/course.h"
-#include <utils/vector.h>
-#include <vector>
+#include "utils/vector.h"
 
 namespace auth {
 class student : public user {
@@ -21,16 +20,17 @@ class student : public user {
     }
     std::vector<std::unique_ptr<learn::course>> get_courses () const;
 
+    utils::vector<std::unique_ptr<learn::course>> getCourses ();
+
     // Specific Functions
     // If the course is not registered, raise utils::custom_exceptions{"Course
     // not registered"} Otherwise, drop the course and save this to the database
-    bool drop_course (std::string course);
-
+    void drop_course (const std::string& course);
     // If the course is registered already with any state except the Dropped
-    // state, do nothing If with the dropped state, change it to Awaiting
-    // Approval If the course registration is not there at all, create one with
+    // state, do nothing
+    // If with the dropped state, change it to Awaiting Approval If the course registration is not there at all, create one with
     // the AwaitintApproval state and save it in DB
-    bool register_course (std::string course);
+    void register_course (std::string course);
 
     // Sum up all the grades in the assignment
     // If there are more than one submission for an assignment by this student,
@@ -52,7 +52,7 @@ class student : public user {
 
     private:
     std::string _name;
-    std::vector<std::string> _courses_registrations;
+    utils::vector<std::string> _courses_registrations;
 };
 
 
