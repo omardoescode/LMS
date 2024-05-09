@@ -1,7 +1,7 @@
 #include "db/database.h"
-
 #include "SQLiteCpp/Database.h"
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string_view>
@@ -31,7 +31,8 @@ void database::refresh_and_seed_db () {
 
     std::cout << "SEEDING DATABASE P.S. THIS MAY TAKE A WHILE" << std::endl;
     for (int i = 0; i < NUM_TABLES; i++) {
-        std::ifstream ifs ("../db/SeedingData/" + tables[i] + ".sql");
+        std::ifstream ifs (std::filesystem::current_path ().string () +
+        "/db/SeedingData/" + tables[i] + ".sql");
         std::string seed_query ((std::istreambuf_iterator<char> (ifs)),
         (std::istreambuf_iterator<char> ()));
         _db.exec (seed_query);

@@ -4,4 +4,4 @@ cmake-build-release/
 .clang-tidy
 .idea/
 .cache/
-
+db.db3

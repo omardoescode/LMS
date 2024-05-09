@@ -28,9 +28,12 @@ set(sources
     utils/exceptions.h)
 add_executable(main main.cpp ${sources})
 add_executable(tests tests/tests.cpp ${sources})
+add_executable(seeder database_setup.cpp db/database.h db/database.cpp)
 
 target_include_directories(main PUBLIC ${PROJECT_SOURCE_DIR})
 target_include_directories(tests PUBLIC ${PROJECT_SOURCE_DIR})
+target_include_directories(seeder PUBLIC ${PROJECT_SOURCE_DIR})
 
 target_link_libraries(main ${libraries})
 target_link_libraries(tests ${libraries})
+target_link_libraries(seeder ${libraries})
