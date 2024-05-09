@@ -26,7 +26,8 @@ set(sources
     db/database.h
     db/database_item.h
     utils/exceptions.h)
-add_executable(main main.cpp ${sources})
+add_executable(main main.cpp ${sources}
+        utils/timer.h)
 add_executable(tests tests/tests.cpp ${sources})
 
 target_include_directories(main PUBLIC ${PROJECT_SOURCE_DIR})

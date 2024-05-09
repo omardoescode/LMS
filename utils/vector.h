@@ -1,3 +1,4 @@
+#pragma once
 #include "utils/exceptions.h"
 #include <algorithm>
 #include <cstdlib>
@@ -111,7 +112,7 @@ template <typename T> void vector<T>::reallocate (int offset) {
         return;
     T* temp = new T[_size + offset];
     for (int i = 0; i < _size; i++)
-        temp[i] = _elems[i];
+        temp[i] = std::move (_elems[i]);
     delete[] _elems;
     _elems    = temp;
     _capacity = _size + offset;
@@ -130,7 +131,7 @@ template <typename T> T& vector<T>::at (int index) const {
 template <typename T> void vector<T>::push_back (T value) {
     if (_size >= _capacity)
         reallocate ();
-    _elems[_size] = value;
+    _elems[_size] = std::move (value);
     _size++;
     return;
 }

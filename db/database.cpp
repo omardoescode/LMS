@@ -6,16 +6,14 @@
 #include <iostream>
 #include <string_view>
 namespace db {
-database::database ()
-: _db (SQLite::Database ("example.db3", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE)) {
+database::database () {
     initialize_db ();
 };
-
 void database::refresh_and_seed_db () {
     // Refresh database structure by deleting all existing tables, if any, and
     // creating new tables.
     std::cout << "REFRESHING DATABASE STRUCTURE" << std::endl;
-    _db.exec (
+    db::database::get_db ().exec (
     "PRAGMA writable_schema = 1;delete from sqlite_master where type in "
     "('table', 'index', 'trigger');PRAGMA writable_schema = "
     "0;VACUUM;PRAGMA INTEGRITY_CHECK;");
@@ -31,10 +29,11 @@ void database::refresh_and_seed_db () {
 
     std::cout << "SEEDING DATABASE P.S. THIS MAY TAKE A WHILE" << std::endl;
     for (int i = 0; i < NUM_TABLES; i++) {
-        std::ifstream ifs ("../db/SeedingData/" + tables[i] + ".sql");
+        std::ifstream ifs (std::filesystem::current_path ().string () +
+        "/db/SeedingData/" + tables[i] + ".sql");
         std::string seed_query ((std::istreambuf_iterator<char> (ifs)),
         (std::istreambuf_iterator<char> ()));
-        _db.exec (seed_query);
+        db::database::get_db ().exec (seed_query);
         std::cout << (i + 1) << " out of " << NUM_TABLES << " Table(s) done." << std::endl;
     }
     std::cout << "DATABASE SEEDED SUCCESSFULLY" << std::endl;
@@ -44,33 +43,38 @@ void database::initialize_db () {
 
     std::cout << "INITIALIZING DATABASE" << std::endl;
     // Create all tables as per database design
-    _db.exec ("CREATE TABLE IF NOT EXISTS Users (user_id INTEGER PRIMARY KEY, "
-              "password_hash VARCHAR(32), email VARCHAR(255), faculty "
-              "VARCHAR(255), name VARCHAR(255))");
-    _db.exec (
+    db::database::get_db ().exec (
+    "CREATE TABLE IF NOT EXISTS Users (user_id INTEGER PRIMARY KEY, "
+    "password_hash VARCHAR(32), email VARCHAR(255), faculty "
+    "VARCHAR(255), name VARCHAR(255))");
+    db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Students (student_id VARCHAR(9) PRIMARY KEY, "
     "user_id INTEGER, FOREIGN KEY(user_id) REFERENCES Users(user_id))");
-    _db.exec ("CREATE TABLE IF NOT EXISTS Students_Courses (student_id "
-              "VARCHAR(9), course_id INTEGER, state TEXT)");
-    _db.exec (
+    db::database::get_db ().exec (
+    "CREATE TABLE IF NOT EXISTS Students_Courses (student_id "
+    "VARCHAR(9), course_id INTEGER, state TEXT)");
+    db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Instructors (instructor_id VARCHAR(255) "
     "PRIMARY KEY, is_teaching_assistant BOOL, user_id INTEGER, FOREIGN "
     "KEY(user_id) REFERENCES Users(user_id))");
-    _db.exec ("CREATE TABLE IF NOT EXISTS Instructors_Courses (instructor_id "
-              "VARCHAR(255), course_id INTEGER)");
-    _db.exec ("CREATE TABLE IF NOT EXISTS Administrators (administrator_id "
-              "VARCHAR(255) PRIMARY KEY, user_id INTEGER, FOREIGN KEY(user_id) "
-              "REFERENCES Users(user_id))");
-    _db.exec (
+    db::database::get_db ().exec (
+    "CREATE TABLE IF NOT EXISTS Instructors_Courses (instructor_id "
+    "VARCHAR(255), course_id INTEGER)");
+    db::database::get_db ().exec (
+    "CREATE TABLE IF NOT EXISTS Administrators (administrator_id "
+    "VARCHAR(255) PRIMARY KEY, user_id INTEGER, FOREIGN KEY(user_id) "
+    "REFERENCES Users(user_id))");
+    db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Courses (course_id INTEGER PRIMARY KEY, "
     "name VARCHAR(255), credit_hours INTEGER, text_book VARCHAR(255))");
 
     /*
-    _db.exec ("INSERT INTO Users(password_hash, email) VALUES('test',
-    'test@rars.c')"); std::cout << _db.getLastInsertRowid (); std::string x =
-    _db.execAndGet ("INSERT INTO Students(student_id, user_id) VALUES('23-101287',
-    '" + std::to_string (_db.getLastInsertRowid ()) + "')"); std::cout <<
-    _db.getLastInsertRowid ();
+    db::database::get_db ().exec ("INSERT INTO Users(password_hash, email)
+    VALUES('test', 'test@rars.c')"); std::cout << db::database::get_db
+    ().getLastInsertRowid (); std::string x = db::database::get_db ().execAndGet
+    ("INSERT INTO Students(student_id, user_id) VALUES('23-101287',
+    '" + std::to_string (db::database::get_db ().getLastInsertRowid ()) + "')");
+    std::cout << db::database::get_db ().getLastInsertRowid ();
     */
 
     /*
@@ -110,4 +114,7 @@ void database::initialize_db () {
     return success > 0;
     */
 }
+
+SQLite::Database database::_db ("example.db3", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
+
 } // namespace db

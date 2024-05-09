@@ -86,11 +86,16 @@ class database {
 
     void refresh_and_seed_db ();
 
+    static SQLite::Database& get_db () {
+
+        return _db;
+    }
+
     private:
     // initialize_db
     void initialize_db ();
 
-    SQLite::Database _db;
+    static SQLite::Database _db;
     database (); // A singleton Class
 };
 } // namespace db

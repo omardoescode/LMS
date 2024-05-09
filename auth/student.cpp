@@ -1,7 +1,9 @@
 #include "auth/student.h"
 
-#include <iostream>
+#include "db/database.h"
 
+#include "utils/timer.h"
+#include <iostream>
 
 namespace auth {
 student::student (std::string username, std::string name, std::string email, std::string password)
@@ -39,4 +41,56 @@ bool student::update_in_database (SQLite::Database& db,
 std::map<std::string, std::any> props) {
     return true;
 }
+
+utils::vector<std::unique_ptr<student>> student::get (
+std::map<std::string, std::any> filtering_props) {
+    utils::timer t;
+    utils::vector<std::unique_ptr<student>> students_objs;
+
+    std::string query_string =
+    "select users.*, students.student_id from students join users on "
+    "users.user_id == students.user_id";
+
+    std::string formated_query_string =
+    filtering_props.size () ? query_string + " where" : query_string;
+
+    if (filtering_props.find ("username") != filtering_props.end ())
+        formated_query_string += " students.student_id = '" +
+        std::any_cast<std::string> (filtering_props["username"]) + "' and";
+    if (filtering_props.find ("name") != filtering_props.end ())
+        formated_query_string += " users.name = '" +
+        std::any_cast<std::string> (filtering_props["name"]) + "' and";
+    if (filtering_props.find ("faculty") != filtering_props.end ())
+        formated_query_string += " users.faculty = '" +
+        std::any_cast<std::string> (filtering_props["faculty"]) + "' and";
+    if (filtering_props.find ("email") != filtering_props.end ())
+        formated_query_string += " users.email = '" +
+        std::any_cast<std::string> (filtering_props["email"]) + "' and";
+
+    formated_query_string += filtering_props.size () ? " 1=1" : "";
+
+    SQLite::Statement query (db::database::get_db (), formated_query_string);
+
+    while (query.executeStep ()) {
+
+        int user_id               = query.getColumn (0);
+        std::string password_hash = query.getColumn (1);
+        std::string email         = query.getColumn (2);
+        std::string faculty       = query.getColumn (3);
+        std::string name          = query.getColumn (4);
+        std::string student_id    = query.getColumn (5);
+
+        std::unique_ptr<student> student_data_ptr =
+        std::make_unique<student> (student_id, name, email, password_hash);
+
+        students_objs.push_back (std::move (student_data_ptr));
+
+        std::cout << "Student: " << name << "\nID: " << student_id
+                  << "\nEmail: " << email << "\nFaculty: " << faculty << std::endl
+                  << std::endl;
+    }
+
+    return utils::vector<std::unique_ptr<student>>{};
+}
+
 } // namespace auth
