@@ -83,6 +83,8 @@ public:
   //   return res;
   // }
 
+  void refresh_and_seed_db();
+
 private:
   // initialize_db
   void initialize_db();
