@@ -10,6 +10,7 @@ enum class CourseRegistrationState {
 };
 class course_registration : public db::database_item {
     public:
+    course_registration (std::string course, std::string student);
     // Getters
     learn::course get_course () const;
     auth::student get_student () const;
