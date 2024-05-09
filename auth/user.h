@@ -1,6 +1,6 @@
 #pragma once
-#include "db/database_item.h"
 #include "SQLiteCpp/Database.h"
+#include "db/database_item.h"
 
 namespace auth {
 class user : public db::database_item {
@@ -28,9 +28,10 @@ public:
   bool check_password(std::string password);
 
   // Overriden Functions
-  virtual bool add_to_database(SQLite::Database& db) = 0;
-  virtual bool remove_from_database(SQLite::Database& db) = 0;
-  virtual bool update_in_database(SQLite::Database& db, std::map<std::string, std::any> props) = 0;
+  virtual bool add_to_database(SQLite::Database &db) = 0;
+  virtual bool remove_from_database(SQLite::Database &db) = 0;
+  virtual bool update_in_database(SQLite::Database &db,
+                                  std::map<std::string, std::any> props) = 0;
 
 protected:
   std::string _name, _username, _password_hash, _email, _faculty;

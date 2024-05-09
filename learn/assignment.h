@@ -23,9 +23,10 @@ public:
   double get_maximum_grade() const;
 
   // Overridden Functions
-  bool add_to_database(SQLite::Database& db) override;
-  bool remove_from_database(SQLite::Database& db) override;
-  bool update_in_database(SQLite::Database& db, std::map<std::string, std::any> props) override;
+  bool add_to_database(SQLite::Database &db) override;
+  bool remove_from_database(SQLite::Database &db) override;
+  bool update_in_database(SQLite::Database &db,
+                          std::map<std::string, std::any> props) override;
 
 private:
   std::string _course;

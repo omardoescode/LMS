@@ -1,10 +1,10 @@
-#include "utils/custom_array.h"
 #include "utils/exceptions.h"
+#include "utils/vector.h"
 #include <iostream>
 
-bool test_custom_array() {
+bool test_vector() {
   std::cout << "...Initializing the custom array" << std::endl;
-  utils::custom_array<int> elems = {1, 2, 3, 4, 5};
+  utils::vector<int> elems = {1, 2, 3, 4, 5};
   if (elems.size() != 5 || elems.capacity() != 5)
     return false;
 

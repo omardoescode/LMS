@@ -1,8 +1,8 @@
 #pragma once
+#include "SQLiteCpp/Database.h"
 #include "auth/user.h"
 #include "learn/course.h"
 #include <vector>
-#include "SQLiteCpp/Database.h"
 
 namespace auth {
 class student : public user {
@@ -37,9 +37,10 @@ public:
   double get_average_grades_in_all_courses() const;
 
   // Overridden functions
-  bool add_to_database(SQLite::Database& db) override;
-  bool remove_from_database(SQLite::Database& db) override;
-  bool update_in_database(SQLite::Database& db, std::map<std::string, std::any> props) override;
+  bool add_to_database(SQLite::Database &db) override;
+  bool remove_from_database(SQLite::Database &db) override;
+  bool update_in_database(SQLite::Database &db,
+                          std::map<std::string, std::any> props) override;
 
 private:
   std::string _name;
