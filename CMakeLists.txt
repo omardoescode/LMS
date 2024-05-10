@@ -39,3 +39,7 @@ target_include_directories(seeder PUBLIC ${PROJECT_SOURCE_DIR})
 target_link_libraries(main PUBLIC ${libraries})
 target_link_libraries(tests PUBLIC ${libraries})
 target_link_libraries(seeder PUBLIC ${libraries})
+
+target_precompile_headers(main PUBLIC pch.h) 
+target_precompile_headers(tests PUBLIC pch.h) 
+target_precompile_headers(seeder PUBLIC pch.h) 
