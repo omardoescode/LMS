@@ -5,7 +5,8 @@
 
 ```
 mkdir build/
-cmake -S . -B ./build
+cmake -S . -B ./build  # for UNIX-Based OS like macos or linux
+cmake -S . -B ./build -G "MinGW Makefiles"# for Windows users
 ```
 
 3. To run the project, use the following commands
@@ -24,5 +25,15 @@ cmake --build ./build --target tests
 ./build/tests.exe # for Windows users
 ```
 
-**NOTE**: For CLion users, Clion auto-handles the entire process of running
-cmake and building prior to running the program
+5. To seed the database
+
+```
+cmake --build ./build --target seeder
+./build/seeder # for UNIX-Based OS like macos or linux
+./build/seeder.exe # for Windows users
+```
+
+**NOTE**: If you want your IDE to handle running the program, just make sure
+that it runs it from the sources directory and not the build one, for example,
+CLION does use the build directory as the current directory and it causes
+problems with database behavior
