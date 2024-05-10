@@ -12,13 +12,10 @@ class course_registration : public db::database_item {
 
 public:
     // Constructor
-    course_registration (std::string id,
-    std::string course,
+    course_registration (std::string course,
     std::string student,
-    CourseRegistrationState state = CourseRegistrationState::AWAITING_APPROVAL)
-    : db::database_item (id), _course{ course }, _student{ student }, _state{ state } {
-    }
-
+    CourseRegistrationState state = CourseRegistrationState::AWAITING_APPROVAL);
+    course_registration (std::string id);
     // Getters
     learn::course get_course ();
     auth::student get_student ();
@@ -34,10 +31,8 @@ public:
     bool remove_from_database (SQLite::Database& db) override;
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
-
+    void get () override;
     // Getter from db
-    static utils::vector<std::unique_ptr<course_registration>> get (
-    std::map<std::string, std::any>);
 
 private:
     std::string _course, _student;

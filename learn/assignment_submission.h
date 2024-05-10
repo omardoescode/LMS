@@ -6,6 +6,9 @@ class assignment;
 class course;
 class assignment_submission : public db::database_item {
 public:
+    // Constructors
+    explicit assignment_submission (std::string id);
+    assignment_submission (std::string assignment, std::string student, double grade = -1);
     // Helpful Funcitons
     bool is_graded () const {
         return _grade >= 0;
@@ -28,6 +31,7 @@ public:
     bool remove_from_database (SQLite::Database& db) override;
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
+    void get () override;
 
 private:
     std::string _assignment, _student;

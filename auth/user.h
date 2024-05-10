@@ -3,6 +3,7 @@
 #include "auth/role.h"
 #include "db/database.h"
 #include "db/database_item.h"
+#include "utils/exceptions.h"
 #include "utils/vector.h"
 
 namespace auth {
@@ -28,16 +29,17 @@ public:
 
     // Setters
     // When applied, we need to update in DB as well
-    bool set_username (std::string_view new_username) {
-        std::map<std::string, std::any> map;
-        map["username"] = new_username;
-        if (db::database::get_instance ().update_item (*this, map)) {
+    bool set_username (std::string new_username) {
+        if (new_username.empty ())
+            throw utils::custom_exception{ "Invalid username" };
+        if (db::database::get_instance ().update_item (
+            *this, { { "username", new_username } })) {
             _username = new_username;
             return true;
         }
         return false;
     }
-    bool set_email (std::string_view new_email) {
+    bool set_email (std::string new_email) {
         std::map<std::string, std::any> map;
         map["email"] = new_email;
         if (db::database::get_instance ().update_item (*this, map)) {
@@ -58,9 +60,7 @@ public:
     virtual bool remove_from_database (SQLite::Database& db) = 0;
     virtual bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props)                   = 0;
-
-    // Getter from db
-    static utils::vector<std::unique_ptr<user>> get (std::map<std::string, std::any>);
+    virtual void get ()                                      = 0;
 
 protected:
     std::string _name, _username, _password_hash, _email, _faculty;

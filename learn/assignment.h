@@ -3,7 +3,6 @@
 #include "utils/vector.h"
 #include <any>
 #include <memory>
-#include <vector>
 namespace learn {
 class course;
 class assignment_submission;
@@ -12,9 +11,9 @@ class assignment : public db::database_item {
 public:
     enum class AssignmentType { PAPER, ONLINE };
     // Constructor
-    assignment (std::string id, std::string course, AssignmentType type = AssignmentType::PAPER)
-    : db::database_item (id), _course{ course }, _type{ type } {
-    }
+    assignment (std::string course, AssignmentType type);
+    explicit assignment (std::string id);
+
     // Getters
     learn::course get_course () const;
     AssignmentType get_type () const {
@@ -35,10 +34,11 @@ public:
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
 
-    static utils::vector<std::unique_ptr<assignment>> get (std::map<std::string, std::any>);
+    void get () override;
 
 private:
     std::string _course;
     AssignmentType _type;
+    utils::vector<std::string> submission;
 };
 } // namespace learn

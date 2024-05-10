@@ -11,6 +11,9 @@ namespace auth {
 
 class instructor : public user {
 public:
+    // Constructors
+    explicit instructor (std::string id);
+    instructor (std::string username, std::string email, std::string password_hash);
     // Given a course in the database, assign this course to this instructor
     bool add_course (learn::course& course);
     bool add_course (std::string_view course_id);
@@ -56,9 +59,7 @@ public:
     bool remove_from_database (SQLite::Database& db) override;
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
-
-    // Getter from db
-    static utils::vector<std::unique_ptr<instructor>> get (std::map<std::string, std::any>);
+    void get () override;
 
 private:
     // Constraint: An instructor can have up to 5 courses

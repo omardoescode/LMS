@@ -5,17 +5,13 @@
 #include <utils/exceptions.h>
 
 namespace learn {
-course::course (std::string id,
-std::string name,
-std::string professor,
-std::string textbook,
-int credit_hours,
-utils::vector<std::string> teaching_assistants,
-utils::vector<std::string> students)
-: db::database_item (id), _name{ name }, _professor (professor),
-  _textbook (textbook), _credit_hours (credit_hours) {
-    _teaching_assistants = std::move (teaching_assistants);
-    _students            = std::move (students);
+
+course::course (std::string id) : db::database_item (id) {
+    get ();
+}
+course::course (std::string name, std::string professor, std::string textbook, int credit_hours)
+: _name{ name }, _professor (professor), _textbook (textbook),
+  _credit_hours (credit_hours) {
 }
 // auth::instructor course::get_professor () {
 //     // return db::database::get_instance ().get_elem_by_id<auth::instructor> (
@@ -61,8 +57,7 @@ utils::vector<std::string> students)
 // }
 
 
-utils::vector<std::unique_ptr<course>> course::get (
-std::map<std::string, std::any> filtering_props) {
+void course::get () {
 }
 bool course::add_to_database (SQLite::Database& db) {
     return true;
