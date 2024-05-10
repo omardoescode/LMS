@@ -1,7 +1,7 @@
 #include "auth/student.h"
 
 #include "db/database.h"
-#include "learn/course_registration.h"
+// #include "learn/course_registration.h"
 #include "utils/exceptions.h"
 #include "utils/timer.h"
 #include "utils/vector.h"
@@ -35,9 +35,6 @@ bool student::add_to_database (SQLite::Database& db) {
     _id         = student_id;
     return success;
 }
-utils::vector<std::unique_ptr<learn::course>> getCourses () {
-    // Todo
-}
 void student::register_course (std::string course) {
     // validate (if course is not already registered)
     for (int i = 0; i < _courses_registrations.size (); i++) {
@@ -47,9 +44,9 @@ void student::register_course (std::string course) {
         }
     }
     // adding to database and member variable
-    learn::course_registration registration (course, _id);
-    _courses_registrations.push_back (course);
-    db::database::get_instance ().add_item (registration);
+    // learn::course_registration registration (course, _id);
+    // _courses_registrations.push_back (course);
+    // db::database::get_instance ().add_item (registration);
 }
 
 void student::drop_course (const std::string& course) {

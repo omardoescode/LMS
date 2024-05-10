@@ -6,7 +6,7 @@
 
 namespace auth {
 class user : public db::database_item {
-    public:
+public:
     // Consturctor
     // Will be used for construction of the subclasses
     // Simply assigning parameters to properties of the object using member
@@ -28,16 +28,22 @@ class user : public db::database_item {
     // Setters
     // When applied, we need to update in DB as well
     bool set_username (std::string_view new_username) {
-        _username = new_username;
         std::map<std::string, std::any> map;
         map["username"] = new_username;
-        db::database::get_instance ().update_item (*this, map);
+        if (db::database::get_instance ().update_item (*this, map)) {
+            _username = new_username;
+            return true;
+        }
+        return false;
     }
     bool set_email (std::string_view new_email) {
-        _email = new_email;
         std::map<std::string, std::any> map;
         map["email"] = new_email;
-        db::database::get_instance ().update_item (*this, map);
+        if (db::database::get_instance ().update_item (*this, map)) {
+            _email = new_email;
+            return true;
+        }
+        return false;
     }
 
     // Helpful Functions
@@ -52,7 +58,7 @@ class user : public db::database_item {
     virtual bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props)                   = 0;
 
-    protected:
+protected:
     std::string _name, _username, _password_hash, _email, _faculty;
     Role _role;
 };

@@ -4,8 +4,16 @@ project(lsm)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/thirdparty/SQLiteCpp)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-set(libraries SQLiteCpp sqlite3 pthread)
+set(libraries SQLiteCpp sqlite3 pthread dl)
 set(sources
+        learn/assignment.cpp
+        learn/assignment.h
+        learn/assignment_submission.cpp
+        learn/assignment_submission.h
+        learn/course.cpp
+        learn/course.h
+        learn/course_registration.h
+        learn/course_registration.cpp
         auth/administrator.cpp
         auth/administrator.h
         auth/instructor.cpp
@@ -14,14 +22,6 @@ set(sources
         auth/user.h
         auth/student.cpp
         auth/student.h
-        learn/assignment.cpp
-        learn/assignment.h
-        learn/assignment_submission.cpp
-        learn/assignment_submission.h
-        learn/course.cpp
-        learn/course.h
-        learn/course_registration.cpp
-        learn/course_registration.h
         db/database.cpp
         db/database.h
         db/database_item.h
@@ -36,6 +36,6 @@ target_include_directories(main PUBLIC ${PROJECT_SOURCE_DIR})
 target_include_directories(tests PUBLIC ${PROJECT_SOURCE_DIR})
 target_include_directories(seeder PUBLIC ${PROJECT_SOURCE_DIR})
 
-target_link_libraries(main ${libraries})
-target_link_libraries(tests ${libraries})
-target_link_libraries(seeder ${libraries})
+target_link_libraries(main PUBLIC ${libraries})
+target_link_libraries(tests PUBLIC ${libraries})
+target_link_libraries(seeder PUBLIC ${libraries})
