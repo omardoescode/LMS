@@ -9,6 +9,7 @@
 namespace auth {
 class user : public db::database_item {
 public:
+    enum class Role { ADMINISTRATOR, INSTRUCTOR, STUDENT };
     // Consturctor
     // Will be used for construction of the subclasses
     // Simply assigning parameters to properties of the object using member
