@@ -72,18 +72,17 @@ std::map<std::string, std::any> props) {
 
 utils::vector<std::unique_ptr<student>> student::get (
 std::map<std::string, std::any> filtering_props) {
-    utils::timer t;
     utils::vector<std::unique_ptr<student>> students_objs;
 
     std::string query_string =
-    "select users.*, students.student_id from students join users on "
-    "users.user_id == students.user_id";
+    "select users.*, students.id from students join users on "
+    "users.id == students.user_id";
 
     std::string formated_query_string =
     filtering_props.size () ? query_string + " where" : query_string;
 
     if (filtering_props.find ("username") != filtering_props.end ())
-        formated_query_string += " students.student_id = '" +
+        formated_query_string += " students.id = '" +
         std::any_cast<std::string> (filtering_props["username"]) + "' and";
     if (filtering_props.find ("name") != filtering_props.end ())
         formated_query_string += " users.name = '" +

@@ -62,6 +62,9 @@ public:
     static utils::vector<std::unique_ptr<instructor>> get (
     std::map<std::string, std::any> props);
 
+    // Getter from db
+    static utils::vector<std::unique_ptr<instructor>> get (std::map<std::string, std::any>);
+
 private:
     // Constraint: An instructor can have up to 5 courses
     utils::vector<std::string> courses;

@@ -1,5 +1,5 @@
 INSERT INTO Administrators (
-                               administrator_id,
+                               id,
                                user_id
                            )
                            VALUES (
@@ -8,7 +8,7 @@ INSERT INTO Administrators (
                            );
 
 INSERT INTO Administrators (
-                               administrator_id,
+                               id,
                                user_id
                            )
                            VALUES (
@@ -17,7 +17,7 @@ INSERT INTO Administrators (
                            );
 
 INSERT INTO Administrators (
-                               administrator_id,
+                               id,
                                user_id
                            )
                            VALUES (
@@ -26,7 +26,7 @@ INSERT INTO Administrators (
                            );
 
 INSERT INTO Administrators (
-                               administrator_id,
+                               id,
                                user_id
                            )
                            VALUES (

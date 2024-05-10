@@ -3,6 +3,7 @@
 #include "auth/role.h"
 #include "db/database.h"
 #include "db/database_item.h"
+#include "utils/vector.h"
 
 namespace auth {
 class user : public db::database_item {
@@ -57,6 +58,9 @@ public:
     virtual bool remove_from_database (SQLite::Database& db) = 0;
     virtual bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props)                   = 0;
+
+    // Getter from db
+    static utils::vector<std::unique_ptr<user>> get (std::map<std::string, std::any>);
 
 protected:
     std::string _name, _username, _password_hash, _email, _faculty;

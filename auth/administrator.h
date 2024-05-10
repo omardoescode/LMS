@@ -53,5 +53,9 @@ public:
     bool remove_from_database (SQLite::Database& db) override;
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
+
+    // Getter from db
+    static utils::vector<std::unique_ptr<administrator>> get (
+    std::map<std::string, std::any>);
 };
 } // namespace auth

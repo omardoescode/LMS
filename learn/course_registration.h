@@ -35,6 +35,10 @@ public:
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
 
+    // Getter from db
+    static utils::vector<std::unique_ptr<course_registration>> get (
+    std::map<std::string, std::any>);
+
 private:
     std::string _course, _student;
     CourseRegistrationState _state;
