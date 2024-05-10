@@ -1,6 +1,5 @@
 #pragma once
 #include "SQLiteCpp/Database.h"
-#include "auth/role.h"
 #include "db/database.h"
 #include "db/database_item.h"
 #include "utils/exceptions.h"
