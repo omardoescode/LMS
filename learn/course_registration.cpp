@@ -24,20 +24,20 @@ std::map<std::string, std::any> props) {
     return true;
 }
 
-// learn::course course_registration::get_course () {
-//     auto courses = course::get ({ { "id"s, _course } });
-//     if (courses.empty ())
-//         throw utils::custom_exception (
-//         "Invalid course. The course seems to have been deleted");
-//     return *courses.front ();
-// };
-//
-// auth::student course_registration::get_student () {
-//     auto students = auth::student::get ({ { "id"s, _course } });
-//     if (students.empty ())
-//         throw utils::custom_exception{
-//             "Invalid student. The student seem to have been deleted"
-//         };
-//     return *students.front ();
-// };
+learn::course course_registration::get_course () {
+    auto courses = course::get ({ { "id"s, _course } });
+    if (courses.empty ())
+        throw utils::custom_exception (
+        "Invalid course. The course seems to have been deleted");
+    return *courses.front ();
+};
+
+auth::student course_registration::get_student () {
+    auto students = auth::student::get ({ { "id"s, _course } });
+    if (students.empty ())
+        throw utils::custom_exception{
+            "Invalid student. The student seem to have been deleted"
+        };
+    return *students.front ();
+};
 } // namespace learn

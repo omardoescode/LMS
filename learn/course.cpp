@@ -60,6 +60,10 @@ utils::vector<std::string> students)
 //     return res_casted;
 // }
 
+
+utils::vector<std::unique_ptr<course>> course::get (
+std::map<std::string, std::any> filtering_props) {
+}
 bool course::add_to_database (SQLite::Database& db) {
     return true;
 }

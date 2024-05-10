@@ -5,9 +5,9 @@ namespace learn {
 class assignment;
 class course;
 class assignment_submission : public db::database_item {
-    public:
+public:
     // Helpful Funcitons
-    bool is_graded () {
+    bool is_graded () const {
         return _grade >= 0;
     }
 
@@ -29,7 +29,7 @@ class assignment_submission : public db::database_item {
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
 
-    private:
+private:
     std::string _assignment, _student;
     double _grade = -1; // -1 is when it's not graded yet
 };
