@@ -56,6 +56,9 @@ class instructor : public user {
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
 
+    // Getter from db
+    static utils::vector<std::unique_ptr<instructor>> get (std::map<std::string, std::any>);
+
     private:
     // Constraint: An instructor can have up to 5 courses
     std::vector<std::string> courses;

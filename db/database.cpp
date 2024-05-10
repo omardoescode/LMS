@@ -44,28 +44,28 @@ void database::initialize_db () {
     std::cout << "INITIALIZING DATABASE" << std::endl;
     // Create all tables as per database design
     db::database::get_db ().exec (
-    "CREATE TABLE IF NOT EXISTS Users (user_id INTEGER PRIMARY KEY, "
+    "CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY, "
     "password_hash VARCHAR(32), email VARCHAR(255), faculty "
     "VARCHAR(255), name VARCHAR(255))");
     db::database::get_db ().exec (
-    "CREATE TABLE IF NOT EXISTS Students (student_id VARCHAR(9) PRIMARY KEY, "
-    "user_id INTEGER, FOREIGN KEY(user_id) REFERENCES Users(user_id))");
+    "CREATE TABLE IF NOT EXISTS Students (id VARCHAR(9) PRIMARY KEY, "
+    "user_id INTEGER, FOREIGN KEY(user_id) REFERENCES Users(id))");
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Students_Courses (student_id "
     "VARCHAR(9), course_id INTEGER, state TEXT)");
     db::database::get_db ().exec (
-    "CREATE TABLE IF NOT EXISTS Instructors (instructor_id VARCHAR(255) "
+    "CREATE TABLE IF NOT EXISTS Instructors (id VARCHAR(255) "
     "PRIMARY KEY, is_teaching_assistant BOOL, user_id INTEGER, FOREIGN "
-    "KEY(user_id) REFERENCES Users(user_id))");
+    "KEY(user_id) REFERENCES Users(id))");
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Instructors_Courses (instructor_id "
     "VARCHAR(255), course_id INTEGER)");
     db::database::get_db ().exec (
-    "CREATE TABLE IF NOT EXISTS Administrators (administrator_id "
+    "CREATE TABLE IF NOT EXISTS Administrators (id "
     "VARCHAR(255) PRIMARY KEY, user_id INTEGER, FOREIGN KEY(user_id) "
-    "REFERENCES Users(user_id))");
+    "REFERENCES Users(id))");
     db::database::get_db ().exec (
-    "CREATE TABLE IF NOT EXISTS Courses (course_id INTEGER PRIMARY KEY, "
+    "CREATE TABLE IF NOT EXISTS Courses (id INTEGER PRIMARY KEY, "
     "name VARCHAR(255), credit_hours INTEGER, text_book VARCHAR(255))");
 
     /*

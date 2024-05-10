@@ -46,6 +46,9 @@ class course : public db::database_item {
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
 
+    // Getter from db
+    static utils::vector<std::unique_ptr<course>> get (std::map<std::string, std::any>);
+
     private:
     int _credit_hours;
     std::string _professor, _textbook;
