@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 project(lsm)
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/thirdparty/SQLiteCpp)
-
+set(CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 set(libraries SQLiteCpp sqlite3 pthread)
 set(sources

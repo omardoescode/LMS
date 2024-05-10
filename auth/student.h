@@ -6,7 +6,7 @@
 
 namespace auth {
 class student : public user {
-    public:
+public:
     // Constructors
     student (std::string username,
     std::string name,
@@ -18,7 +18,7 @@ class student : public user {
     std::string get_id () const {
         return _id;
     }
-    std::vector<std::unique_ptr<learn::course>> get_courses () const;
+    utils::vector<std::unique_ptr<learn::course>> get_courses ();
 
     utils::vector<std::unique_ptr<learn::course>> getCourses ();
 
@@ -50,7 +50,7 @@ class student : public user {
     // Getter from db
     static utils::vector<std::unique_ptr<student>> get (std::map<std::string, std::any>);
 
-    private:
+private:
     std::string _name;
     utils::vector<std::string> _courses_registrations;
 };

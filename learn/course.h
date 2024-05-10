@@ -13,20 +13,23 @@ class student;
 namespace learn {
 class course : public db::database_item {
 public:
-    // Constructors
-    course (int course_id,
-    std::string name,
-    int credit_hours,
-    std::string text_book); // Create with empty ID to indicate
-                            // it hasn't been added to the database yet
-
+    // Constructor
+    course (std::string,
+    std::string,
+    std::string,
+    std::string,
+    int,
+    utils::vector<std::string>,
+    utils::vector<std::string>);
+    // Destructor
+    virtual ~course () = default;
     // Getters
     int get_credit_hours () const {
         return _credit_hours;
     }
-    auth::instructor get_professor () const;
-    std::list<std::unique_ptr<auth::instructor>> get_teaching_assistants () const;
-    std::list<std::unique_ptr<auth::student>> get_students () const;
+    auth::instructor get_professor ();
+    std::list<std::unique_ptr<auth::instructor>> get_teaching_assistants ();
+    std::list<std::unique_ptr<auth::student>> get_students ();
     std::string get_textbook () const {
         return _textbook;
     }
@@ -60,8 +63,8 @@ public:
 private:
     int _id;
     int _credit_hours;
-    std::string _professor, _textbook, _name;
-    std::vector<std::string> _teaching_assistants,
+    std::string _name, _professor, _textbook;
+    utils::vector<std::string> _teaching_assistants,
     _students; // Up to 6 teaching assistants
 };
 
