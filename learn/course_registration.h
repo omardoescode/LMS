@@ -1,16 +1,18 @@
 #pragma once
 #include "db/database_item.h"
 #include "learn/course.h"
+#include "learn/course_registration_state.h"
 namespace learn {
-enum class CourseRegistrationState {
-    ENROLLED,
-    DROPPED,
-    AWAITING_APPROVAL,
-    FINISHED
-};
 class course_registration : public db::database_item {
-    public:
-    course_registration (std::string course, std::string student);
+public:
+    // Constructor
+    course_registration (std::string course,
+    std::string student,
+    CourseRegistrationState state = CourseRegistrationState::AWAITING_APPROVAL)
+    : _course{ course }, _student{ student }, _state{ state } {
+    }
+
+
     // Getters
     learn::course get_course () const;
     auth::student get_student () const;
@@ -31,7 +33,7 @@ class course_registration : public db::database_item {
     static utils::vector<std::unique_ptr<course_registration>> get (
     std::map<std::string, std::any>);
 
-    private:
+private:
     std::string _course, _student;
     CourseRegistrationState _state;
 };

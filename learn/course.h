@@ -1,6 +1,7 @@
 #pragma once
 #include "db/database_item.h"
 #include "learn/assignment.h"
+#include "utils/vector.h"
 #include <list>
 #include <memory>
 #include <vector>
@@ -11,7 +12,7 @@ class student;
 } // namespace auth
 namespace learn {
 class course : public db::database_item {
-    public:
+public:
     // Getters
     int get_credit_hours () const {
         return _credit_hours;
@@ -49,7 +50,7 @@ class course : public db::database_item {
     // Getter from db
     static utils::vector<std::unique_ptr<course>> get (std::map<std::string, std::any>);
 
-    private:
+private:
     int _credit_hours;
     std::string _professor, _textbook;
     std::vector<std::string> _teaching_assistants,

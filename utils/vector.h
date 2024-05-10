@@ -7,7 +7,7 @@
 
 namespace utils {
 template <typename T> class vector {
-    public:
+public:
     // Constructors
     vector ();
     explicit vector (int);
@@ -42,6 +42,7 @@ template <typename T> class vector {
     void insert (int, T);
     T& front () const;
     T& back () const;
+    bool empty () const;
 
     // Operators
     T& operator[] (int);
@@ -52,7 +53,7 @@ template <typename T> class vector {
     T* begin () const;
     T* end () const;
 
-    private:
+private:
     std::size_t _capacity, _size;
     T* _elems;
 
@@ -122,6 +123,9 @@ template <typename T> bool vector<T>::valid_index (int index) const {
     return index >= 0 && index < _size;
 }
 // Functionalities
+template <typename T> bool vector<T>::empty () const {
+    return _size == 0;
+}
 template <typename T> T& vector<T>::at (int index) const {
     if (!valid_index (index))
         throw utils::custom_exception{ "Invalid index" };

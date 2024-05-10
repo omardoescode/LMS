@@ -60,7 +60,7 @@ PointerAlignment: Left
 
 # AccessModifierOffset (int)
 # The extra indent or outdent of access modifiers, e.g. public:.
-AccessModifierOffset: 0
+AccessModifierOffset: -4
 
 # AlignAfterOpenBracket (BracketAlignmentStyle)
 # If true, horizontally aligns arguments after an open bracket.
