@@ -29,26 +29,8 @@ public:
 
     // Setters
     // When applied, we need to update in DB as well
-    bool set_username (std::string new_username) {
-        if (new_username.empty ())
-            throw utils::custom_exception{ "Invalid username" };
-        if (db::database::get_instance ().update_item (
-            *this, { { "username", new_username } })) {
-            _username = new_username;
-            return true;
-        }
-        return false;
-    }
-    bool set_email (std::string new_email) {
-        std::map<std::string, std::any> map;
-        map["email"] = new_email;
-        if (db::database::get_instance ().update_item (*this, map)) {
-            _email = new_email;
-            return true;
-        }
-        return false;
-    }
-
+    bool set_email (std::string new_email);
+    bool set_username (std::string new_username);
     // Helpful Functions
     bool check_password (std::string password) const {
         std::hash<std::string> hasher;

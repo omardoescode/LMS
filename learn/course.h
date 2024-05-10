@@ -10,6 +10,7 @@ class instructor;
 class student;
 } // namespace auth
 namespace learn {
+class assignment_submission;
 class course : public db::database_item {
 public:
     // Constructors
@@ -60,8 +61,7 @@ public:
 private:
     int _credit_hours;
     std::string _name, _professor, _textbook;
-    utils::vector<std::string> _teaching_assistants,
-    _students; // Up to 6 teaching assistants
+    utils::vector<std::string> _teaching_assistants, _students, _assignments; // Up to 6 teaching assistants
 };
 
 } // namespace learn

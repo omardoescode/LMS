@@ -55,5 +55,6 @@ private:
     utils::vector<std::string> _courses_registrations;
 };
 
-
 } // namespace auth
+
+// namespace auth
