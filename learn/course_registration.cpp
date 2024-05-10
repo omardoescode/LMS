@@ -13,6 +13,17 @@ bool course_registration::course_registration::set_state (CourseRegistrationStat
     return false;
 }
 
+bool course_registration::add_to_database (SQLite::Database& db) {
+    return true;
+}
+bool course_registration::remove_from_database (SQLite::Database& db) {
+    return true;
+}
+bool course_registration::update_in_database (SQLite::Database& db,
+std::map<std::string, std::any> props) {
+    return true;
+}
+
 // learn::course course_registration::get_course () {
 //     auto courses = course::get ({ { "id"s, _course } });
 //     if (courses.empty ())

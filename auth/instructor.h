@@ -7,7 +7,6 @@
 #include "utils/vector.h"
 #include <memory>
 #include <string_view>
-#include <vector>
 namespace auth {
 
 class instructor : public user {
@@ -57,10 +56,6 @@ public:
     bool remove_from_database (SQLite::Database& db) override;
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
-
-
-    static utils::vector<std::unique_ptr<instructor>> get (
-    std::map<std::string, std::any> props);
 
     // Getter from db
     static utils::vector<std::unique_ptr<instructor>> get (std::map<std::string, std::any>);

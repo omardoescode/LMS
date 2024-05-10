@@ -13,6 +13,7 @@ class student;
 namespace learn {
 class course : public db::database_item {
 public:
+    // Constructor
     course (std::string,
     std::string,
     std::string,
@@ -20,6 +21,8 @@ public:
     int,
     utils::vector<std::string>,
     utils::vector<std::string>);
+    // Destructor
+    virtual ~course () = default;
     // Getters
     int get_credit_hours () const {
         return _credit_hours;

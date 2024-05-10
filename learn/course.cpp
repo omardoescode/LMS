@@ -60,4 +60,14 @@ utils::vector<std::string> students)
 //     return res_casted;
 // }
 
+bool course::add_to_database (SQLite::Database& db) {
+    return true;
+}
+
+bool course::remove_from_database (SQLite::Database& db) {
+    return true;
+}
+bool course::update_in_database (SQLite::Database& db, std::map<std::string, std::any> props) {
+    return true;
+}
 } // namespace learn
