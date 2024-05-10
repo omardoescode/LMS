@@ -7,13 +7,15 @@
 namespace db {
 
 class database_item {
-    public:
+public:
     friend class database;
     virtual ~database_item () = default;
 
     // Constructor
     // Used for subclass
+
     database_item () = default;
+
     database_item (std::string_view id) : _id{ id } {
     }
 
@@ -28,10 +30,10 @@ class database_item {
         return _id != "";
     }
 
-    protected:
+protected:
     std::string _id;
 
-    private:
+private:
     virtual bool add_to_database (SQLite::Database& db)      = 0;
     virtual bool remove_from_database (SQLite::Database& db) = 0;
     virtual bool update_in_database (SQLite::Database& db,

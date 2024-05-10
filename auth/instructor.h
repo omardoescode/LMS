@@ -4,12 +4,14 @@
 #include "learn/assignment.h"
 #include "learn/assignment_submission.h"
 #include "learn/course.h"
+#include "utils/vector.h"
+#include <memory>
 #include <string_view>
 #include <vector>
 namespace auth {
 
 class instructor : public user {
-    public:
+public:
     // Given a course in the database, assign this course to this instructor
     bool add_course (learn::course& course);
     bool add_course (std::string_view course_id);
@@ -56,8 +58,12 @@ class instructor : public user {
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
 
-    private:
+
+    static utils::vector<std::unique_ptr<instructor>> get (
+    std::map<std::string, std::any> props);
+
+private:
     // Constraint: An instructor can have up to 5 courses
-    std::vector<std::string> courses;
+    utils::vector<std::string> courses;
 };
 } // namespace auth

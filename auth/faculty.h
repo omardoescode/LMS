@@ -9,11 +9,11 @@
 namespace auth {
 class faculty;
 class faculty_getter {
-    private:
+private:
     faculty_getter () {
     }
 
-    public:
+public:
     static faculty_getter& get_instance () {
         static faculty_getter instance;
         return instance;
@@ -26,7 +26,7 @@ class faculty_getter {
     void operator= (const faculty_getter&) = delete;
 };
 class faculty : public db::database_item {
-    public:
+public:
     using getter = faculty_getter;
     // Getters
     std::string get_name () const {
@@ -34,18 +34,18 @@ class faculty : public db::database_item {
     }
 
     // Search in DB and return the values where faculty is this instance
-    auth::administrator get_administrator () const;
-    std::vector<std::unique_ptr<auth::instructor>> get_instructors () const;
-    std::vector<std::unique_ptr<auth::student>> get_students () const;
-    std::vector<std::unique_ptr<learn::course>> get_courses () const;
+    auth::administrator get_administrator ();
+    utils::vector<std::unique_ptr<auth::instructor>> get_instructors ();
+    utils::vector<std::unique_ptr<auth::student>> get_students ();
+    utils::vector<std::unique_ptr<learn::course>> get_courses ();
 
-    // Overridden Functions
+    // vpverridden Functions
     bool add_to_database (SQLite::Database& db) override;
     bool remove_from_database (SQLite::Database& db) override;
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
 
-    private:
+private:
     std::string _name;
 };
 

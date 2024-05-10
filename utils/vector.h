@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cstdlib>
 #include <initializer_list>
-#include <utility>
 
 namespace utils {
 template <typename T> class vector {
@@ -46,8 +45,8 @@ public:
 
     // Operators
     T& operator[] (int);
-    T& operator= (vector<T>&);
-    T& operator= (vector<T>&&);
+    vector<T> operator= (vector<T>&);
+    vector<T> operator= (vector<T>&&);
 
     // Iterators
     T* begin () const;
@@ -128,7 +127,7 @@ template <typename T> bool vector<T>::empty () const {
 }
 template <typename T> T& vector<T>::at (int index) const {
     if (!valid_index (index))
-        throw utils::custom_exception{ "Invalid index" };
+        throw custom_exception{ "Invalid index" };
 
     return _elems[index];
 }
@@ -142,7 +141,7 @@ template <typename T> void vector<T>::push_back (T value) {
 
 template <typename T> void vector<T>::pop_back () {
     if (_size == 0)
-        throw utils::custom_exception{ "You cannot pop up an empty array" };
+        throw custom_exception{ "You cannot pop up an empty array" };
 
     _size--;
 }
@@ -175,9 +174,7 @@ template <typename T> void vector<T>::clear () {
 }
 template <typename T> void vector<T>::erase (int index, int count) {
     if (count < 1)
-        throw utils::custom_exception{
-            "Invalid count option to utils::vector::erase"
-        };
+        throw custom_exception{ "Invalid count option to vector::erase" };
     for (int i = index; i + count < _size; i++)
         _elems[i] = _elems[i + count];
     _size -= count;
@@ -187,9 +184,7 @@ template <typename T> void vector<T>::erase (int index) {
 }
 template <typename T> void vector<T>::insert (int index, T value) {
     if (index > _size)
-        throw utils::custom_exception{
-            "You cannot insert to an index > size()"
-        };
+        throw custom_exception{ "You cannot insert to an index > size()" };
     push_back (value);
     for (int i = _size - 1; i < index; i--)
         std::swap (_elems[i], _elems[i - 1]);
@@ -198,25 +193,34 @@ template <typename T> void vector<T>::insert (int index, T value) {
 template <typename T> T& vector<T>::operator[] (int value) {
     return at (value);
 }
-template <typename T> T& vector<T>::operator= (vector<T>& other) {
+template <typename T> vector<T> vector<T>::operator= (vector<T>& other) {
     _capacity = _size = other._size;
     for (int i = 0; i < _size; i++)
         _elems[i] = other[i];
+    return *this;
 }
 
-template <typename T> T& vector<T>::operator= (vector<T>&& other) {
+template <typename T> vector<T> vector<T>::operator= (vector<T>&& other) {
     _capacity = _size = other._size;
     _elems            = other._elems;
     other._elems      = nullptr;
     other._size = other._capacity = 0;
+
+    return *this;
 }
 
+// template <typename T> void vector<T>::swap (vector<T>& other) {
+//     std::swap (_capacity, other._capacity);
+//     std::swap (_size, other._size);
+//     std::swap (_elems, other._elems);
+// }
+
 // Iterators
-template <typename T> T* utils::vector<T>::begin () const {
+template <typename T> T* vector<T>::begin () const {
     return &at (0);
 };
 
-template <typename T> T* utils::vector<T>::end () const {
+template <typename T> T* vector<T>::end () const {
     return &at (_size - 1);
 };
 } // namespace utils

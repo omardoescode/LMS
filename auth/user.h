@@ -15,7 +15,7 @@ public:
 
     // Intialize as well
     // Used for subclasses
-    explicit user (std::string_view id) : database_item (id){};
+    explicit user (std::string id) : database_item (id){};
 
     // Getters
     std::string get_username () const {

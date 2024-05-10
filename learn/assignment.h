@@ -1,22 +1,28 @@
 #pragma once
 #include "db/database_item.h"
+#include "utils/vector.h"
+#include <any>
 #include <memory>
 #include <vector>
 namespace learn {
-enum class AssigmentType { PAPER, ONLINE };
 class course;
 class assignment_submission;
 
 class assignment : public db::database_item {
-    public:
+public:
+    enum class AssignmentType { PAPER, ONLINE };
+    // Constructor
+    assignment (std::string id, std::string course, AssignmentType type = AssignmentType::PAPER)
+    : db::database_item (id), _course{ course }, _type{ type } {
+    }
     // Getters
     learn::course get_course () const;
-    AssigmentType get_type () const {
+    AssignmentType get_type () const {
         return _type;
     }
 
     // Search in DB and get the submission of this assignment
-    std::vector<std::unique_ptr<learn::assignment_submission>> get_submission () const;
+    utils::vector<std::unique_ptr<learn::assignment_submission>> get_submission () const;
 
     // Calculations
     double get_average_grade () const;
@@ -29,8 +35,10 @@ class assignment : public db::database_item {
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
 
-    private:
+    static utils::vector<std::unique_ptr<assignment>> get (std::map<std::string, std::any>);
+
+private:
     std::string _course;
-    AssigmentType _type;
+    AssignmentType _type;
 };
 } // namespace learn
