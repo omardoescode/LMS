@@ -4,7 +4,7 @@ project(lsm)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/thirdparty/SQLiteCpp)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-set(libraries SQLiteCpp sqlite3 pthread dl)
+set(libraries SQLiteCpp sqlite3 pthread)
 set(sources
         learn/assignment.cpp
         learn/assignment.h
@@ -40,6 +40,6 @@ target_link_libraries(main PUBLIC ${libraries})
 target_link_libraries(tests PUBLIC ${libraries})
 target_link_libraries(seeder PUBLIC ${libraries})
 
-target_precompile_headers(main PUBLIC pch.h) 
-target_precompile_headers(tests PUBLIC pch.h) 
+target_precompile_headers(main PUBLIC pch.h)
+target_precompile_headers(tests PUBLIC pch.h)
 target_precompile_headers(seeder PUBLIC pch.h) 

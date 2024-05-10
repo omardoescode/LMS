@@ -13,6 +13,13 @@ class student;
 namespace learn {
 class course : public db::database_item {
 public:
+    // Constructors
+    course (int course_id,
+    std::string name,
+    int credit_hours,
+    std::string text_book); // Create with empty ID to indicate
+                            // it hasn't been added to the database yet
+
     // Getters
     int get_credit_hours () const {
         return _credit_hours;
@@ -51,8 +58,9 @@ public:
     static utils::vector<std::unique_ptr<course>> get (std::map<std::string, std::any>);
 
 private:
+    int _id;
     int _credit_hours;
-    std::string _professor, _textbook;
+    std::string _professor, _textbook, _name;
     std::vector<std::string> _teaching_assistants,
     _students; // Up to 6 teaching assistants
 };

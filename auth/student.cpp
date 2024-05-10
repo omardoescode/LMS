@@ -117,6 +117,6 @@ std::map<std::string, std::any> filtering_props) {
                   << std::endl;
     }
 
-    return utils::vector<std::unique_ptr<student>>{};
+    return students_objs;
 }
 } // namespace auth
