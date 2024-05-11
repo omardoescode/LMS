@@ -4,7 +4,7 @@
 #include <sstream>
 
 namespace utils {
-utils::vector<std::string> split_string (std::string str, char sep) {
+inline utils::vector<std::string> split_string (std::string str, char sep) {
     std::string s;
     std::stringstream ss (str);
 

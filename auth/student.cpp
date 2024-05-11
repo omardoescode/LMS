@@ -80,7 +80,7 @@ void student::get () {
 
     std::string query_string =
     "select users.*, students.id from students join users on "
-    "users.id == students.user_id whre students.id = ?";
+    "users.id == students.user_id where students.id = ?";
 
     SQLite::Statement query (db::database::get_db (), query_string);
     query.bind (1, _id);

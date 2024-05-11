@@ -63,6 +63,7 @@ public:
 
 private:
     // Constraint: An instructor can have up to 5 courses
-    utils::vector<std::string> courses;
+    bool _is_teaching_assistant;
+    utils::vector<std::string> _courses;
 };
 } // namespace auth

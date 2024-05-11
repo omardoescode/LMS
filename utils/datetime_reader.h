@@ -35,7 +35,7 @@ public:
     }
     void set_time (const char* datatimestring) {
         struct tm tmStruct;
-        strptime (datatimestring, format, &tmStruct);
+        // strptime (datatimestring, format, &tmStruct);
         time = mktime (&tmStruct);
     }
 
