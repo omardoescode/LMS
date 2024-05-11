@@ -1,15 +1,18 @@
 #include "auth/student.h"
 
 #include "db/database.h"
-// #include "learn/course_registration.h"
+#include "learn/course_registration.h"
 #include "utils/exceptions.h"
-#include "utils/timer.h"
 #include "utils/vector.h"
+
 #include <iostream>
 
 namespace auth {
 student::student (std::string username, std::string name, std::string email, std::string password)
 : user (username, email, password), _name{ name } {
+}
+student::student (std::string id) : user{ id } {
+    get ();
 }
 bool student::add_to_database (SQLite::Database& db) {
     if (saved_in_db ())
@@ -44,9 +47,9 @@ void student::register_course (std::string course) {
         }
     }
     // adding to database and member variable
-    // learn::course_registration registration (course, _id);
-    // _courses_registrations.push_back (course);
-    // db::database::get_instance ().add_item (registration);
+    learn::course_registration registration (course, _id);
+    _courses_registrations.push_back (course);
+    db::database::get_instance ().add_item (registration);
 }
 
 void student::drop_course (const std::string& course) {
@@ -70,53 +73,28 @@ std::map<std::string, std::any> props) {
     return true;
 }
 
-utils::vector<std::unique_ptr<student>> student::get (
-std::map<std::string, std::any> filtering_props) {
-    utils::vector<std::unique_ptr<student>> students_objs;
+
+void student::get () {
+    if (!saved_in_db ())
+        throw utils::custom_exception{ "Item not saved in database;" };
 
     std::string query_string =
     "select users.*, students.id from students join users on "
-    "users.id == students.user_id";
+    "users.id == students.user_id whre students.id = ?";
 
-    std::string formated_query_string =
-    filtering_props.size () ? query_string + " where" : query_string;
-
-    if (filtering_props.find ("username") != filtering_props.end ())
-        formated_query_string += " students.id = '" +
-        std::any_cast<std::string> (filtering_props["username"]) + "' and";
-    if (filtering_props.find ("name") != filtering_props.end ())
-        formated_query_string += " users.name = '" +
-        std::any_cast<std::string> (filtering_props["name"]) + "' and";
-    if (filtering_props.find ("faculty") != filtering_props.end ())
-        formated_query_string += " users.faculty = '" +
-        std::any_cast<std::string> (filtering_props["faculty"]) + "' and";
-    if (filtering_props.find ("email") != filtering_props.end ())
-        formated_query_string += " users.email = '" +
-        std::any_cast<std::string> (filtering_props["email"]) + "' and";
-
-    formated_query_string += filtering_props.size () ? " 1=1" : "";
-
-    SQLite::Statement query (db::database::get_db (), formated_query_string);
+    SQLite::Statement query (db::database::get_db (), query_string);
+    query.bind (1, _id);
 
     while (query.executeStep ()) {
+        _password_hash = (std::string)query.getColumn (1);
+        _email         = (std::string)query.getColumn (2);
+        _faculty       = (std::string)query.getColumn (3);
+        _name          = (std::string)query.getColumn (4);
 
-        int user_id               = query.getColumn (0);
-        std::string password_hash = query.getColumn (1);
-        std::string email         = query.getColumn (2);
-        std::string faculty       = query.getColumn (3);
-        std::string name          = query.getColumn (4);
-        std::string student_id    = query.getColumn (5);
-
-        std::unique_ptr<student> student_data_ptr =
-        std::make_unique<student> (student_id, name, email, password_hash);
-
-        students_objs.push_back (std::move (student_data_ptr));
-
-        std::cout << "Student: " << name << "\nID: " << student_id
-                  << "\nEmail: " << email << "\nFaculty: " << faculty << std::endl
+        std::cout << "Student: " << _name << "\nID: " << _id
+                  << "\nEmail: " << _email << "\nFaculty: " << _faculty << std::endl
                   << std::endl;
     }
-
-    return students_objs;
 }
+
 } // namespace auth

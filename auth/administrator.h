@@ -10,11 +10,11 @@ class administrator : public user {
 public:
     // Constructors
     // auto added to database after initialization
-    administrator (std::string_view username, std::string_view email, std::string_view password);
+    administrator (std::string username, std::string email, std::string password);
 
     // Get from database
     // Raise utils::custom_exception("Administrator not found") if not there
-    administrator (std::string_view id);
+    administrator (std::string id);
 
     // Specific Functions
     // This is the only way to add students and instructors to the database
@@ -53,9 +53,7 @@ public:
     bool remove_from_database (SQLite::Database& db) override;
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
-
+    void get () override;
     // Getter from db
-    static utils::vector<std::unique_ptr<administrator>> get (
-    std::map<std::string, std::any>);
 };
 } // namespace auth

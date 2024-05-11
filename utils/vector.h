@@ -25,6 +25,7 @@ public:
     auto size () const {
         return _size;
     }
+
     auto capacity () const {
         return _capacity;
     }
@@ -112,8 +113,12 @@ template <typename T> void vector<T>::reallocate (int offset) {
         return;
     T* temp = new T[_size + offset];
     for (int i = 0; i < _size; i++)
-        temp[i] = std::move (_elems[i]);
-    delete[] _elems;
+        temp[i] =
+        std::is_trivially_destructible_v<T> ? _elems[i] : std::move (_elems[i]);
+    // Delete the old array, but only if it's not null and T is trivially destructible
+    if (_elems) {
+        delete[] _elems;
+    }
     _elems    = temp;
     _capacity = _size + offset;
 }
@@ -121,16 +126,19 @@ template <typename T> void vector<T>::reallocate (int offset) {
 template <typename T> bool vector<T>::valid_index (int index) const {
     return index >= 0 && index < _size;
 }
+
 // Functionalities
 template <typename T> bool vector<T>::empty () const {
     return _size == 0;
 }
+
 template <typename T> T& vector<T>::at (int index) const {
     if (!valid_index (index))
         throw custom_exception{ "Invalid index" };
 
     return _elems[index];
 }
+
 template <typename T> void vector<T>::push_back (T value) {
     if (_size >= _capacity)
         reallocate ();
@@ -169,9 +177,11 @@ template <typename T> T& vector<T>::back () const {
 
 template <typename T> void vector<T>::clear () {
     delete[] _elems;
+    _elems    = nullptr;
     _size     = 0;
     _capacity = 0;
 }
+
 template <typename T> void vector<T>::erase (int index, int count) {
     if (count < 1)
         throw custom_exception{ "Invalid count option to vector::erase" };
@@ -179,20 +189,24 @@ template <typename T> void vector<T>::erase (int index, int count) {
         _elems[i] = _elems[i + count];
     _size -= count;
 }
+
 template <typename T> void vector<T>::erase (int index) {
     erase (index, 1);
 }
+
 template <typename T> void vector<T>::insert (int index, T value) {
     if (index > _size)
         throw custom_exception{ "You cannot insert to an index > size()" };
     push_back (value);
-    for (int i = _size - 1; i < index; i--)
+    for (int i = _size - 1; i > index; i--)
         std::swap (_elems[i], _elems[i - 1]);
 }
+
 // Operators Overloading
 template <typename T> T& vector<T>::operator[] (int value) {
     return at (value);
 }
+
 template <typename T> vector<T> vector<T>::operator= (vector<T>& other) {
     _capacity = _size = other._size;
     for (int i = 0; i < _size; i++)

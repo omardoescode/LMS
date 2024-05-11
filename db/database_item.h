@@ -38,5 +38,6 @@ private:
     virtual bool remove_from_database (SQLite::Database& db) = 0;
     virtual bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props)                   = 0;
+    virtual void get ()                                      = 0;
 };
 } // namespace db

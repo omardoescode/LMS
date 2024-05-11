@@ -46,14 +46,15 @@ public:
     bool remove_from_database (SQLite::Database& db) override;
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
+    void get () override;
 
     // Getter from db
-    static utils::vector<std::unique_ptr<student>> get (std::map<std::string, std::any>);
 
 private:
     std::string _name;
     utils::vector<std::string> _courses_registrations;
 };
 
-
 } // namespace auth
+
+// namespace auth

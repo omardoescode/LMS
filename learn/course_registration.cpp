@@ -2,8 +2,14 @@
 #include "auth/student.h"
 #include "db/database.h"
 #include "learn/course.h"
-#include "utils/exceptions.h"
 namespace learn {
+course_registration::course_registration (std::string id)
+: db::database_item (id) {
+    get ();
+}
+course_registration::course_registration (std::string course, std::string student, CourseRegistrationState state)
+: _course{ course }, _student{ student }, _state{ state } {
+}
 bool course_registration::course_registration::set_state (CourseRegistrationState new_state) {
     _state = new_state;
     if (db::database::get_instance ().update_item (*this, { { "state", new_state } })) {
@@ -13,6 +19,8 @@ bool course_registration::course_registration::set_state (CourseRegistrationStat
     return false;
 }
 
+void course_registration::get () {
+}
 bool course_registration::add_to_database (SQLite::Database& db) {
     return true;
 }
@@ -25,19 +33,10 @@ std::map<std::string, std::any> props) {
 }
 
 learn::course course_registration::get_course () {
-    auto courses = course::get ({ { "id"s, _course } });
-    if (courses.empty ())
-        throw utils::custom_exception (
-        "Invalid course. The course seems to have been deleted");
-    return *courses.front ();
+    return learn::course (_course);
 };
 
 auth::student course_registration::get_student () {
-    auto students = auth::student::get ({ { "id"s, _course } });
-    if (students.empty ())
-        throw utils::custom_exception{
-            "Invalid student. The student seem to have been deleted"
-        };
-    return *students.front ();
+    return auth::student (_student);
 };
 } // namespace learn

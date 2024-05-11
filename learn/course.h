@@ -4,25 +4,22 @@
 #include "utils/vector.h"
 #include <list>
 #include <memory>
-#include <vector>
 // To prevent looping includes, instead of including it there
 namespace auth {
 class instructor;
 class student;
 } // namespace auth
 namespace learn {
+class assignment_submission;
 class course : public db::database_item {
 public:
-    // Constructor
-    course (std::string,
-    std::string,
-    std::string,
-    std::string,
-    int,
-    utils::vector<std::string>,
-    utils::vector<std::string>);
-    // Destructor
-    virtual ~course () = default;
+    // Constructors
+    // Retirves from db
+    explicit course (std::string);
+
+    // Create a new one before saving
+    course (std::string, std::string, std::string, int);
+
     // Getters
     int get_credit_hours () const {
         return _credit_hours;
@@ -58,13 +55,13 @@ public:
     std::map<std::string, std::any> props) override;
 
     // Getter from db
-    static utils::vector<std::unique_ptr<course>> get (std::map<std::string, std::any>);
+    void get () override;
+
 
 private:
     int _credit_hours;
     std::string _name, _professor, _textbook;
-    utils::vector<std::string> _teaching_assistants,
-    _students; // Up to 6 teaching assistants
+    utils::vector<std::string> _teaching_assistants, _students, _assignments; // Up to 6 teaching assistants
 };
 
 } // namespace learn
