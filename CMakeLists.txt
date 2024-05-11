@@ -27,7 +27,8 @@ set(sources
         db/database_item.h
         utils/exceptions.h
         utils/timer.h
-        utils/vector.h)
+        utils/vector.h
+        utils/split_string.h)
 add_executable(main main.cpp ${sources})
 add_executable(tests tests/tests.cpp ${sources})
 add_executable(seeder database_setup.cpp db/database.h db/database.cpp)

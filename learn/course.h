@@ -61,7 +61,6 @@ public:
     static utils::vector<std::unique_ptr<course>> get (std::map<std::string, std::any>);
 
 private:
-    int _id;
     int _credit_hours;
     std::string _name, _professor, _textbook;
     utils::vector<std::string> _teaching_assistants,

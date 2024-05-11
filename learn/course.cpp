@@ -1,5 +1,7 @@
 #include "db/database.h"
 #include "db/database_item.h"
+#include "utils/split_string.h"
+
 #include <any>
 #include <iostream>
 #include <learn/course.h>
@@ -65,7 +67,7 @@ std::map<std::string, std::any> filtering_props) {
     utils::vector<std::unique_ptr<course>> courses_objs;
 
     std::string query_string =
-    "select courses.*, (select instructors.id from instructors join "
+    "select distinct courses.*, (select instructors.id from instructors join "
     "instructors_courses on instructors.id == "
     "instructors_courses.instructor_id where instructors_courses.course_id == "
     "courses.id and instructors.is_teaching_assistant == 0 ) as instructor "
@@ -76,7 +78,7 @@ std::map<std::string, std::any> filtering_props) {
     "teaching_assistants, ((select group_concat(students.id) from students "
     "join students_courses on students.id == students_courses.student_id where "
     "students_courses.course_id == courses.id)) as students from courses join "
-    "instructors_courses on instructors_courses.course_id == courses.id";
+    "instructors_courses";
 
     std::string formated_query_string =
     filtering_props.size () ? query_string + " where" : query_string;
@@ -88,13 +90,23 @@ std::map<std::string, std::any> filtering_props) {
         formated_query_string += " courses.credit_hourse = '" +
         std::any_cast<std::string> (filtering_props["credit_hourse"]) + "' and";
     if (filtering_props.find ("name") != filtering_props.end ())
-        formated_query_string += " courses.name = '" +
-        std::any_cast<std::string> (filtering_props["name"]) + "' and";
+        formated_query_string += " courses.name like '%" +
+        std::any_cast<std::string> (filtering_props["name"]) + "%' and";
     if (filtering_props.find ("text_book") != filtering_props.end ())
         formated_query_string += " courses.text_book = '" +
         std::any_cast<std::string> (filtering_props["text_book"]) + "' and";
+    if (filtering_props.find ("professor") != filtering_props.end ())
+        formated_query_string += " instructor like '%" +
+        std::any_cast<std::string> (filtering_props["professor"]) + "%' and";
+    if (filtering_props.find ("teaching_assistant") != filtering_props.end ())
+        formated_query_string += " teaching_assistants like '%" +
+        std::any_cast<std::string> (filtering_props["text_book"]) + "%' and";
+    if (filtering_props.find ("student") != filtering_props.end ())
+        formated_query_string += " students like '%" +
+        std::any_cast<std::string> (filtering_props["student"]) + "%' and";
 
-    formated_query_string += filtering_props.size () ? " 1=1" : "";
+
+    formated_query_string += filtering_props.size () ? " 1=1" : " order by courses.id";
 
     SQLite::Statement query (db::database::get_db (), formated_query_string);
 
@@ -106,18 +118,21 @@ std::map<std::string, std::any> filtering_props) {
         std::string text_book               = query.getColumn (3);
         std::string instructor_id           = query.getColumn (4);
         std::string teaching_assistants_ids = query.getColumn (5);
-        std::string students_ids            = query.getColumn (6);
+        utils::vector<std::string> teaching_assistants =
+        utils::split_string (teaching_assistants_ids, ',');
+        std::string students_ids = query.getColumn (6);
+        utils::vector<std::string> students = utils::split_string (students_ids, ',');
 
         std::unique_ptr<course> course_data_ptr =
-        std::make_unique<course> (course_id, name, credit_hours, text_book);
+        std::make_unique<course> (std::to_string (course_id), name,
+        instructor_id, text_book, credit_hours, teaching_assistants, students);
 
         courses_objs.push_back (std::move (course_data_ptr));
 
         std::cout << "Course: " << name << "\nID: " << course_id
                   << "\nCredit Hourse: " << credit_hours
-                  << "\nText Book: " << text_book << std::endl
-                  << "\nInstructor: " << instructor_id << std::endl
-                  << "\nTeaching Assistants: " << teaching_assistants_ids << std::endl
+                  << "\nText Book: " << text_book << "\nInstructor: " << instructor_id
+                  << "\nTeaching Assistants: " << teaching_assistants_ids
                   << "\nStudents: " << students_ids << std::endl
                   << std::endl;
     }
@@ -125,10 +140,6 @@ std::map<std::string, std::any> filtering_props) {
     return courses_objs;
 }
 
-
-utils::vector<std::unique_ptr<course>> course::get (
-std::map<std::string, std::any> filtering_props) {
-}
 bool course::add_to_database (SQLite::Database& db) {
     return true;
 }
