@@ -91,9 +91,11 @@ void student::get () {
         _faculty       = (std::string)query.getColumn (3);
         _name          = (std::string)query.getColumn (4);
 
+#if DEBUGGING
         std::cout << "Student: " << _name << "\nID: " << _id
                   << "\nEmail: " << _email << "\nFaculty: " << _faculty << std::endl
                   << std::endl;
+#endif
     }
 }
 

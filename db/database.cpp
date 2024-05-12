@@ -67,6 +67,17 @@ void database::initialize_db () {
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Courses (id INTEGER PRIMARY KEY, "
     "name VARCHAR(255), credit_hours INTEGER, text_book VARCHAR(255))");
+    db::database::get_db ().exec (
+    "CREATE TABLE IF NOT EXISTS Assignments (id INTEGER PRIMARY KEY, name "
+    "VARCHAR(255), type VARCHAR(255), start_date TIMESTAMP DEFAULT "
+    "CURRENT_TIMESTAMP, due_date TIMESTAMP, available_until_date TIMESTAMP, "
+    "course_id INTEGER, FOREIGN KEY (course_id) REFERENCES Courses(id))");
+    db::database::get_db ().exec (
+    "CREATE TABLE IF NOT EXISTS AssignmentSubmissions (id INTEGER PRIMARY KEY, "
+    "grade REAL, submission_date TIMESTAMP DEFAULT "
+    "CURRENT_TIMESTAMP, assignment_id INTEGER, student_id VARCHAR(9), FOREIGN "
+    "KEY (assignment_id) REFERENCES Assignments(id), FOREIGN KEY (student_id) "
+    "REFERENCES Students(id))");
 
     /*
     db::database::get_db ().exec ("INSERT INTO Users(password_hash, email)

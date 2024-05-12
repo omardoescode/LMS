@@ -14,10 +14,6 @@ public:
         return _grade >= 0;
     }
 
-    // Helpful Functions
-    bool has_submission_date () const {
-        return !_submission_datetime.empty ();
-    }
     // Getters
     // Raise an exception if not graded: check using is_graded method
     double get_grade () const;
@@ -38,7 +34,8 @@ public:
     void get () override;
 
 private:
-    std::string _assignment, _student, _submission_datetime;
+    std::string _assignment, _student;
+    time_t _submission_datetime;
     double _grade; // -1 is when it's not graded yet
 };
 } // namespace learn

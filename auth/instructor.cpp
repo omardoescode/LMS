@@ -38,11 +38,13 @@ void instructor::get () {
         std::string courses_ids = query.getColumn (7);
         _courses                = utils::split_string (courses_ids, ',');
 
+#if DEBUGGING
         std::cout << "Instructor: " << _name << "\nID: " << _id
                   << "\nEmail: " << _email << "\nFaculty: " << _faculty
                   << "\nTeaching Assistant: " << (_is_teaching_assistant ? "Yes" : "No")
                   << "\nCourses: " << courses_ids << std::endl
                   << std::endl;
+#endif
     }
 }
 bool instructor::add_to_database (SQLite::Database& db) {

@@ -1,5 +1,9 @@
 #include "learn/assignment.h"
 #include "learn/assignment_submission.h"
+#include "utils/split_string.h"
+
+#include <iostream>
+#include <utils/datetime_reader.h>
 namespace learn {
 
 assignment::assignment (std::string id) : db::database_item (id) {
@@ -12,7 +16,7 @@ AssignmentType type,
 std::string start_date,
 std::string due_date,
 std::string available_until_date)
-: _name{ name }, _course{ course }, _maximum_grade (maximum_grade), _type{ type } {
+: _name{ name }, _course{ course }, _max_grade (maximum_grade), _type{ type } {
 }
 
 
@@ -42,7 +46,7 @@ double assignment::get_maximum_grade () {
 }
 
 double assignment::get_minimum_grade () {
-    double min = _maximum_grade;
+    double min = _max_grade;
     for (const auto& val : _submissions) {
         auto submission = assignment_submission (val);
         if (submission.is_graded ())
@@ -61,6 +65,60 @@ bool assignment::update_in_database (SQLite::Database& db,
 std::map<std::string, std::any> props) {
     return true;
 }
+
+assignment::AssignmentType assignment::enum_translate (std::string s) {
+    switch (s == "online") {
+    case true: return AssignmentType::ONLINE;
+    case false: return AssignmentType::PAPER;
+    }
+}
+
+std::string assignment::enum_translate (assignment::AssignmentType a) {
+    switch (a == AssignmentType::ONLINE) {
+    case true: return "online";
+    case false: return "paper";
+    }
+}
+
 void assignment ::get () {
+    if (!saved_in_db ())
+        throw utils::custom_exception{ "Item not saved in database;" };
+
+    std::string query_string =
+    "select assignments.*, (select group_concat(assignmentsubmissions.id) from "
+    "assignmentsubmissions where assignmentsubmissions.assignment_id = "
+    "assignments.id) as submissions from assignments where assignments.id = ?";
+
+    SQLite::Statement query (db::database::get_db (), query_string);
+    query.bind (1, _id);
+
+    while (query.executeStep ()) {
+        _name = (std::string)query.getColumn (1);
+
+        std::string type_string = (std::string)query.getColumn (2);
+        _type                   = enum_translate (type_string);
+
+        _start_date =
+        utils::datetime_reader ((std::string)query.getColumn (3)).get_time ();
+        _due_date = utils::datetime_reader ((std::string)query.getColumn (4)).get_time ();
+        _available_until_date =
+        utils::datetime_reader ((std::string)query.getColumn (5)).get_time ();
+
+        _course = (std::string)query.getColumn (6);
+
+        std::string submissions_ids = (std::string)query.getColumn (7);
+        _submissions = utils::split_string (submissions_ids, ',');
+
+#if DEBUGGING
+        std::cout
+        << "Assignment: " << _name << "\nID: " << _id << "\nType: " << type_string
+        << "\nStart Date: " << utils::datetime_reader (_start_date).DateTime ()
+        << "\nDue Date: " << utils::datetime_reader (_due_date).DateTime ()
+        << "\nAvailable Until Date: "
+        << utils::datetime_reader (_available_until_date).DateTime ()
+        << "\nCourse ID: " << _course << "\nSubmissions: " << submissions_ids << std::endl
+        << std::endl;
+#endif
+    }
 }
 } // namespace learn

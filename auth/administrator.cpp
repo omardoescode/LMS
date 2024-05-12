@@ -29,9 +29,11 @@ void administrator::get () {
         _faculty       = (std::string)query.getColumn (3);
         _name          = (std::string)query.getColumn (4);
 
+#if DEBUGGING
         std::cout << "Administrator: " << _name << "\nID: " << _id
                   << "\nEmail: " << _email << "\nFaculty: " << _faculty << std::endl
                   << std::endl;
+#endif
     }
 }
 bool administrator::add_to_database (SQLite::Database& db) {
