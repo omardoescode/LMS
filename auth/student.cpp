@@ -94,12 +94,12 @@ void student::get () {
     _role          = auth::user::Role::STUDENT;
 }
 
-std::unique_ptr<student> student::get_by_username (std::string username) {
-    return student::get_by_id (username); // username is id
-}
-std::unique_ptr<student> student::get_by_id (std::string id) {
-    std::unique_ptr<student> s (new student (id));
-    s.get ();
-    return s;
-}
+// std::unique_ptr<student> student::get_by_username (std::string username) {
+//     return student::get_by_id (username); // username is id
+// }
+// std::unique_ptr<student> student::get_by_id (std::string id) {
+//     std::unique_ptr<student> s (new student (id));
+//     s.get ();
+//     return s;
+// }
 } // namespace auth

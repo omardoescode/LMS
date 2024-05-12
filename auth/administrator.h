@@ -54,8 +54,8 @@ public:
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
     void get () override;
-    // Getter from db
-    static std::unique_ptr<student> get_by_username (std::string);
-    static std::unique_ptr<student> get_by_id (std::string);
+    // // Getter from db
+    // static std::unique_ptr<administrator> get_by_username (std::string);
+    // static std::unique_ptr<administrator> get_by_id (std::string);
 };
 } // namespace auth

@@ -23,16 +23,11 @@ void administrator::get () {
     SQLite::Statement query (db::database::get_db (), query_string);
     query.bind (1, _id);
 
-    while (query.executeStep ()) {
-        _password_hash = (std::string)query.getColumn (1);
-        _email         = (std::string)query.getColumn (2);
-        _faculty       = (std::string)query.getColumn (3);
-        _name          = (std::string)query.getColumn (4);
-
-        std::cout << "Administrator: " << _name << "\nID: " << _id
-                  << "\nEmail: " << _email << "\nFaculty: " << _faculty << std::endl
-                  << std::endl;
-    }
+    query.executeStep ();
+    _password_hash = (std::string)query.getColumn (1);
+    _email         = (std::string)query.getColumn (2);
+    _faculty       = (std::string)query.getColumn (3);
+    _name          = (std::string)query.getColumn (4);
 }
 bool administrator::add_to_database (SQLite::Database& db) {
     return true;
