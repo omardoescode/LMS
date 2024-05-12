@@ -49,6 +49,8 @@ public:
     void get () override;
 
     // Getter from db
+    static std::unique_ptr<student> get_by_username (std::string);
+    static std::unique_ptr<student> get_by_id (std::string);
 
 private:
     std::string _name;

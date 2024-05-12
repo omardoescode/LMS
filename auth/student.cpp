@@ -85,16 +85,21 @@ void student::get () {
     SQLite::Statement query (db::database::get_db (), query_string);
     query.bind (1, _id);
 
-    while (query.executeStep ()) {
-        _password_hash = (std::string)query.getColumn (1);
-        _email         = (std::string)query.getColumn (2);
-        _faculty       = (std::string)query.getColumn (3);
-        _name          = (std::string)query.getColumn (4);
-
-        std::cout << "Student: " << _name << "\nID: " << _id
-                  << "\nEmail: " << _email << "\nFaculty: " << _faculty << std::endl
-                  << std::endl;
-    }
+    query.executeStep ();
+    _password_hash = (std::string)query.getColumn (1);
+    _email         = (std::string)query.getColumn (2);
+    _faculty       = (std::string)query.getColumn (3);
+    _name          = (std::string)query.getColumn (4);
+    _username      = _id;
+    _role          = auth::user::Role::STUDENT;
 }
 
+std::unique_ptr<student> student::get_by_username (std::string username) {
+    return student::get_by_id (username); // username is id
+}
+std::unique_ptr<student> student::get_by_id (std::string id) {
+    std::unique_ptr<student> s (new student (id));
+    s.get ();
+    return s;
+}
 } // namespace auth
