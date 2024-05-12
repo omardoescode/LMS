@@ -2,7 +2,7 @@
 #include <string>
 
 class Tester {
-    public:
+public:
     Tester () {
         count = 0;
     }
@@ -24,6 +24,6 @@ class Tester {
         return count;
     }
 
-    private:
+private:
     int count;
 };

@@ -3,16 +3,18 @@
 #include <iostream>
 namespace utils {
 class timer {
-    private:
+private:
     std::chrono::time_point<std::chrono::high_resolution_clock> startPoint;
+    bool has_stopped = false;
 
-    public:
+public:
     timer () {
         startPoint = std::chrono::high_resolution_clock::now ();
     }
 
     ~timer () {
-        Stop ();
+        if (!has_stopped)
+            Stop ();
     }
 
     void Stop () {
@@ -28,6 +30,7 @@ class timer {
         double ms     = duration * .001;
 
         std::cout << duration << " us (" << ms << " ms)";
+        has_stopped = true;
     }
 };
 } // namespace utils
