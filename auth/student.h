@@ -48,8 +48,6 @@ public:
     std::map<std::string, std::any> props) override;
     void get () override;
 
-    // Getter from db
-
 private:
     std::string _name;
     utils::vector<std::string> _courses_registrations;

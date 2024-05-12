@@ -101,6 +101,7 @@ vector<T>::vector (vector<T>&& move)
 // Destructor
 template <typename T> vector<T>::~vector () {
     delete[] _elems;
+    _elems = nullptr;
 }
 
 // Helpers
