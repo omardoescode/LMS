@@ -18,9 +18,8 @@ public:
     std::string get_id () const {
         return _id;
     }
-    utils::vector<std::unique_ptr<learn::course>> get_courses ();
 
-    utils::vector<std::unique_ptr<learn::course>> getCourses ();
+    utils::vector<std::unique_ptr<learn::course>> get_courses ();
 
     // Specific Functions
     // If the course is not registered, raise utils::custom_exceptions{"Course
@@ -47,6 +46,7 @@ public:
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
     void get () override;
+
 
 private:
     std::string _name;

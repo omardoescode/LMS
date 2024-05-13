@@ -85,7 +85,8 @@ void student::get () {
     SQLite::Statement query (db::database::get_db (), query_string);
     query.bind (1, _id);
 
-    query.executeStep ();
+    if (!query.executeStep ())
+        throw utils::custom_exception ("Invalid Id to auth::student");
     _password_hash = (std::string)query.getColumn (1);
     _email         = (std::string)query.getColumn (2);
     _faculty       = (std::string)query.getColumn (3);
