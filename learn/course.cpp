@@ -99,12 +99,14 @@ void course::get () {
         std::string students_ids = query.getColumn (6);
         _students                = utils::split_string (students_ids, ',');
 
-        // std::cout << "Course: " << _name << "\nID: " << _id
-        //           << "\nCredit Hourse: " << _credit_hours
-        //           << "\nText Book: " << _textbook << "\nInstructor: " << _professor
-        //           << "\nTeaching Assistants: " << teaching_assistants_ids
-        //           << "\nStudents: " << students_ids << std::endl
-        //           << std::endl;
+#if DEBUGGING
+        std::cout << "Course: " << _name << "\nID: " << _id
+                  << "\nCredit Hourse: " << _credit_hours
+                  << "\nText Book: " << _textbook << "\nInstructor: " << _professor
+                  << "\nTeaching Assistants: " << teaching_assistants_ids
+                  << "\nStudents: " << students_ids << std::endl
+                  << std::endl;
+#endif
     }
 }
 

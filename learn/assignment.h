@@ -28,6 +28,9 @@ public:
     double get_average_grade ();
     double get_minimum_grade ();
     double get_maximum_grade ();
+    double get_max_grade () const {
+        return _max_grade;
+    }
 
     // Overridden Functions
     bool add_to_database (SQLite::Database& db) override;
@@ -38,9 +41,12 @@ public:
     void get () override;
 
 private:
+    AssignmentType enum_translate (std::string);
+    std::string enum_translate (AssignmentType);
+
     std::string _name, _course;
     AssignmentType _type;
-    double _maximum_grade;
+    double _max_grade = 1;
     utils::vector<std::string> _submissions;
     time_t _start_date, _due_date, _available_until_date;
 };

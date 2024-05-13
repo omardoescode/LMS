@@ -3,6 +3,8 @@
 #include "utils/datetime_reader.h"
 #include "utils/exceptions.h"
 
+#include <iostream>
+
 namespace learn {
 
 assignment_submission::assignment_submission (std::string id)
@@ -15,7 +17,7 @@ assignment_submission::assignment_submission (std::string assignment, std::strin
 assignment_submission::assignment_submission (std::string assignment, std::string student)
 : _assignment (assignment), _student (student), _grade{ -1 } {
     utils::datetime_reader dtr ("now");
-    _submission_datetime = dtr.DateTime ();
+    _submission_datetime = dtr.get_time ();
 }
 
 double assignment_submission::get_grade () const {
@@ -41,7 +43,31 @@ bool assignment_submission::set_grade (double new_grade) {
     }
     return false;
 }
-void assignment_submission::get () {
+void assignment_submission ::get () {
+    if (!saved_in_db ())
+        throw utils::custom_exception{ "Item not saved in database;" };
+
+    std::string query_string =
+    "select * from assignmentsubmissions where id = ?";
+
+    SQLite::Statement query (db::database::get_db (), query_string);
+    query.bind (1, _id);
+
+    while (query.executeStep ()) {
+        _grade = query.getColumn (1);
+        _submission_datetime =
+        utils::datetime_reader ((std::string)query.getColumn (2)).get_time ();
+        _assignment = (std::string)query.getColumn (3);
+        _student    = (std::string)query.getColumn (4);
+
+#if DEBUGGING
+        std::cout
+        << "Assignment ID: " << _assignment << "\nSubmission ID: " << _id
+        << "\nGrade: " << _grade << "\nStudent ID: " << _student << std::endl
+        << "Submission Date: "
+        << utils::datetime_reader (_submission_datetime).DateTime () << std::endl;
+#endif
+    }
 }
 
 bool assignment_submission::add_to_database (SQLite::Database& db) {

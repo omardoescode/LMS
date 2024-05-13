@@ -93,6 +93,13 @@ void student::get () {
     _name          = (std::string)query.getColumn (4);
     _username      = _id;
     _role          = auth::user::Role::STUDENT;
+
+#if DEBUGGING
+    std::cout << "Student: " << _name << "\nID: " << _id
+              << "\nEmail: " << _email << "\nFaculty: " << _faculty << std::endl
+              << std::endl;
+#endif
+}
 }
 
 // std::unique_ptr<student> student::get_by_username (std::string username) {
