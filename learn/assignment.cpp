@@ -112,10 +112,10 @@ void assignment ::get () {
 #if DEBUGGING
         std::cout
         << "Assignment: " << _name << "\nID: " << _id << "\nType: " << type_string
-        << "\nStart Date: " << utils::datetime_reader (_start_date).DateTime ()
-        << "\nDue Date: " << utils::datetime_reader (_due_date).DateTime ()
+        << "\nStart Date: " << utils::datetime_reader (_start_date).toString ()
+        << "\nDue Date: " << utils::datetime_reader (_due_date).toString ()
         << "\nAvailable Until Date: "
-        << utils::datetime_reader (_available_until_date).DateTime ()
+        << utils::datetime_reader (_available_until_date).toString ()
         << "\nCourse ID: " << _course << "\nSubmissions: " << submissions_ids << std::endl
         << std::endl;
 #endif
