@@ -100,7 +100,6 @@ void student::get () {
               << std::endl;
 #endif
 }
-}
 
 // std::unique_ptr<student> student::get_by_username (std::string username) {
 //     return student::get_by_id (username); // username is id

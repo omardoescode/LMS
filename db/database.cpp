@@ -35,6 +35,7 @@ void database::refresh_and_seed_db () {
         (std::istreambuf_iterator<char> ()));
         db::database::get_db ().exec (seed_query);
         std::cout << (i + 1) << " out of " << NUM_TABLES << " Table(s) done." << std::endl;
+        ifs.close ();
     }
     std::cout << "DATABASE SEEDED SUCCESSFULLY" << std::endl;
 }

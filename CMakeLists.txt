@@ -14,6 +14,11 @@ set(sources
         learn/course.h
         learn/course_registration.h
         learn/course_registration.cpp
+        
+        auth/login_manager.cpp
+        auth/login_manager.h
+        auth/session.cpp
+        auth/session.h
         auth/administrator.cpp
         auth/administrator.h
         auth/instructor.cpp
@@ -28,7 +33,8 @@ set(sources
         utils/exceptions.h
         utils/timer.h
         utils/vector.h
-        utils/split_string.h)
+        utils/split_string.h
+        )
 add_executable(main main.cpp ${sources})
 add_executable(tests tests/tests.cpp ${sources})
 add_executable(seeder database_setup.cpp db/database.h db/database.cpp)

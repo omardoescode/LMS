@@ -1,5 +1,6 @@
 #include "auth/administrator.h"
 #include "auth/instructor.h"
+#include "auth/session.h"
 #include "auth/student.h"
 #include <iostream>
 auto main () -> int {
@@ -20,12 +21,13 @@ auto main () -> int {
     std::cout << "Admin ID: ";
     std::cin >> admin_id;
     auth::administrator admin (admin_id);*/
-    int a_id;
-    std::cout << "Assignment ID: ";
-    std::cin >> a_id;
-    learn::assignment a (std::to_string (a_id));
-    int s_id;
-    std::cout << "Assignment Submission ID: ";
-    std::cin >> s_id;
-    learn::assignment_submission s (std::to_string (s_id));
+    // int a_id;
+    // std::cout << "Assignment ID: ";
+    // std::cin >> a_id;
+    // learn::assignment a (std::to_string (a_id));
+    // int s_id;
+    // std::cout << "Assignment Submission ID: ";
+    // std::cin >> s_id;
+    // learn::assignment_submission s (std::to_string (s_id));
+    // std::cout << auth::session::file;
 }
