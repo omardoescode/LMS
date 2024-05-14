@@ -35,6 +35,8 @@ public:
     // Getter from db
 
 private:
+    CourseRegistrationState enum_translate (std::string);
+    std::string enum_translate (CourseRegistrationState);
     std::string _course, _student;
     CourseRegistrationState _state;
 };
