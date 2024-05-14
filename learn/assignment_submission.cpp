@@ -65,7 +65,8 @@ void assignment_submission ::get () {
         << "Assignment ID: " << _assignment << "\nSubmission ID: " << _id
         << "\nGrade: " << _grade << "\nStudent ID: " << _student << std::endl
         << "Submission Date: "
-        << utils::datetime_reader (_submission_datetime).DateTime () << std::endl;
+        << utils::datetime_reader (_submission_datetime).DateTime () << std::endl
+        << std::endl;
 #endif
     }
 }

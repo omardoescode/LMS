@@ -28,4 +28,8 @@ auto main () -> int {
     std::cout << "Assignment Submission ID: ";
     std::cin >> s_id;
     learn::assignment_submission s (std::to_string (s_id));
+    int r_id;
+    std::cout << "Course Registration ID: ";
+    std::cin >> r_id;
+    learn::course_registration r (std::to_string (r_id));
 }

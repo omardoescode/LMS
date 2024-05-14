@@ -50,15 +50,16 @@ void database::initialize_db () {
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Students (id VARCHAR(9) PRIMARY KEY, "
     "user_id INTEGER, FOREIGN KEY(user_id) REFERENCES Users(id))");
-    db::database::get_db ().exec (
-    "CREATE TABLE IF NOT EXISTS Students_Courses (student_id "
-    "VARCHAR(9), course_id INTEGER, state TEXT)");
+    db::database::get_db ().exec ("CREATE TABLE IF NOT EXISTS Students_Courses "
+                                  "(id INTEGER PRIMARY KEY, student_id "
+                                  "VARCHAR(9), course_id INTEGER, state TEXT)");
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Instructors (id VARCHAR(255) "
     "PRIMARY KEY, is_teaching_assistant BOOL, user_id INTEGER, FOREIGN "
     "KEY(user_id) REFERENCES Users(id))");
     db::database::get_db ().exec (
-    "CREATE TABLE IF NOT EXISTS Instructors_Courses (instructor_id "
+    "CREATE TABLE IF NOT EXISTS Instructors_Courses (id INTEGER PRIMARY KEY, "
+    "instructor_id "
     "VARCHAR(255), course_id INTEGER)");
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Administrators (id "

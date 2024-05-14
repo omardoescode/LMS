@@ -3,6 +3,7 @@
 #include "db/database.h"
 #include "learn/course_registration.h"
 #include "utils/exceptions.h"
+#include "utils/split_string.h"
 #include "utils/vector.h"
 
 #include <iostream>
@@ -30,7 +31,7 @@ bool student::add_to_database (SQLite::Database& db) {
 
     std::string student_id = "23-101287";
 
-    query = SQLite::Statement (db, "INSERT INTO Students(student_id, user_id) VALUES(?, ?)");
+    query = SQLite::Statement (db, "INSERT INTO Students(id, user_id) VALUES(?, ?)");
     query.bind (1, student_id);
     query.bind (2, user_id);
 
@@ -79,8 +80,10 @@ void student::get () {
         throw utils::custom_exception{ "Item not saved in database;" };
 
     std::string query_string =
-    "select users.*, students.id from students join users on "
-    "users.id == students.user_id where students.id = ?";
+    "select users.*, (select group_concat(students_courses.id) from "
+    "students_courses where students_Courses.student_id = students.id) as "
+    "courses_registrations from students join users on users.id == "
+    "students.user_id where students.id = ?";
 
     SQLite::Statement query (db::database::get_db (), query_string);
     query.bind (1, _id);
@@ -90,10 +93,13 @@ void student::get () {
         _email         = (std::string)query.getColumn (2);
         _faculty       = (std::string)query.getColumn (3);
         _name          = (std::string)query.getColumn (4);
+        std::string course_registrations_string = (std::string)query.getColumn (5);
+        _courses_registrations = utils::split_string (course_registrations_string, ',');
 
 #if DEBUGGING
         std::cout << "Student: " << _name << "\nID: " << _id
-                  << "\nEmail: " << _email << "\nFaculty: " << _faculty << std::endl
+                  << "\nEmail: " << _email << "\nFaculty: " << _faculty
+                  << "\nCourses: " << course_registrations_string << std::endl
                   << std::endl;
 #endif
     }
