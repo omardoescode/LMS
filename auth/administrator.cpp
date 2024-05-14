@@ -29,7 +29,7 @@ void administrator::get () {
         _faculty       = (std::string)query.getColumn (3);
         _name          = (std::string)query.getColumn (4);
 
-#if DEBUGGING
+#if PRINT_DATA_WHEN_RETRIEVED
         std::cout << "Administrator: " << _name << "\nID: " << _id
                   << "\nEmail: " << _email << "\nFaculty: " << _faculty << std::endl
                   << std::endl;

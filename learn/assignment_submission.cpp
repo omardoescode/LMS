@@ -60,12 +60,12 @@ void assignment_submission ::get () {
         _assignment = (std::string)query.getColumn (3);
         _student    = (std::string)query.getColumn (4);
 
-#if DEBUGGING
+#if PRINT_DATA_WHEN_RETRIEVED
         std::cout
         << "Assignment ID: " << _assignment << "\nSubmission ID: " << _id
         << "\nGrade: " << _grade << "\nStudent ID: " << _student << std::endl
         << "Submission Date: "
-        << utils::datetime_reader (_submission_datetime).DateTime () << std::endl
+        << utils::datetime_reader (_submission_datetime).to_string () << std::endl
         << std::endl;
 #endif
     }

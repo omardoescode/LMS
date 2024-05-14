@@ -38,7 +38,7 @@ void instructor::get () {
         std::string courses_ids = query.getColumn (7);
         _courses                = utils::split_string (courses_ids, ',');
 
-#if DEBUGGING
+#if PRINT_DATA_WHEN_RETRIEVED
         std::cout << "Instructor: " << _name << "\nID: " << _id
                   << "\nEmail: " << _email << "\nFaculty: " << _faculty
                   << "\nTeaching Assistant: " << (_is_teaching_assistant ? "Yes" : "No")

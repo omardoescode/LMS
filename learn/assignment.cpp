@@ -109,13 +109,13 @@ void assignment ::get () {
         std::string submissions_ids = (std::string)query.getColumn (7);
         _submissions = utils::split_string (submissions_ids, ',');
 
-#if DEBUGGING
+#if PRINT_DATA_WHEN_RETRIEVED
         std::cout
         << "Assignment: " << _name << "\nID: " << _id << "\nType: " << type_string
-        << "\nStart Date: " << utils::datetime_reader (_start_date).DateTime ()
-        << "\nDue Date: " << utils::datetime_reader (_due_date).DateTime ()
+        << "\nStart Date: " << utils::datetime_reader (_start_date).to_string ()
+        << "\nDue Date: " << utils::datetime_reader (_due_date).to_string ()
         << "\nAvailable Until Date: "
-        << utils::datetime_reader (_available_until_date).DateTime ()
+        << utils::datetime_reader (_available_until_date).to_string ()
         << "\nCourse ID: " << _course << "\nSubmissions: " << submissions_ids << std::endl
         << std::endl;
 #endif

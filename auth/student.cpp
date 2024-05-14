@@ -96,7 +96,7 @@ void student::get () {
         std::string course_registrations_string = (std::string)query.getColumn (5);
         _courses_registrations = utils::split_string (course_registrations_string, ',');
 
-#if DEBUGGING
+#if PRINT_DATA_WHEN_RETRIEVED
         std::cout << "Student: " << _name << "\nID: " << _id
                   << "\nEmail: " << _email << "\nFaculty: " << _faculty
                   << "\nCourses: " << course_registrations_string << std::endl

@@ -59,7 +59,7 @@ void course_registration::get () {
         _course  = (std::string)query.getColumn (2);
         _state   = enum_translate ((std::string)query.getColumn (3));
 
-#if DEBUGGING
+#if PRINT_DATA_WHEN_RETRIEVED
         std::cout << "Student ID: " << _student << "\nCourse ID: " << _course
                   << "\nState: " << enum_translate (_state) << std::endl
                   << std::endl;

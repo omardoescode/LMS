@@ -1,13 +1,12 @@
 #pragma once
 #include <ctime>
-#include <iomanip>
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <time.h>
 
 namespace utils {
 
+#ifdef __MINGW32__
 extern "C" inline char* strptime (const char* s, const char* f, struct tm* tm) {
     // Isn't the C++ standard lib nice? std::get_time is defined such that its
     // format parameters are the exact same as strptime. Of course, we have to
@@ -23,11 +22,12 @@ extern "C" inline char* strptime (const char* s, const char* f, struct tm* tm) {
     }
     return (char*)(s + input.tellg ());
 }
+#endif
 
 
 class datetime_reader {
 private:
-    time_t time;
+    time_t _time;
     constexpr static char format[] = "%Y-%m-%d %H:%M:%S";
 
 public:
@@ -37,40 +37,38 @@ public:
 
     datetime_reader (const char* datetimestring) {
         if (datetimestring == "now"s) {
-            std::time_t t = std::time (0);
-            std::tm* now  = std::localtime (&t);
-            set_time (std::to_string (now->tm_mon + 1) + '-' +
-            std::to_string (now->tm_mon + 1) + "-" + std::to_string (now->tm_mday));
+            _time = time (NULL);
             return;
         }
         set_time (datetimestring);
     }
 
-    datetime_reader (time_t time) : time (time) {
+    datetime_reader (time_t time) : _time (time) {
     }
 
-    std::string DateTime () {
-        char* buffer        = new char[90];
-        struct tm* timeinfo = localtime (&time);
-        strftime (buffer, sizeof (buffer), format, timeinfo);
+    std::string to_string () {
+        struct tm timeinfo;
+        localtime_r (&_time, &timeinfo);
+        char buffer[90];
+        strftime (buffer, sizeof (buffer), format, &timeinfo);
         return buffer;
     }
 
     void set_time (std::string datetimestring) {
         set_time (datetimestring.c_str ());
     }
-    void set_time (const char* datatimestring) {
-        struct tm tmStruct;
-        strptime (datatimestring, format, &tmStruct);
-        time = mktime (&tmStruct);
+    void set_time (const char* datetimestring) {
+        struct tm tm;
+        strptime (datetimestring, format, &tm);
+        time_t t = mktime (&tm);
     }
 
     time_t get_time () const {
-        return time;
+        return _time;
     }
 
     std::string operator() () {
-        return DateTime ();
+        return to_string ();
     }
 };
 } // namespace utils
