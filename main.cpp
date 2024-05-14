@@ -3,6 +3,7 @@
 #include "auth/session.h"
 #include "auth/student.h"
 #include <iostream>
+
 auto main () -> int {
     // db::database::get_instance ().refresh_and_seed_db ();
     /*int id;

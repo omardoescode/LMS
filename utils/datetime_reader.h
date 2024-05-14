@@ -60,7 +60,7 @@ public:
     void set_time (const char* datetimestring) {
         struct tm tm;
         strptime (datetimestring, format, &tm);
-        time_t t = mktime (&tm);
+        _time = mktime (&tm);
     }
 
     time_t get_time () const {

@@ -2,19 +2,18 @@
 #include "utils/datetime_reader.h"
 #include "utils/exceptions.h"
 #include <cassert>
-#include <cstddef>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
 namespace auth {
-session::session () : _session_id (-1), _user (nullptr) {
+session::session () : _user (nullptr) {
     generate_directory ();
 }
 
-session::session (int session_id, std::shared_ptr<user> user, time_t time)
-: _session_id (session_id), _user (user), _time (time) {
+session::session (std::shared_ptr<user> user, time_t time)
+: _user (user), _time (time) {
     generate_directory ();
 }
 
@@ -65,9 +64,10 @@ bool session::search_sessions (std::string target_user_id, session* target_sessi
         return false;
     std::ifstream infile (path);
 
-    int session_id;
     std::string user_id, role_string, time_string;
-    infile >> session_id >> user_id >> role_string >> time_string;
+    getline (infile, user_id);
+    getline (infile, role_string);
+    getline (infile, time_string);
 
 
     user::Role role = user::string_to_role (role_string);
@@ -76,7 +76,9 @@ bool session::search_sessions (std::string target_user_id, session* target_sessi
 
     utils::datetime_reader dtr (time_string);
 
-    *target_session = session (session_id, user, dtr.get_time ());
+    // std::cout << dtr.get_time () << std::endl;
+
+    *target_session = session (user, dtr.get_time ());
 
     infile.close ();
     return true;
@@ -95,7 +97,6 @@ void session::save_session () {
     outfile.open (path);
     assert (std::filesystem::exists (path));
 
-    outfile << _session_id << std::endl;
     outfile << _user->get_id () << std::endl;
     outfile << user::role_to_string (_user->get_role ()) << std::endl;
     outfile << dtr.to_string () << std::endl;
