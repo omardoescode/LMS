@@ -3,7 +3,6 @@
 #include "utils/split_string.h"
 
 #include <iostream>
-#include <utils/datetime_reader.h>
 namespace learn {
 
 assignment::assignment (std::string id) : db::database_item (id) {
@@ -98,11 +97,9 @@ void assignment ::get () {
         std::string type_string = (std::string)query.getColumn (2);
         _type                   = enum_translate (type_string);
 
-        _start_date =
-        utils::datetime_reader ((std::string)query.getColumn (3)).get_time ();
-        _due_date = utils::datetime_reader ((std::string)query.getColumn (4)).get_time ();
-        _available_until_date =
-        utils::datetime_reader ((std::string)query.getColumn (5)).get_time ();
+        _start_date           = query.getColumn (3);
+        _due_date             = query.getColumn (4);
+        _available_until_date = query.getColumn (5);
 
         _course = (std::string)query.getColumn (6);
 
@@ -110,14 +107,12 @@ void assignment ::get () {
         _submissions = utils::split_string (submissions_ids, ',');
 
 #if PRINT_DATA_WHEN_RETRIEVED
-        std::cout
-        << "Assignment: " << _name << "\nID: " << _id << "\nType: " << type_string
-        << "\nStart Date: " << utils::datetime_reader (_start_date).to_string ()
-        << "\nDue Date: " << utils::datetime_reader (_due_date).to_string ()
-        << "\nAvailable Until Date: "
-        << utils::datetime_reader (_available_until_date).to_string ()
-        << "\nCourse ID: " << _course << "\nSubmissions: " << submissions_ids << std::endl
-        << std::endl;
+        std::cout << "Assignment: " << _name << "\nID: " << _id << "\nType: " << type_string
+                  << "\nStart Date: " << _start_date << "\nDue Date: " << _due_date
+                  << "\nAvailable Until Date: " << _available_until_date
+                  << "\nCourse ID: " << _course
+                  << "\nSubmissions: " << submissions_ids << std::endl
+                  << std::endl;
 #endif
     }
 }

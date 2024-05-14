@@ -1,5 +1,4 @@
 #include "auth/session.h"
-#include "utils/datetime_reader.h"
 #include "utils/exceptions.h"
 #include <cassert>
 #include <filesystem>
@@ -64,21 +63,18 @@ bool session::search_sessions (std::string target_user_id, session* target_sessi
         return false;
     std::ifstream infile (path);
 
-    std::string user_id, role_string, time_string;
+    std::string user_id, role_string;
+    time_t time;
     getline (infile, user_id);
     getline (infile, role_string);
-    getline (infile, time_string);
+    infile >> time;
 
 
     user::Role role = user::string_to_role (role_string);
 
     std::shared_ptr<user> user = login_manager::get_instance ().load_user (user_id, role);
 
-    utils::datetime_reader dtr (time_string);
-
-    // std::cout << dtr.get_time () << std::endl;
-
-    *target_session = session (user, dtr.get_time ());
+    *target_session = session (user, time);
 
     infile.close ();
     return true;
@@ -88,8 +84,7 @@ bool session::search_sessions (std::string target_user_id, session* target_sessi
 void session::save_session () {
     if (!valid_session ())
         throw utils::custom_exception{ "The session is invalid" };
-    utils::datetime_reader dtr ("now");
-    _time            = dtr.get_time ();
+    _time            = time (NULL);
     std::string path = generate_path (_user->get_id ());
 
     std::ofstream outfile;
@@ -99,7 +94,7 @@ void session::save_session () {
 
     outfile << _user->get_id () << std::endl;
     outfile << user::role_to_string (_user->get_role ()) << std::endl;
-    outfile << dtr.to_string () << std::endl;
+    outfile << _time << std::endl;
 
     outfile.close ();
 }
