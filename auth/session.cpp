@@ -1,6 +1,7 @@
 #include "auth/session.h"
 #include "utils/exceptions.h"
 #include <cassert>
+#include <ctime>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -81,6 +82,23 @@ bool session::search_sessions (std::string target_user_id, session* target_sessi
 }
 
 
+bool session::is_saved () const {
+    auto path = generate_path (_user->get_id ());
+    try {
+        for (const std::filesystem::directory_entry& x : std::filesystem::directory_iterator{
+             std::filesystem::current_path ().string () + "/" + sessions_directory })
+            if (x.path () == path) {
+                return true;
+            }
+    } catch (const std::filesystem::filesystem_error& ex) {
+        std::cerr << ex.what () << '\n';
+        return false;
+    }
+    return false;
+}
+bool session::has_expired () const {
+    return difftime (time (NULL), _time) > 24 * 60 * 60;
+}
 void session::save_session () {
     if (!valid_session ())
         throw utils::custom_exception{ "The session is invalid" };
