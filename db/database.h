@@ -20,7 +20,7 @@
  */
 namespace db {
 class database {
-    public:
+public:
     // Default operations for singletons
     // Delete the copy constructor and assignment operator
     database (database&)             = delete;
@@ -91,7 +91,7 @@ class database {
         return _db;
     }
 
-    private:
+private:
     // initialize_db
     void initialize_db ();
 
