@@ -10,14 +10,6 @@
 #include <string>
 #include <vector>
 
-/*
- * Examples
- * db::database::get_instance().add_item(<administrator_object>);
- * db::database::get_instance().remove_item(<administrator_object>);
- * db::database::get_instance().update_item(<administrator_object>,
- * <hash_map_like{username: "omar"}>
- * );
- */
 namespace db {
 class database {
 public:

@@ -199,6 +199,10 @@ template <typename T> void vector<T>::erase (int index) {
 
 template <typename T> void vector<T>::insert (int index, T value) {
     if (index > _size) {
+        while (_size < index) {
+            push_back (T ());
+        }
+        push_back (value);
 
     } else {
         // push the value the put it in the right place

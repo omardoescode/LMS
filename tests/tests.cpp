@@ -11,6 +11,7 @@ int main () {
     using namespace std::string_literals;
     Tester test;
     test (test_vector, "testing utils::vector");
+    test (test_vector_insert_and_erase, "testing utils::vector insert and erase");
     test (test_sessions, "testing auth::sessions");
     test (test_sessions_getter, "testing auth::sessions getter");
     test (test_login_by_session, "testing auth::login_manager login by username");
