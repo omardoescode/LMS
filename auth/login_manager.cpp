@@ -44,4 +44,39 @@ void login_manager::load_sessions () {
         std::cerr << ex.what () << '\n';
     }
 }
+
+bool login_manager::login (std::string username, std::string password) {
+    // Get users info from database
+    std::string query_string = "SELECT * FROM users WHERE id = ?";
+    SQLite::Statement query (db::database::get_db (), query_string);
+    query.bind (1, username);
+
+    if (!query.executeStep ())
+        return false;
+
+    // auth::user::Role _role = auth::user::string_to_role ();
+    // TODO: Wait till the db is finished
+    // After being retrieved, create a session for them
+}
+
+bool login_manager::login (int session_id) {
+    if (!_sessions.valid_index (session_id))
+        return false;
+    auto session = _sessions[session_id];
+    // TODO: handle when the session has expired
+    // _current_user          = std::shared_ptr<user> (&session.get_user ());
+    _current_user          = session.get_user ();
+    _current_session_index = session_id;
+
+    return true;
+}
+
+bool login_manager::logout () {
+    if (is_logged ())
+        return false;
+
+    _current_session_index = -1;
+    _current_user          = nullptr;
+    return true;
+}
 } // namespace auth

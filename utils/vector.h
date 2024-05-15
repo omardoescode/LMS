@@ -43,6 +43,7 @@ public:
     T& front () const;
     T& back () const;
     bool empty () const;
+    bool valid_index (int) const;
 
     // Operators
     T& operator[] (int);
@@ -60,8 +61,6 @@ private:
     // Helpers
     void reallocate ();
     void reallocate (int);
-
-    bool valid_index (int) const;
 };
 
 // Implementation

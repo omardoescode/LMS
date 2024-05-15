@@ -6,9 +6,10 @@ class session {
 public:
     session ();
     session (std::shared_ptr<user> user, time_t time);
+
     // Getters
-    user& get_user () {
-        return *_user;
+    auto get_user () {
+        return _user;
     }
     time_t get_time () const {
         return _time;

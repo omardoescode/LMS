@@ -1,7 +1,10 @@
+#pragma once
 #include "auth/user.h"
 #include "utils/vector.h"
+#include <iostream>
 #include <memory>
 namespace auth {
+class session;
 class session;
 class login_manager {
 
@@ -22,7 +25,7 @@ public:
     }
 
     // Helpful funcitons
-    bool has_registered () const {
+    bool is_logged () const {
         return _current_session_index != -1;
     }
     // Getters
@@ -34,19 +37,23 @@ public:
     }
 
     std::shared_ptr<user> get_current_user () const {
-        return _current_user;
+        if (is_logged ())
+            return _current_user;
+        return nullptr;
     }
 
-    bool authenticate (auth::user&, std::string id, std::string password);
 
-    void load_sessions ();
+    // Authentication functions
+    bool login (std::string username, std::string password);
+    bool login (int session_id);
+    bool logout ();
 
 private:
     int _current_session_index;
     std::shared_ptr<user> _current_user;
     utils::vector<session> _sessions;
 
-
+    void load_sessions (); // initalized by constructor
     friend class session;
 };
 } // namespace auth
