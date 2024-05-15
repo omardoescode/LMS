@@ -1,4 +1,5 @@
 #include "auth/session.h"
+#include "auth/login_manager.h"
 #include "utils/exceptions.h"
 #include <cassert>
 #include <ctime>
@@ -17,45 +18,9 @@ session::session (std::shared_ptr<user> user, time_t time)
     generate_directory ();
 }
 
-// bool session::search_sessions (std::string target_user_id, session* target_session) {
-//     std::string path = std::filesystem::current_path ().string () + "/" + file;
-//     std::cout << path;
-//     if (!std::filesystem::exists (path))
-//         return false;
-//     std::ifstream infile (path);
-//
-//     int session_id;
-//     std::string user_id, role_string, time_string;
-//
-//
-//     while (!infile.eof ()) {
-//         // read data
-//         infile >> session_id >> user_id >> role_string >> time_string;
-//
-//         std::cout << session_id << " " << user_id << " " << role_string << " " << time_string;
-//         if (user_id != target_user_id)
-//             continue;
-//
-//         user::Role role = user::string_to_role (role_string);
-//
-//         std::shared_ptr<user> user =
-//         login_manager::get_instance ().load_user (user_id, role);
-//
-//         utils::datetime_reader dtr (time_string);
-//
-//         *target_session = session (session_id, user, dtr.get_time ());
-//
-//         infile.close ();
-//         return true;
-//     }
-//
-//     return false;
-// }
-
-
 std::string session::generate_path (std::string id) {
     return std::filesystem::current_path ().string () + "/" +
-    sessions_directory + "/" + id + ".txt";
+    _sessions_directory + "/" + id + ".txt";
 }
 
 bool session::search_sessions (std::string target_user_id, session* target_session) {
@@ -86,7 +51,7 @@ bool session::is_saved () const {
     auto path = generate_path (_user->get_id ());
     try {
         for (const std::filesystem::directory_entry& x : std::filesystem::directory_iterator{
-             std::filesystem::current_path ().string () + "/" + sessions_directory })
+             std::filesystem::current_path ().string () + "/" + _sessions_directory })
             if (x.path () == path) {
                 return true;
             }
@@ -120,8 +85,12 @@ void session::save_session () {
 void session::update_session_time_to_now () {
 }
 void session::generate_directory () {
-    std::string dir_path = std::filesystem::current_path ().string () + "/" + sessions_directory;
+    std::string dir_path = get_directory ();
     if (!std::filesystem::exists (dir_path))
         std::filesystem::create_directory (dir_path);
+}
+
+std::string session::get_directory () {
+    return std::filesystem::current_path ().string () + "/" + _sessions_directory;
 }
 } // namespace auth

@@ -11,6 +11,7 @@ int main () {
     Tester test;
     test (test_vector, "testing utils::vector");
     test (test_sessions, "testing auth::sessions");
+    test (test_sessions_getter, "testing auth::sessions getter");
 
     return 0;
 }
