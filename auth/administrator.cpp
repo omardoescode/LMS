@@ -12,6 +12,11 @@ administrator::administrator (std::string username, std::string email, std::stri
 administrator::administrator (std::string id) : user (id) {
     get ();
 }
+
+
+
+
+
 void administrator::get () {
     if (!saved_in_db ())
         throw utils::custom_exception{ "Item not saved in database;" };
@@ -42,6 +47,7 @@ bool administrator::add_to_database (SQLite::Database& db) {
 bool administrator::remove_from_database (SQLite::Database& db) {
     return true;
 }
+
 bool administrator::update_in_database (SQLite::Database& db,
 std::map<std::string, std::any> props) {
     return true;
