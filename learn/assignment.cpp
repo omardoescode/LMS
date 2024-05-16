@@ -103,14 +103,15 @@ void assignment ::get () {
 
         _course = (std::string)query.getColumn (6);
 
-        std::string submissions_ids = (std::string)query.getColumn (7);
+        _max_grade                  = query.getColumn (7);
+        std::string submissions_ids = (std::string)query.getColumn (8);
         _submissions = utils::split_string (submissions_ids, ',');
 
 #if PRINT_DATA_WHEN_RETRIEVED
         std::cout << "Assignment: " << _name << "\nID: " << _id << "\nType: " << type_string
                   << "\nStart Date: " << _start_date << "\nDue Date: " << _due_date
                   << "\nAvailable Until Date: " << _available_until_date
-                  << "\nCourse ID: " << _course
+                  << "\nCourse ID: " << _course << "\nMax Grade: " << _max_grade
                   << "\nSubmissions: " << submissions_ids << std::endl
                   << std::endl;
 #endif

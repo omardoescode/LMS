@@ -23,9 +23,10 @@ void database::refresh_and_seed_db () {
     // TODO: MAKE IT RUN IN DEBUG MODE ONLY AND MAKE IT RUN ONCE ONLY AS LONG AS
     // NO CHANGES HAPPEN TO TABLE STRUCTURE
     // TODO: READ THESE CONSTANTS FROM A CONSTATS FILE
-    const int NUM_TABLES           = 7;
+    const int NUM_TABLES           = 9;
     std::string tables[NUM_TABLES] = { "Users", "Students", "Instructors",
-        "Administrators", "Courses", "Instructors_Courses", "Students_Courses" };
+        "Administrators", "Courses", "Instructors_Courses", "Students_Courses",
+        "Assignments", "AssignmentSubmissions" };
 
     std::cout << "SEEDING DATABASE P.S. THIS MAY TAKE A WHILE" << std::endl;
     for (int i = 0; i < NUM_TABLES; i++) {
@@ -47,7 +48,7 @@ void database::initialize_db () {
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY, "
     "password_hash VARCHAR(32), email VARCHAR(255), faculty "
-    "VARCHAR(255), name VARCHAR(255))");
+    "VARCHAR(255), name VARCHAR(255), role TEXT)");
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Students (id VARCHAR(9) PRIMARY KEY, "
     "user_id INTEGER, FOREIGN KEY(user_id) REFERENCES Users(id))");
@@ -68,17 +69,19 @@ void database::initialize_db () {
     "REFERENCES Users(id))");
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Courses (id INTEGER PRIMARY KEY, "
-    "name VARCHAR(255), credit_hours INTEGER, text_book VARCHAR(255))");
+    "name VARCHAR(255), credit_hours INTEGER, text_book VARCHAR(255), "
+    "course_code VARCHAR(255))");
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Assignments (id INTEGER PRIMARY KEY, name "
-    "VARCHAR(255), type VARCHAR(255), start_date TIMESTAMP DEFAULT "
-    "CURRENT_TIMESTAMP, due_date TIMESTAMP, available_until_date TIMESTAMP, "
-    "course_id INTEGER, FOREIGN KEY (course_id) REFERENCES Courses(id))");
+    "VARCHAR(255), type VARCHAR(255), start_date INTEGER "
+    "DEFAULT(strftime('%s', 'now')), due_date INTEGER, available_until_date "
+    "INTEGER, course_id INTEGER, max_grade REAL, FOREIGN KEY (course_id) "
+    "REFERENCES Courses(id))");
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS AssignmentSubmissions (id INTEGER PRIMARY KEY, "
-    "grade REAL, submission_date TIMESTAMP DEFAULT "
-    "CURRENT_TIMESTAMP, assignment_id INTEGER, student_id VARCHAR(9), FOREIGN "
-    "KEY (assignment_id) REFERENCES Assignments(id), FOREIGN KEY (student_id) "
+    "grade REAL DEFAULT -1, submission_date INTEGER DEFAULT(strftime('%s', "
+    "'now')), assignment_id INTEGER, student_id VARCHAR(9), FOREIGN KEY "
+    "(assignment_id) REFERENCES Assignments(id), FOREIGN KEY (student_id) "
     "REFERENCES Students(id))");
 
     /*

@@ -60,7 +60,7 @@ public:
 
 private:
     int _credit_hours;
-    std::string _name, _professor, _textbook;
+    std::string _name, _professor, _textbook, _course_code;
     utils::vector<std::string> _teaching_assistants, _students, _assignments; // Up to 6 teaching assistants
 };
 

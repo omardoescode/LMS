@@ -32,18 +32,18 @@ bool user::set_email (std::string new_email) {
 
 std::string user::role_to_string (Role role) {
     switch (role) {
-    case Role::STUDENT: return "student";
-    case Role::INSTRUCTOR: return "instructor";
-    case Role::ADMINISTRATOR: return "administrator";
+    case Role::STUDENT: return "Student";
+    case Role::INSTRUCTOR: return "Instructor";
+    case Role::ADMINISTRATOR: return "Administrator";
     }
 }
 
 user::Role user::string_to_role (std::string role) {
-    if (role == "student")
+    if (role == "Student")
         return Role::STUDENT;
-    if (role == "instructor")
+    if (role == "Instructor")
         return Role::INSTRUCTOR;
-    if (role == "administrator")
+    if (role == "Administrator")
         return Role::ADMINISTRATOR;
     throw utils::custom_exception ("Invalid role");
 }

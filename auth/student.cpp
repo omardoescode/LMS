@@ -89,16 +89,18 @@ void student::get () {
     query.bind (1, _id);
 
     while (query.executeStep ()) {
-        _password_hash = (std::string)query.getColumn (1);
-        _email         = (std::string)query.getColumn (2);
-        _faculty       = (std::string)query.getColumn (3);
-        _name          = (std::string)query.getColumn (4);
-        std::string course_registrations_string = (std::string)query.getColumn (5);
+        _password_hash          = (std::string)query.getColumn (1);
+        _email                  = (std::string)query.getColumn (2);
+        _faculty                = (std::string)query.getColumn (3);
+        _name                   = (std::string)query.getColumn (4);
+        std::string role_string = (std::string)query.getColumn (5);
+        _role                   = string_to_role (role_string);
+        std::string course_registrations_string = (std::string)query.getColumn (6);
         _courses_registrations = utils::split_string (course_registrations_string, ',');
 
 #if PRINT_DATA_WHEN_RETRIEVED
-        std::cout << "Student: " << _name << "\nID: " << _id
-                  << "\nEmail: " << _email << "\nFaculty: " << _faculty
+        std::cout << "Student: " << _name << "\nID: " << _id << "\nEmail: " << _email
+                  << "\nFaculty: " << _faculty << "\nRole: " << role_string
                   << "\nCourses: " << course_registrations_string << std::endl
                   << std::endl;
 #endif

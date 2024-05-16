@@ -23,7 +23,7 @@ bool course_registration::course_registration::set_state (CourseRegistrationStat
 
 course_registration::CourseRegistrationState
 course_registration::enum_translate (std::string s) {
-    if (s == "Enrolled")
+    if (s == "Enrolled" || s == "Current")
         return CourseRegistrationState::ENROLLED;
     if (s == "Dropped")
         return CourseRegistrationState::DROPPED;
@@ -57,7 +57,7 @@ void course_registration::get () {
     while (query.executeStep ()) {
         _student = (std::string)query.getColumn (1);
         _course  = (std::string)query.getColumn (2);
-        _state   = enum_translate ((std::string)query.getColumn (3));
+        _state   = enum_translate (query.getColumn (3));
 
 #if PRINT_DATA_WHEN_RETRIEVED
         std::cout << "Student ID: " << _student << "\nCourse ID: " << _course

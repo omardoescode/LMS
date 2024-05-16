@@ -34,16 +34,19 @@ void instructor::get () {
         _email                  = (std::string)query.getColumn (2);
         _faculty                = (std::string)query.getColumn (3);
         _name                   = (std::string)query.getColumn (4);
-        _is_teaching_assistant  = query.getColumn (6).getInt ();
-        std::string courses_ids = query.getColumn (7);
+        std::string role_string = (std::string)query.getColumn (5);
+        _role                   = string_to_role (role_string);
+        _is_teaching_assistant  = query.getColumn (7).getInt ();
+        std::string courses_ids = query.getColumn (8);
         _courses                = utils::split_string (courses_ids, ',');
 
 #if PRINT_DATA_WHEN_RETRIEVED
-        std::cout << "Instructor: " << _name << "\nID: " << _id
-                  << "\nEmail: " << _email << "\nFaculty: " << _faculty
-                  << "\nTeaching Assistant: " << (_is_teaching_assistant ? "Yes" : "No")
-                  << "\nCourses: " << courses_ids << std::endl
-                  << std::endl;
+        std::cout
+        << "Instructor: " << _name << "\nID: " << _id << "\nEmail: " << _email
+        << "\nFaculty: " << _faculty
+        << "\nTeaching Assistant: " << (_is_teaching_assistant ? "Yes" : "No")
+        << "\nRole: " << role_string << "\nCourses: " << courses_ids << std::endl
+        << std::endl;
 #endif
     }
 }
