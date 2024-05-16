@@ -7,6 +7,4 @@ cmake-build-release/
 .cache/
 CMakeFiles/
 example.db3
-/.vs/LMS/v17/ipch/AutoPCH/845c51a23cbe8233/LEARNING-MANAGEMENT-SYSTEM.ipch
-/.vs/LMS/v17/ipch/AutoPCH/8484597bd21a99c0/ULMSD.ipch
-/.vs/LMS
+sessions/

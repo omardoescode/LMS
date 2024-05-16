@@ -1,4 +1,5 @@
 #include "auth/user.h"
+#include "utils/exceptions.h"
 
 namespace auth {
 const std::hash<std::string> hasher;
@@ -27,4 +28,24 @@ bool user::set_email (std::string new_email) {
     }
     return false;
 }
+
+
+std::string user::role_to_string (Role role) {
+    switch (role) {
+    case Role::STUDENT: return "Student";
+    case Role::INSTRUCTOR: return "Instructor";
+    case Role::ADMINISTRATOR: return "Administrator";
+    }
+}
+
+user::Role user::string_to_role (std::string role) {
+    if (role == "Student")
+        return Role::STUDENT;
+    if (role == "Instructor")
+        return Role::INSTRUCTOR;
+    if (role == "Administrator")
+        return Role::ADMINISTRATOR;
+    throw utils::custom_exception ("Invalid role");
+}
+
 } // namespace auth

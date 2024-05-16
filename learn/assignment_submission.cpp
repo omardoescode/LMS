@@ -1,6 +1,5 @@
 #include "learn/assignment_submission.h"
 #include "auth/student.h"
-#include "utils/datetime_reader.h"
 #include "utils/exceptions.h"
 
 #include <iostream>
@@ -16,8 +15,7 @@ assignment_submission::assignment_submission (std::string assignment, std::strin
 }
 assignment_submission::assignment_submission (std::string assignment, std::string student)
 : _assignment (assignment), _student (student), _grade{ -1 } {
-    utils::datetime_reader dtr ("now");
-    _submission_datetime = dtr.get_time ();
+    _submission_datetime = time (NULL);
 }
 
 double assignment_submission::get_grade () const {
@@ -54,18 +52,16 @@ void assignment_submission ::get () {
     query.bind (1, _id);
 
     while (query.executeStep ()) {
-        _grade = query.getColumn (1);
-        _submission_datetime =
-        utils::datetime_reader ((std::string)query.getColumn (2)).get_time ();
-        _assignment = (std::string)query.getColumn (3);
-        _student    = (std::string)query.getColumn (4);
+        _grade               = query.getColumn (1);
+        _submission_datetime = query.getColumn (2);
+        _assignment          = (std::string)query.getColumn (3);
+        _student             = (std::string)query.getColumn (4);
 
-#if DEBUGGING
-        std::cout
-        << "Assignment ID: " << _assignment << "\nSubmission ID: " << _id
-        << "\nGrade: " << _grade << "\nStudent ID: " << _student << std::endl
-        << "Submission Date: "
-        << utils::datetime_reader (_submission_datetime).DateTime () << std::endl;
+#if PRINT_DATA_WHEN_RETRIEVED
+        std::cout << "Assignment ID: " << _assignment << "\nSubmission ID: " << _id
+                  << "\nGrade: " << _grade << "\nStudent ID: " << _student << std::endl
+                  << "Submission Date: " << _submission_datetime << std::endl
+                  << std::endl;
 #endif
     }
 }

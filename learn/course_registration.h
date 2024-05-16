@@ -32,10 +32,12 @@ public:
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
     void get () override;
-    // Getter from db
 
 private:
     std::string _course, _student;
     CourseRegistrationState _state;
+
+    CourseRegistrationState enum_translate (std::string);
+    std::string enum_translate (CourseRegistrationState);
 };
 } // namespace learn

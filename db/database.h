@@ -10,17 +10,9 @@
 #include <string>
 #include <vector>
 
-/*
- * Examples
- * db::database::get_instance().add_item(<administrator_object>);
- * db::database::get_instance().remove_item(<administrator_object>);
- * db::database::get_instance().update_item(<administrator_object>,
- * <hash_map_like{username: "omar"}>
- * );
- */
 namespace db {
 class database {
-    public:
+public:
     // Default operations for singletons
     // Delete the copy constructor and assignment operator
     database (database&)             = delete;
@@ -91,7 +83,7 @@ class database {
         return _db;
     }
 
-    private:
+private:
     // initialize_db
     void initialize_db ();
 

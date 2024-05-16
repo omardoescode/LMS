@@ -1,17 +1,21 @@
 #include "auth/administrator.h"
 #include "auth/instructor.h"
+#include "auth/session.h"
 #include "auth/student.h"
 #include <iostream>
+
 auto main () -> int {
     // db::database::get_instance ().refresh_and_seed_db ();
-    /*int id;
+    int id;
     std::cout << "Course ID: ";
     std::cin >> id;
     learn::course c (std::to_string (id));
+
     std::string stud_id;
     std::cout << "Student ID: ";
     std::cin >> stud_id;
     auth::student stud (stud_id);
+
     std::string inst_id;
     std::cout << "Instructor ID: ";
     std::cin >> inst_id;
@@ -19,7 +23,8 @@ auto main () -> int {
     std::string admin_id;
     std::cout << "Admin ID: ";
     std::cin >> admin_id;
-    auth::administrator admin (admin_id);*/
+    auth::administrator admin (admin_id);
+
     int a_id;
     std::cout << "Assignment ID: ";
     std::cin >> a_id;
@@ -28,4 +33,8 @@ auto main () -> int {
     std::cout << "Assignment Submission ID: ";
     std::cin >> s_id;
     learn::assignment_submission s (std::to_string (s_id));
+    int r_id;
+    std::cout << "Course Registration ID: ";
+    std::cin >> r_id;
+    learn::course_registration r (std::to_string (r_id));
 }

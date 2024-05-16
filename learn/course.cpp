@@ -91,18 +91,19 @@ void course::get () {
         _name         = (std::string)query.getColumn (1);
         _credit_hours = query.getColumn (2);
         _textbook     = (std::string)query.getColumn (3);
-        _professor    = (std::string)query.getColumn (4);
+        _course_code  = (std::string)query.getColumn (4);
+        _professor    = (std::string)query.getColumn (5);
 
-        std::string teaching_assistants_ids = query.getColumn (5);
+        std::string teaching_assistants_ids = query.getColumn (6);
         _teaching_assistants = utils::split_string (teaching_assistants_ids, ',');
 
-        std::string students_ids = query.getColumn (6);
+        std::string students_ids = query.getColumn (7);
         _students                = utils::split_string (students_ids, ',');
 
-#if DEBUGGING
+#if PRINT_DATA_WHEN_RETRIEVED
         std::cout << "Course: " << _name << "\nID: " << _id
-                  << "\nCredit Hourse: " << _credit_hours
-                  << "\nText Book: " << _textbook << "\nInstructor: " << _professor
+                  << "\nCredit Hourse: " << _credit_hours << "\nText Book: " << _textbook
+                  << "\nInstructor: " << _professor << "\nCourse Code: " << _course_code
                   << "\nTeaching Assistants: " << teaching_assistants_ids
                   << "\nStudents: " << students_ids << std::endl
                   << std::endl;

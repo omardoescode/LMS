@@ -3,8 +3,10 @@
 #include "db/database.h"
 #include "learn/course_registration.h"
 #include "utils/exceptions.h"
+#include "utils/split_string.h"
 #include "utils/vector.h"
 
+#include <filesystem>
 #include <iostream>
 
 namespace auth {
@@ -30,7 +32,7 @@ bool student::add_to_database (SQLite::Database& db) {
 
     std::string student_id = "23-101287";
 
-    query = SQLite::Statement (db, "INSERT INTO Students(student_id, user_id) VALUES(?, ?)");
+    query = SQLite::Statement (db, "INSERT INTO Students(id, user_id) VALUES(?, ?)");
     query.bind (1, student_id);
     query.bind (2, user_id);
 
@@ -51,6 +53,7 @@ void student::register_course (std::string course) {
     _courses_registrations.push_back (course);
     db::database::get_instance ().add_item (registration);
 }
+
 
 void student::drop_course (const std::string& course) {
     // checks if course is even registered.
@@ -79,27 +82,31 @@ void student::get () {
         throw utils::custom_exception{ "Item not saved in database;" };
 
     std::string query_string =
-    "select users.*, students.id from students join users on "
-    "users.id == students.user_id where students.id = ?";
+    "select users.*, (select group_concat(students_courses.id) from "
+    "students_courses where students_Courses.student_id = students.id) as "
+    "courses_registrations from students join users on users.id == "
+    "students.user_id where students.id = ?";
 
     SQLite::Statement query (db::database::get_db (), query_string);
     query.bind (1, _id);
 
-    if (!query.executeStep ())
-        throw utils::custom_exception ("Invalid Id to auth::student");
-    _password_hash = (std::string)query.getColumn (1);
-    _email         = (std::string)query.getColumn (2);
-    _faculty       = (std::string)query.getColumn (3);
-    _name          = (std::string)query.getColumn (4);
-    _username      = _id;
-    _role          = auth::user::Role::STUDENT;
+    while (query.executeStep ()) {
+        _password_hash          = (std::string)query.getColumn (1);
+        _email                  = (std::string)query.getColumn (2);
+        _faculty                = (std::string)query.getColumn (3);
+        _name                   = (std::string)query.getColumn (4);
+        std::string role_string = (std::string)query.getColumn (5);
+        _role                   = string_to_role (role_string);
+        std::string course_registrations_string = (std::string)query.getColumn (6);
+        _courses_registrations = utils::split_string (course_registrations_string, ',');
 
-#if DEBUGGING
-    std::cout << "Student: " << _name << "\nID: " << _id
-              << "\nEmail: " << _email << "\nFaculty: " << _faculty << std::endl
-              << std::endl;
+#if PRINT_DATA_WHEN_RETRIEVED
+        std::cout << "Student: " << _name << "\nID: " << _id << "\nEmail: " << _email
+                  << "\nFaculty: " << _faculty << "\nRole: " << role_string
+                  << "\nCourses: " << course_registrations_string << std::endl
+                  << std::endl;
 #endif
-}
+    }
 }
 
 // std::unique_ptr<student> student::get_by_username (std::string username) {

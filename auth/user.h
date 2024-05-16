@@ -26,6 +26,13 @@ public:
     std::string get_email () const {
         return _email;
     }
+    Role get_role () const {
+        return _role;
+    }
+
+    static std::string role_to_string (Role role);
+    static Role string_to_role (std::string role);
+
 
     // Setters
     // When applied, we need to update in DB as well
