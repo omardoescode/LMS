@@ -67,14 +67,45 @@ void course_registration::get () {
     }
 }
 bool course_registration::add_to_database (SQLite::Database& db) {
-    return true;
+    SQLite::Statement query (
+    db, "INSERT INTO Students_Courses(student_id, course_id, state) VALUES(?,?, ?) RETURNING id");
+
+    query.bindNoCopy (1, _student);
+    query.bindNoCopy (2, _course);
+    query.bindNoCopy (3, enum_translate (_state));
+
+    query.executeStep ();
+    int course_reg_id = query.getColumn (0);
+
+    _id = course_reg_id;
+    return (course_reg_id != 0);
 }
 bool course_registration::remove_from_database (SQLite::Database& db) {
-    return true;
+    SQLite::Statement query (db, "DELETE FROM Students_Courses WHERE id = ?");
+
+    query.bindNoCopy (1, _id);
+
+    int success = query.exec ();
+    return success;
 }
 bool course_registration::update_in_database (SQLite::Database& db,
 std::map<std::string, std::any> props) {
-    return true;
+    std::string query_string = "UPDATE Students_Courses SET ";
+    int count                = 0;
+    for (auto const& [key, val] : props) {
+        if (count > 0)
+            query_string += ",";
+        query_string += key + " = '" + std::any_cast<std::string> (val) + "'";
+        count++;
+    }
+
+    query_string += " WHERE id = ?";
+
+    SQLite::Statement query (db, query_string);
+    query.bindNoCopy (1, _id);
+
+    int success = query.exec ();
+    return success;
 }
 
 learn::course course_registration::get_course () {

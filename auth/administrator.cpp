@@ -3,8 +3,8 @@
 #include <iostream>
 namespace auth {
 
-administrator::administrator (std::string username, std::string email, std::string password)
-: user (username, email, password) {
+administrator::administrator (std::string name, std::string faculty, std::string email, std::string password)
+: user (name, faculty, email, password, Role::ADMINISTRATOR) {
 }
 
 // Get from database
@@ -40,13 +40,58 @@ void administrator::get () {
     }
 }
 bool administrator::add_to_database (SQLite::Database& db) {
-    return true;
+    SQLite::Statement query (
+    db, "INSERT INTO Users(name, password_hash, email, faculty, role) VALUES(?,?, ?, ?, ?) RETURNING id");
+
+    query.bindNoCopy (1, _name);
+    query.bindNoCopy (2, _password_hash);
+    query.bindNoCopy (3, _email);
+    query.bindNoCopy (4, _faculty);
+    query.bindNoCopy (5, role_to_string (_role));
+
+    query.executeStep ();
+    int user_id = query.getColumn (0);
+
+    std::string id = _name;
+    std::replace (id.begin (), id.end (), ' ', '.');
+
+    query = SQLite::Statement (db, "INSERT INTO Administrators(id, user_id) VALUES(?,?)");
+    query.bind (1, id);
+    query.bind (2, user_id);
+
+    int success = query.exec ();
+    _id         = id;
+    return success;
 }
 bool administrator::remove_from_database (SQLite::Database& db) {
-    return true;
+    SQLite::Statement query (db,
+    "DELETE FROM Users WHERE Users.id = (SELECT Users.id FROM Users JOIN "
+    "Administrators ON Administrators.user_id == Users.id WHERE "
+    "Administrators.id = ?)");
+    query.bindNoCopy (1, _id);
+
+    int success = query.exec ();
+    return success;
 }
 bool administrator::update_in_database (SQLite::Database& db,
 std::map<std::string, std::any> props) {
-    return true;
+    std::string query_string = "UPDATE Users SET ";
+    int count                = 0;
+    for (auto const& [key, val] : props) {
+        if (count > 0)
+            query_string += ",";
+        query_string += key + " = '" + std::any_cast<std::string> (val) + "'";
+        count++;
+    }
+
+    query_string += " WHERE id = (SELECT Users.id FROM Users JOIN "
+                    "Administrators ON Administrators.user_id == Users.id "
+                    "WHERE Administrators.id = ?)";
+
+    SQLite::Statement query (db, query_string);
+    query.bindNoCopy (1, _id);
+
+    int success = query.exec ();
+    return success;
 }
 } // namespace auth

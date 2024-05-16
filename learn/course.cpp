@@ -15,9 +15,13 @@ namespace learn {
 course::course (std::string id) : db::database_item (id) {
     get ();
 }
-course::course (std::string name, std::string professor, std::string textbook, int credit_hours)
+course::course (std::string name,
+std::string professor,
+std::string textbook,
+int credit_hours,
+std::string course_code)
 : _name{ name }, _professor (professor), _textbook (textbook),
-  _credit_hours (credit_hours) {
+  _credit_hours (credit_hours), _course_code (course_code) {
 }
 auth::instructor course::get_professor () {
     return auth::instructor (_professor);
@@ -112,13 +116,55 @@ void course::get () {
 }
 
 bool course::add_to_database (SQLite::Database& db) {
-    return true;
+    SQLite::Statement query (
+    db, "INSERT INTO Courses(name, credit_hours, text_book, course_code) VALUES(?,?, ?, ?) RETURNING id");
+
+    query.bindNoCopy (1, _name);
+    query.bind (2, _credit_hours);
+    query.bindNoCopy (3, _textbook);
+    query.bindNoCopy (4, _course_code);
+
+    query.executeStep ();
+    int course_id = query.getColumn (0);
+
+    int success = auth::instructor (_professor).add_course (std::to_string (course_id));
+
+    _id = course_id;
+    return (course_id != 0) && (success);
 }
 
 bool course::remove_from_database (SQLite::Database& db) {
-    return true;
+    SQLite::Statement query (db, "DELETE FROM Courses WHERE id = ?");
+
+    query.bind (1, _id);
+
+    int success = query.exec ();
+
+    return success;
 }
 bool course::update_in_database (SQLite::Database& db, std::map<std::string, std::any> props) {
-    return true;
+    std::string query_string = "UPDATE Courses SET ";
+    int count                = 0;
+    for (auto const& [key, val] : props) {
+        if (count > 0)
+            query_string += ",";
+
+
+        if (key == "credit_hours") {
+            query_string += key + " = " + std::to_string (std::any_cast<int> (val));
+        } else {
+            query_string += key + " = '" + std::any_cast<std::string> (val) + "'";
+        }
+
+        count++;
+    }
+
+    query_string += " WHERE id = ?";
+
+    SQLite::Statement query (db, query_string);
+    query.bindNoCopy (1, _id);
+
+    int success = query.exec ();
+    return success;
 }
 } // namespace learn

@@ -67,14 +67,56 @@ void assignment_submission ::get () {
 }
 
 bool assignment_submission::add_to_database (SQLite::Database& db) {
-    return true;
+    SQLite::Statement query (db,
+    "INSERT INTO AssignmentSubmissions(grade, assignment_id, student_id) "
+    "VALUES(?,?,?) RETURNING id, submission_date");
+
+    query.bind (1, _grade);
+    query.bindNoCopy (2, _assignment);
+    query.bindNoCopy (3, _student);
+
+    query.executeStep ();
+
+    int assignment_submission_id   = query.getColumn (0);
+    int assignment_submission_date = query.getColumn (1);
+
+    _id                  = std::to_string (assignment_submission_id);
+    _submission_datetime = assignment_submission_date;
+    return (stoi (_id) != 0);
 }
 
 bool assignment_submission::remove_from_database (SQLite::Database& db) {
-    return true;
+    SQLite::Statement query (db, "DELETE FROM AssignmentSubmissions WHERE id = ?");
+
+    query.bindNoCopy (1, _id);
+
+    int success = query.exec ();
+    return success;
 }
 bool assignment_submission::update_in_database (SQLite::Database& db,
 std::map<std::string, std::any> props) {
-    return true;
+    std::string query_string = "UPDATE AssignmentSubmissions SET ";
+    int count                = 0;
+    for (auto const& [key, val] : props) {
+        if (count > 0)
+            query_string += ",";
+
+        query_string += key + " = ";
+
+        if (key == "grade")
+            query_string += std::to_string (std::any_cast<double> (val));
+        else
+            query_string += std::to_string (std::any_cast<int> (val));
+
+        count++;
+    }
+
+    query_string += " WHERE id = ?";
+
+    SQLite::Statement query (db, query_string);
+    query.bindNoCopy (1, _id);
+
+    int success = query.exec ();
+    return success;
 }
 } // namespace learn

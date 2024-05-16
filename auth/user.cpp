@@ -3,9 +3,9 @@
 
 namespace auth {
 const std::hash<std::string> hasher;
-user::user (std::string username, std::string email, std::string password)
-: _username{ username }, _email{ email },
-  _password_hash{ std::to_string (hasher (password)) } {
+user::user (std::string name, std::string faculty, std::string email, std::string password, Role role)
+: _name{ name }, _faculty (faculty), _email{ email },
+  _password_hash{ std::to_string (hasher (password)) }, _role (role) {
 }
 
 

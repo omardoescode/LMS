@@ -13,9 +13,9 @@ public:
     std::string course,
     double maximum_grade,
     AssignmentType type,
-    std::string start_date,
-    std::string due_date,
-    std::string available_until_date);
+    time_t start_date,
+    time_t due_date,
+    time_t available_until_date);
     explicit assignment (std::string id);
 
     // Getters

@@ -10,8 +10,8 @@
 #include <iostream>
 
 namespace auth {
-student::student (std::string username, std::string name, std::string email, std::string password)
-: user (username, email, password), _name{ name } {
+student::student (std::string name, std::string faculty, std::string email, std::string password)
+: user (name, faculty, email, password, Role::STUDENT) {
 }
 student::student (std::string id) : user{ id } {
     get ();
@@ -21,23 +21,31 @@ bool student::add_to_database (SQLite::Database& db) {
         return true;
 
     SQLite::Statement query (
-    db, "INSERT INTO Users(name, password_hash, email, faculty) VALUES(?, ?, ?, ?) RETURNING user_id");
-    query.bindNoCopy (1, _username);
+    db, "INSERT INTO Users(name, password_hash, email, faculty, role) VALUES(?,?, ?, ?, ?) RETURNING id");
+
+    query.bindNoCopy (1, _name);
     query.bindNoCopy (2, _password_hash);
     query.bindNoCopy (3, _email);
     query.bindNoCopy (4, _faculty);
+    query.bindNoCopy (5, role_to_string (_role));
 
     query.executeStep ();
     int user_id = query.getColumn (0);
 
-    std::string student_id = "23-101287";
+    query = SQLite::Statement (db, "SELECT id FROM Students ORDER BY id DESC LIMIT 1");
+    query.executeStep ();
+    std::string last_student_id = query.getColumn (0);
 
-    query = SQLite::Statement (db, "INSERT INTO Students(id, user_id) VALUES(?, ?)");
-    query.bind (1, student_id);
+    std::string sub1   = last_student_id.substr (0, 5);
+    std::string sub2   = last_student_id.substr (5);
+    std::string new_id = sub1 + std::to_string (std::stoi (sub2) + 1);
+
+    query = SQLite::Statement (db, "INSERT INTO Students(id, user_id) VALUES(?,?)");
+    query.bind (1, new_id);
     query.bind (2, user_id);
 
     int success = query.exec ();
-    _id         = student_id;
+    _id         = new_id;
     return success;
 }
 void student::register_course (std::string course) {
@@ -69,11 +77,35 @@ void student::drop_course (const std::string& course) {
 }
 
 bool student::remove_from_database (SQLite::Database& db) {
-    return true;
+    SQLite::Statement query (db,
+    "DELETE FROM Users WHERE Users.id = (SELECT Users.id FROM Users JOIN "
+    "Students ON Students.user_id == Users.id WHERE Students.id = ?)");
+    query.bindNoCopy (1, _id);
+
+    int success = query.exec ();
+    return success;
 }
+
 bool student::update_in_database (SQLite::Database& db,
 std::map<std::string, std::any> props) {
-    return true;
+    std::string query_string = "UPDATE Users SET ";
+    int count                = 0;
+    for (auto const& [key, val] : props) {
+        if (count > 0)
+            query_string += ",";
+        query_string += key + " = '" + std::any_cast<std::string> (val) + "'";
+        count++;
+    }
+
+    query_string +=
+    " WHERE id = (SELECT Users.id FROM Users JOIN "
+    "Students ON Students.user_id == Users.id WHERE Students.id = ?)";
+
+    SQLite::Statement query (db, query_string);
+    query.bindNoCopy (1, _id);
+
+    int success = query.exec ();
+    return success;
 }
 
 

@@ -16,7 +16,7 @@ void database::refresh_and_seed_db () {
     db::database::get_db ().exec (
     "PRAGMA writable_schema = 1;delete from sqlite_master where type in "
     "('table', 'index', 'trigger');PRAGMA writable_schema = "
-    "0;VACUUM;PRAGMA INTEGRITY_CHECK;");
+    "0;VACUUM;PRAGMA INTEGRITY_CHECK;PRAGMA foreign_keys = ON;");
     initialize_db ();
 
     // Seed database
@@ -44,6 +44,7 @@ void database::refresh_and_seed_db () {
 void database::initialize_db () {
 
     std::cout << "INITIALIZING DATABASE" << std::endl;
+    db::database::get_db ().exec ("PRAGMA foreign_keys = ON;");
     // Create all tables as per database design
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY, "
@@ -51,14 +52,15 @@ void database::initialize_db () {
     "VARCHAR(255), name VARCHAR(255), role TEXT)");
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Students (id VARCHAR(9) PRIMARY KEY, "
-    "user_id INTEGER, FOREIGN KEY(user_id) REFERENCES Users(id))");
+    "user_id INTEGER, FOREIGN KEY(user_id) REFERENCES Users(id) ON DELETE "
+    "CASCADE)");
     db::database::get_db ().exec ("CREATE TABLE IF NOT EXISTS Students_Courses "
                                   "(id INTEGER PRIMARY KEY, student_id "
                                   "VARCHAR(9), course_id INTEGER, state TEXT)");
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Instructors (id VARCHAR(255) "
     "PRIMARY KEY, is_teaching_assistant BOOL, user_id INTEGER, FOREIGN "
-    "KEY(user_id) REFERENCES Users(id))");
+    "KEY(user_id) REFERENCES Users(id) ON DELETE CASCADE)");
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Instructors_Courses (id INTEGER PRIMARY KEY, "
     "instructor_id "
@@ -66,7 +68,7 @@ void database::initialize_db () {
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Administrators (id "
     "VARCHAR(255) PRIMARY KEY, user_id INTEGER, FOREIGN KEY(user_id) "
-    "REFERENCES Users(id))");
+    "REFERENCES Users(id) ON DELETE CASCADE)");
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS Courses (id INTEGER PRIMARY KEY, "
     "name VARCHAR(255), credit_hours INTEGER, text_book VARCHAR(255), "

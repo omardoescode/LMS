@@ -18,7 +18,7 @@ public:
     explicit course (std::string);
 
     // Create a new one before saving
-    course (std::string, std::string, std::string, int);
+    course (std::string, std::string, std::string, int, std::string);
 
     // Getters
     int get_credit_hours () const {

@@ -6,6 +6,7 @@
 
 auto main () -> int {
     // db::database::get_instance ().refresh_and_seed_db ();
+    /*
     int id;
     std::cout << "Course ID: ";
     std::cin >> id;
@@ -37,4 +38,29 @@ auto main () -> int {
     std::cout << "Course Registration ID: ";
     std::cin >> r_id;
     learn::course_registration r (std::to_string (r_id));
+    */
+    /*
+    auth::student new_student ("23-101975");
+    std::map<std::string, std::any> props = { { "email"s, "momo@example.com"s } };
+    std::cout
+    << new_student.update_in_database (db::database::get_instance ().get_db (), props);
+    */
+    /*
+    auth::instructor new_instructor ("Mohamed.Elmosalamy");
+    std::cout
+    << new_instructor.remove_from_database (db::database::get_instance ().get_db ());
+    */
+    /*
+    auth::administrator new_administrator ("Momo.Admin");
+    std::cout << new_administrator.remove_from_database (
+    db::database::get_instance ().get_db ());
+    */
+    /*
+    learn::assignment assignment ("3");
+    std::map<std::string, std::any> props = { { "max_grade"s, 50.6 },
+        { "due_date"s, 1715540500 } };
+
+    std::cout
+    << assignment.update_in_database (db::database::get_instance ().get_db (), props);
+    */
 }

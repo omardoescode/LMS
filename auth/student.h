@@ -8,9 +8,9 @@ namespace auth {
 class student : public user {
 public:
     // Constructors
-    student (std::string username,
-    std::string name,
+    student (std::string name,
     std::string email,
+    std::string faculty,
     std::string password); // Create with empty ID to indicate
                            // it hasn't been added to the database yet
 
@@ -49,7 +49,6 @@ public:
 
 
 private:
-    std::string _name;
     utils::vector<std::string> _courses_registrations;
 };
 

@@ -13,14 +13,18 @@ class instructor : public user {
 public:
     // Constructors
     explicit instructor (std::string id);
-    instructor (std::string username, std::string email, std::string password_hash);
+    instructor (std::string name,
+    std::string email,
+    std::string faculty,
+    std::string password,
+    bool is_teaching_assistant);
     // Given a course in the database, assign this course to this instructor
     bool add_course (learn::course& course);
-    bool add_course (std::string_view course_id);
+    bool add_course (std::string course_id);
 
     // Remove the course from the list of courses taught by this instructor
     bool remove_course (learn::course& course);
-    bool remove_course (std::string_view course_id);
+    bool remove_course (std::string course_id);
 
     // Grades Mofication
 

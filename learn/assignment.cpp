@@ -12,10 +12,12 @@ assignment::assignment (std::string name,
 std::string course,
 double maximum_grade,
 AssignmentType type,
-std::string start_date,
-std::string due_date,
-std::string available_until_date)
-: _name{ name }, _course{ course }, _max_grade (maximum_grade), _type{ type } {
+time_t start_date,
+time_t due_date,
+time_t available_until_date)
+: _name{ name }, _course{ course }, _max_grade (maximum_grade), _type{ type },
+  _start_date (start_date), _due_date (due_date),
+  _available_until_date (available_until_date) {
 }
 
 
@@ -54,15 +56,62 @@ double assignment::get_minimum_grade () {
     return min;
 }
 bool assignment::add_to_database (SQLite::Database& db) {
-    return true;
+    SQLite::Statement query (db,
+    "INSERT INTO Assignments(name, type, start_date, due_date, "
+    "available_until_date, course_id, max_grade) VALUES(?, ?, ?, ?, ?, ?, ?) "
+    "RETURNING id");
+
+    query.bindNoCopy (1, _name);
+    query.bindNoCopy (2, enum_translate (_type));
+    query.bind (3, _start_date);
+    query.bind (4, _due_date);
+    query.bind (5, _available_until_date);
+    query.bindNoCopy (6, _course);
+    query.bind (7, _max_grade);
+
+    query.executeStep ();
+    int assignment_id = query.getColumn (0);
+
+    _id = assignment_id;
+    return (assignment_id != 0);
 }
 
 bool assignment::remove_from_database (SQLite::Database& db) {
-    return true;
+    SQLite::Statement query (db, "DELETE FROM Assignments WHERE id = ?");
+
+    query.bindNoCopy (1, _id);
+
+    int success = query.exec ();
+
+    return success;
 }
 bool assignment::update_in_database (SQLite::Database& db,
 std::map<std::string, std::any> props) {
-    return true;
+    std::string query_string = "UPDATE Assignments SET ";
+    int count                = 0;
+    for (auto const& [key, val] : props) {
+        if (count > 0)
+            query_string += ",";
+
+        query_string += key + " = ";
+
+        if (key == "max_grade")
+            query_string += std::to_string (std::any_cast<double> (val));
+        else if (key == "name" || key == "type")
+            query_string += "'" + std::any_cast<std::string> (val) + "'";
+        else
+            query_string += std::to_string (std::any_cast<int> (val));
+
+        count++;
+    }
+
+    query_string += " WHERE id = ?";
+
+    SQLite::Statement query (db, query_string);
+    query.bindNoCopy (1, _id);
+
+    int success = query.exec ();
+    return success;
 }
 
 assignment::AssignmentType assignment::enum_translate (std::string s) {

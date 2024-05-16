@@ -10,7 +10,7 @@ class administrator : public user {
 public:
     // Constructors
     // auto added to database after initialization
-    administrator (std::string username, std::string email, std::string password);
+    administrator (std::string name, std::string email, std::string faculty, std::string password);
 
     // Get from database
     // Raise utils::custom_exception("Administrator not found") if not there

@@ -13,7 +13,7 @@ public:
     // Will be used for construction of the subclasses
     // Simply assigning parameters to properties of the object using member
     // initializer list
-    user (std::string username, std::string email, std::string password);
+    user (std::string name, std::string faculty, std::string email, std::string password, Role role);
 
     // Intialize as well
     // Used for subclasses
