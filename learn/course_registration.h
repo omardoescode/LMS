@@ -3,14 +3,14 @@
 #include "learn/course.h"
 namespace learn {
 class course_registration : public db::database_item {
+
+public:
     enum class CourseRegistrationState {
         ENROLLED,
         DROPPED,
         AWAITING_APPROVAL,
         FINISHED
     };
-
-public:
     // Constructor
     course_registration (std::string course,
     std::string student,
