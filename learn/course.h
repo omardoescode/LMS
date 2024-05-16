@@ -10,6 +10,7 @@ class instructor;
 class student;
 } // namespace auth
 namespace learn {
+class course_registration;
 class assignment_submission;
 class course : public db::database_item {
 public:
@@ -25,18 +26,20 @@ public:
         return _credit_hours;
     }
     auth::instructor get_professor ();
-    std::list<std::unique_ptr<auth::instructor>> get_teaching_assistants ();
-    std::list<std::unique_ptr<auth::student>> get_students ();
+    utils::vector<std::unique_ptr<auth::instructor>> get_teaching_assistants ();
+    utils::vector<std::unique_ptr<auth::student>> get_students ();
     std::string get_textbook () const {
         return _textbook;
     }
+    utils::vector<std::unique_ptr<learn::course_registration>> get_registrations ();
 
     // Setters
     // Include saving in DB for each
     bool set_credit_hours (int new_value);
     // Helpful Functions
     // Search in database for assignments that have this course
-    std::list<learn::assignment> get_assigments () const;
+    utils::vector<std::unique_ptr<learn::assignment>> get_assignments ();
+    bool has_teaching_assistant (const auth::instructor& TA) const;
 
     // Calculations
     double get_average_grade (learn::assignment& assignment) const {
@@ -61,7 +64,8 @@ public:
 private:
     int _credit_hours;
     std::string _name, _professor, _textbook, _course_code;
-    utils::vector<std::string> _teaching_assistants, _students, _assignments; // Up to 6 teaching assistants
+    utils::vector<std::string> _teaching_assistants, _students, _assignments,
+    _registrations; // Up to 6 teaching assistants
 };
 
 } // namespace learn

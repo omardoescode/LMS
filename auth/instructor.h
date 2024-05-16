@@ -51,11 +51,11 @@ public:
 
     // If not saved, raise utils::custom_exception{"Instructor Not saved"}
     // Otherwise, add it to the list of TAs, and save this is db
-    bool add_teaching_assistants (auth::instructor& TA);
+    bool add_teaching_assistant (std::string course_id, auth::instructor TA);
 
     // If student is registered already, do nothing
-    // If not, create a course registration with the state Enrolled and save in
-    // the database
+    // If not, create a course registration with the state Enrolled and save
+    // in the database
     bool add_student (auth::student& student, learn::course);
 
     // Overriden Functions

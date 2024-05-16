@@ -113,8 +113,7 @@ template <typename T> void vector<T>::reallocate (int offset) {
         return;
     T* temp = new T[_size + offset];
     for (int i = 0; i < _size; i++)
-        temp[i] =
-        std::is_trivially_destructible_v<T> ? _elems[i] : std::move (_elems[i]);
+        temp[i] = std::move (_elems[i]);
     // Delete the old array, but only if it's not null and T is trivially destructible
     if (_elems) {
         delete[] _elems;

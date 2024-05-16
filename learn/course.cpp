@@ -7,6 +7,7 @@
 #include <any>
 #include <iostream>
 #include <learn/course.h>
+#include <learn/course_registration.h>
 #include <memory>
 #include <utils/exceptions.h>
 
@@ -26,36 +27,34 @@ std::string course_code)
 auth::instructor course::get_professor () {
     return auth::instructor (_professor);
 }
-// utils::vector<std::unique_ptr<auth::instructor>> course::get_teaching_assistants () {
-//     utils::vector<std::unique_ptr<auth::instructor>> res;
-//     for (const auto& ta : _teaching_assistants)
-//         res.push_back (std::make_unique<auth::instructor> (ta));
-//     return res;
-// }
-// utils::vector<std::unique_ptr<auth::student>> course::get_students () {
-//     utils::vector<std::unique_ptr<auth::student>> res;
-//     for (const auto& student : _students)
-//         res.push_back (std::make_unique<auth::student> (student));
-//     return res;
-// }
-//
-// bool course::set_credit_hours (int new_value) {
-//     if (new_value <= 0)
-//         throw utils::custom_exception{
-//             "Credit hours cannot be less than or equal to 0"
-//         };
-//
-//     _credit_hours = new_value;
-//     std::map<std::string, std::any> props;
-//     props["credit_hours"] = new_value;
-//     return db::database::get_instance ().update_item (*this, props);
-// }
-// utils::vector<std::unique_ptr<learn::assignment>> course::get_assigments () {
-//     utils::vector<std::unique_ptr<learn::assignment>> res;
-//     for (const auto& assignment : _assignments)
-//         res.push_back (std::make_unique<learn::assignment> (assignment));
-//     return res;
-// }
+utils::vector<std::unique_ptr<auth::instructor>> course::get_teaching_assistants () {
+    utils::vector<std::unique_ptr<auth::instructor>> res;
+    for (const auto& ta : _teaching_assistants)
+        res.push_back (std::make_unique<auth::instructor> (ta));
+    return res;
+}
+utils::vector<std::unique_ptr<auth::student>> course::get_students () {
+    utils::vector<std::unique_ptr<auth::student>> res;
+    for (const auto& student : _students)
+        res.push_back (std::make_unique<auth::student> (student));
+    return res;
+}
+bool course::set_credit_hours (int new_value) {
+    if (new_value <= 0)
+        throw utils::custom_exception{
+            "Credit hours cannot be less than or equal to 0"
+        };
+
+    _credit_hours = new_value;
+    return db::database::get_instance ().update_item (
+    *this, { { "credit_hours"s, std::to_string (new_value) } });
+}
+utils::vector<std::unique_ptr<learn::assignment>> course::get_assignments () {
+    utils::vector<std::unique_ptr<learn::assignment>> res;
+    for (const auto& assignment : _assignments)
+        res.push_back (std::make_unique<learn::assignment> (assignment));
+    return res;
+}
 
 void course::get () {
     if (!saved_in_db ())
@@ -166,5 +165,21 @@ bool course::update_in_database (SQLite::Database& db, std::map<std::string, std
 
     int success = query.exec ();
     return success;
+}
+
+
+bool course::has_teaching_assistant (const auth::instructor& TA) const {
+    for (const auto& ta : _teaching_assistants)
+        if (ta == TA.get_id ())
+            return false;
+    return true;
+}
+
+
+utils::vector<std::unique_ptr<learn::course_registration>> course::get_registrations () {
+    utils::vector<std::unique_ptr<learn::course_registration>> res;
+    for (const std::string& registration : _registrations)
+        res.push_back (std::make_unique<course_registration> (registration));
+    return res;
 }
 } // namespace learn
