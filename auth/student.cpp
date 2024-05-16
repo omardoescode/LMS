@@ -6,6 +6,7 @@
 #include "utils/split_string.h"
 #include "utils/vector.h"
 
+#include <filesystem>
 #include <iostream>
 
 namespace auth {
@@ -52,6 +53,7 @@ void student::register_course (std::string course) {
     _courses_registrations.push_back (course);
     db::database::get_instance ().add_item (registration);
 }
+
 
 void student::drop_course (const std::string& course) {
     // checks if course is even registered.

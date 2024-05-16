@@ -53,3 +53,17 @@ bool test_vector () {
         }
     }
 }
+
+bool test_vector_insert_and_erase () {
+    utils::vector<std::string> strings = { "Shafiy"s, "Mohammad"s };
+
+    strings.insert (3, "Omar");
+    if (strings[2] != "")
+        return false;
+
+    strings.erase (2, 100);
+    if (strings.size () != 2)
+        return false;
+
+    return true;
+}

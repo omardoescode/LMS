@@ -1,8 +1,13 @@
+#pragma once
 #include "auth/user.h"
+#include "utils/vector.h"
+#include <iostream>
 #include <memory>
 namespace auth {
 class session;
+class session;
 class login_manager {
+
 private:
     login_manager ();
     std::unique_ptr<user> load_user (std::string id, user::Role role);
@@ -20,23 +25,35 @@ public:
     }
 
     // Helpful funcitons
-    bool has_registered () const {
-        return _current_session_id != -1;
+    bool is_logged () const {
+        return _current_session_index != -1;
     }
     // Getters
     int get_current_session_id () const {
-        return _current_session_id;
+        return _current_session_index != -1;
+    }
+    utils::vector<session>& get_sessions () {
+        return _sessions;
     }
 
     std::shared_ptr<user> get_current_user () const {
-        return _current_user;
+        if (is_logged ())
+            return _current_user;
+        return nullptr;
     }
 
 
-private:
-    int _current_session_id;
-    std::shared_ptr<user> _current_user;
+    // Authentication functions
+    bool login (std::string username, std::string password);
+    bool login (int session_id);
+    bool logout ();
 
+private:
+    int _current_session_index;
+    std::shared_ptr<user> _current_user;
+    utils::vector<session> _sessions;
+
+    void load_sessions (); // initalized by constructor
     friend class session;
 };
 } // namespace auth

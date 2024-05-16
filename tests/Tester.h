@@ -17,7 +17,7 @@ public:
     }
 
     void operator() (bool (*func) (), std::string_view test_name) {
-        operator() (func, test_name, "Testcase #" + std::to_string (count) + " failed");
+        operator() (func, test_name, "Testcase #" + std::to_string (count + 1) + " failed");
     }
 
     int getTestsCount () const {

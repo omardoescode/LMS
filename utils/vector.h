@@ -43,6 +43,7 @@ public:
     T& front () const;
     T& back () const;
     bool empty () const;
+    bool valid_index (int) const;
 
     // Operators
     T& operator[] (int);
@@ -60,8 +61,6 @@ private:
     // Helpers
     void reallocate ();
     void reallocate (int);
-
-    bool valid_index (int) const;
 };
 
 // Implementation
@@ -186,9 +185,12 @@ template <typename T> void vector<T>::clear () {
 template <typename T> void vector<T>::erase (int index, int count) {
     if (count < 1)
         throw custom_exception{ "Invalid count option to vector::erase" };
-    for (int i = index; i + count < _size; i++)
+    int i = index, real_counter = 0;
+    while (count-- && valid_index (index + count)) {
         _elems[i] = _elems[i + count];
-    _size -= count;
+        i++, real_counter++;
+    }
+    _size -= real_counter;
 }
 
 template <typename T> void vector<T>::erase (int index) {
@@ -196,11 +198,18 @@ template <typename T> void vector<T>::erase (int index) {
 }
 
 template <typename T> void vector<T>::insert (int index, T value) {
-    if (index > _size)
-        throw custom_exception{ "You cannot insert to an index > size()" };
-    push_back (value);
-    for (int i = _size - 1; i > index; i--)
-        std::swap (_elems[i], _elems[i - 1]);
+    if (index > _size) {
+        while (_size < index) {
+            push_back (T ());
+        }
+        push_back (value);
+
+    } else {
+        // push the value the put it in the right place
+        push_back (value);
+        for (int i = _size - 1; i > index; i--)
+            std::swap (_elems[i], _elems[i - 1]);
+    }
 }
 
 // Operators Overloading

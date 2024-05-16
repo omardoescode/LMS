@@ -1,15 +1,15 @@
 #pragma once
 #include "auth/user.h"
-#include <auth/login_manager.h>
 #include <memory>
 namespace auth {
 class session {
 public:
     session ();
     session (std::shared_ptr<user> user, time_t time);
+
     // Getters
-    user& get_user () {
-        return *_user;
+    auto get_user () {
+        return _user;
     }
     time_t get_time () const {
         return _time;
@@ -28,15 +28,20 @@ public:
     // Static Sessions functionalities
     static bool search_sessions (std::string target_user_id, session* target_session);
 
+    // Sessions directory
+    static constexpr char _sessions_directory[] = "sessions";
+
 private:
     std::shared_ptr<user> _user;
     time_t _time;
 
-    static constexpr char sessions_directory[] = "sessions";
-
     // Helpful private functions
     static std::string generate_path (std::string username);
     void generate_directory ();
+    static std::string get_directory ();
+
+    friend class login_manager;
 };
+
 
 } // namespace auth
