@@ -23,7 +23,6 @@ bool is_teaching_assistant)
   _is_teaching_assistant (is_teaching_assistant) {
 }
 
-
 bool instructor::add_course (std::string_view course_id) {
     // Check if the course already exists in the instructor's list of courses
     for (const std::string& existing_course : _courses) {
@@ -93,7 +92,8 @@ bool instructor::add_teaching_assistant (std::string course_id, auth::instructor
     }
 
     // Assign the TA as a teaching assistant for the course
-    add_teaching_assistant (_id, TA);
+    // TODO: Handle adding the TA to the course
+    // add_teaching_assistant (_id, TA);
 
     // Update the database with the new teaching assistant assignment for the course
     // TODO DB: Add teaching assistant to DB
@@ -234,6 +234,10 @@ bool instructor::add_to_database (SQLite::Database& db) {
     return success;
 }
 
+// TODO DB: Integrate database handling with existing add_course and remove_course
+
+// DATABASE HANDLING FOR add_course and remove_course
+/*
 bool instructor::add_course (std::string course_id) {
     SQLite::Statement query (db::database::get_instance ().get_db (),
     "INSERT INTO Instructors_Courses(instructor_id, course_id) VALUES(?,?) "
@@ -259,7 +263,7 @@ bool instructor::remove_course (std::string course_id) {
     int success = query.exec ();
     return success;
 }
-
+*/
 
 bool instructor::remove_from_database (SQLite::Database& db) {
     SQLite::Statement query (db,
