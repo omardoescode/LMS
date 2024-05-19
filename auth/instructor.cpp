@@ -166,6 +166,7 @@ bool instructor::modify_grade (auth::student& student, learn::assignment& assign
         learn::assignment_submission (assignment.get_id (), student.get_id (), grade);
         db::database::get_instance ().add_item (submission);
     }
+    return true;
 }
 
 

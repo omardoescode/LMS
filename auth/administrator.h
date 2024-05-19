@@ -42,7 +42,7 @@ public:
     // by creating a course registration and saving it to the database
     // HINT: Create the course registration, save it to DB, and pass it the
     // above funciton
-    bool register_course_for_student (std::string_view course_id, std::string_view student_id);
+    bool register_course_for_student (std::string course_id, std::string student_id);
 
     // Given a course, add it to the same faculty as this administrator is and
     // add it to the DB

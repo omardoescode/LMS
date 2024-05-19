@@ -182,4 +182,6 @@ utils::vector<std::unique_ptr<learn::course_registration>> course::get_registrat
         res.push_back (std::make_unique<course_registration> (registration));
     return res;
 }
+
+
 } // namespace learn
