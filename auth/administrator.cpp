@@ -27,21 +27,20 @@ void administrator::get () {
     SQLite::Statement query (db::database::get_db (), query_string);
     query.bind (1, _id);
 
-    while (query.executeStep ()) {
-        _password_hash          = (std::string)query.getColumn (1);
-        _email                  = (std::string)query.getColumn (2);
-        _faculty                = (std::string)query.getColumn (3);
-        _name                   = (std::string)query.getColumn (4);
-        std::string role_string = (std::string)query.getColumn (5);
-        _role                   = string_to_role (role_string);
+    if (!query.executeStep ())
+        throw utils::custom_exception ("Invalid Id for administrator");
+    _password_hash          = (std::string)query.getColumn (1);
+    _email                  = (std::string)query.getColumn (2);
+    _faculty                = (std::string)query.getColumn (3);
+    _name                   = (std::string)query.getColumn (4);
+    std::string role_string = (std::string)query.getColumn (5);
+    _role                   = string_to_role (role_string);
 
 #if PRINT_DATA_WHEN_RETRIEVED
-        std::cout << "Administrator: " << _name << "\nID: " << _id
-                  << "\nEmail: " << _email << "\nFaculty: " << _faculty
-                  << "\nRole: " << role_string << std::endl
-                  << std::endl;
+    std::cout << "Administrator: " << _name << "\nID: " << _id << "\nEmail: " << _email
+              << "\nFaculty: " << _faculty << "\nRole: " << role_string << std::endl
+              << std::endl;
 #endif
-    }
 }
 bool administrator::add_to_database (SQLite::Database& db) {
     SQLite::Statement query (
@@ -106,7 +105,7 @@ administrator::list_pending_registrations () {
 }
 
 
-bool register_course_for_student (learn::course_registration& course_reg) {
+bool administrator::register_course_for_student (learn::course_registration& course_reg) {
     return db::database::get_instance ().update_item (
     course_reg, { { "state"s, "Enrolled"s } });
 }
@@ -125,4 +124,8 @@ bool administrator::add_course (learn::course& course) {
     return db::database::get_instance ().update_item (course, { { "faculty", _faculty } });
 }
 
+
+bool assign_course (learn::course&, auth::instructor&) {
+    // TODO DB: Assign a course to the instructor
+}
 } // namespace auth

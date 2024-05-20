@@ -1,4 +1,5 @@
 #pragma once
+#include "auth/instructor.h"
 #include "auth/user.h"
 #include "db/database.h"
 #include "learn/course.h"
@@ -47,6 +48,9 @@ public:
     // Given a course, add it to the same faculty as this administrator is and
     // add it to the DB
     bool add_course (learn::course&);
+
+
+    bool assign_course (learn::course&, auth::instructor&);
 
     // Overridden functions
     bool add_to_database (SQLite::Database& db) override;
