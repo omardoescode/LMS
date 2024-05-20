@@ -5,7 +5,7 @@
 bool test_creating_user_by_admin () {
     auth::administrator admin ("1");
     auth::student student (
-    "Omar Mohammad", "omarmohammad@gmail.com", "Computer Science", "OmarReigns");
+    "Omar Mohammad", "Computer Science", "omarmohammad@gmail.com", "OmarReigns");
     admin.add_user (student);
 
     if (!student.saved_in_db ())
@@ -21,7 +21,7 @@ bool test_creating_user_by_admin () {
 bool test_creating_instructor_by_admin () {
     auth::administrator admin ("1");
     auth::student instructor (
-    "Omar Mohammad", "omarmohammad@gmail.com", "Computer Science", "OmarReigns");
+    "Omar Mohammad", "Computer Science", "omarmohammad@gmail.com", "OmarReigns");
     admin.add_user (instructor);
 
     if (!instructor.saved_in_db ()) {
