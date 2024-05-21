@@ -24,13 +24,13 @@ double assignment_submission::get_grade () const {
     return _grade;
 }
 
-// assignment assignment_submission::get_assignment () {
-//     return assignment (_assignment);
-// }
+assignment assignment_submission::get_assignment () {
+    return assignment (_assignment);
+}
 
-// auth::student assignment_submission::get_student () {
-//     return auth::student (_student);
-// }
+auth::student assignment_submission::get_student () {
+    return auth::student (_student);
+}
 
 
 bool assignment_submission::set_grade (double new_grade) {

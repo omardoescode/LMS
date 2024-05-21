@@ -150,7 +150,7 @@ bool instructor::add_teaching_assistant (std::string course_id, auth::instructor
 
 
 bool modify_grade (learn::assignment_submission& submission, double grade) {
-    db::database::get_instance ().update_item (
+    return db::database::get_instance ().update_item (
     submission, { { "grade", std::to_string (grade) } });
 }
 
@@ -166,6 +166,7 @@ bool instructor::modify_grade (auth::student& student, learn::assignment& assign
         learn::assignment_submission (assignment.get_id (), student.get_id (), grade);
         db::database::get_instance ().add_item (submission);
     }
+    return true;
 }
 
 

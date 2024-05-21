@@ -1,4 +1,6 @@
 #include "auth/administrator.h"
+#include "db/database.h"
+#include "learn/course_registration.h"
 
 #include <iostream>
 namespace auth {
@@ -14,9 +16,6 @@ administrator::administrator (std::string id) : user (id) {
 }
 
 
-
-
-
 void administrator::get () {
     if (!saved_in_db ())
         throw utils::custom_exception{ "Item not saved in database;" };
@@ -28,21 +27,20 @@ void administrator::get () {
     SQLite::Statement query (db::database::get_db (), query_string);
     query.bind (1, _id);
 
-    while (query.executeStep ()) {
-        _password_hash          = (std::string)query.getColumn (1);
-        _email                  = (std::string)query.getColumn (2);
-        _faculty                = (std::string)query.getColumn (3);
-        _name                   = (std::string)query.getColumn (4);
-        std::string role_string = (std::string)query.getColumn (5);
-        _role                   = string_to_role (role_string);
+    if (!query.executeStep ())
+        throw utils::custom_exception ("Invalid Id for administrator");
+    _password_hash          = (std::string)query.getColumn (1);
+    _email                  = (std::string)query.getColumn (2);
+    _faculty                = (std::string)query.getColumn (3);
+    _name                   = (std::string)query.getColumn (4);
+    std::string role_string = (std::string)query.getColumn (5);
+    _role                   = string_to_role (role_string);
 
 #if PRINT_DATA_WHEN_RETRIEVED
-        std::cout << "Administrator: " << _name << "\nID: " << _id
-                  << "\nEmail: " << _email << "\nFaculty: " << _faculty
-                  << "\nRole: " << role_string << std::endl
-                  << std::endl;
+    std::cout << "Administrator: " << _name << "\nID: " << _id << "\nEmail: " << _email
+              << "\nFaculty: " << _faculty << "\nRole: " << role_string << std::endl
+              << std::endl;
 #endif
-    }
 }
 bool administrator::add_to_database (SQLite::Database& db) {
     SQLite::Statement query (
@@ -99,5 +97,35 @@ std::map<std::string, std::any> props) {
 
     int success = query.exec ();
     return success;
+}
+
+utils::vector<std::unique_ptr<learn::course_registration>>
+administrator::list_pending_registrations () {
+    // TODO DB: return all course registrations that returns all the registrations that have the same faculty
+}
+
+
+bool administrator::register_course_for_student (learn::course_registration& course_reg) {
+    return db::database::get_instance ().update_item (
+    course_reg, { { "state"s, "Enrolled"s } });
+}
+
+bool administrator::register_course_for_student (std::string course_id, std::string student_id) {
+    // TODO DB: Find if there are a course registration
+    // If there's any, change its state to Enrolled
+    // If not, use the following commands
+    learn::course_registration reg (course_id, student_id);
+    return register_course_for_student (reg);
+}
+
+
+bool administrator::add_course (learn::course& course) {
+    db::database::get_instance ().add_item (course);
+    return db::database::get_instance ().update_item (course, { { "faculty", _faculty } });
+}
+
+
+bool assign_course (learn::course&, auth::instructor&) {
+    // TODO DB: Assign a course to the instructor
 }
 } // namespace auth

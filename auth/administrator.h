@@ -1,4 +1,5 @@
 #pragma once
+#include "auth/instructor.h"
 #include "auth/user.h"
 #include "db/database.h"
 #include "learn/course.h"
@@ -42,11 +43,14 @@ public:
     // by creating a course registration and saving it to the database
     // HINT: Create the course registration, save it to DB, and pass it the
     // above funciton
-    bool register_course_for_student (std::string_view course_id, std::string_view student_id);
+    bool register_course_for_student (std::string course_id, std::string student_id);
 
     // Given a course, add it to the same faculty as this administrator is and
     // add it to the DB
     bool add_course (learn::course&);
+
+
+    bool assign_course (learn::course&, auth::instructor&);
 
     // Overridden functions
     bool add_to_database (SQLite::Database& db) override;
@@ -54,8 +58,6 @@ public:
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
     void get () override;
-    // // Getter from db
-    // static std::unique_ptr<administrator> get_by_username (std::string);
-    // static std::unique_ptr<administrator> get_by_id (std::string);
+    // Getter from db
 };
 } // namespace auth

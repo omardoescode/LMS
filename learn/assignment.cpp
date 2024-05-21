@@ -21,9 +21,9 @@ time_t available_until_date)
 }
 
 
-// learn::course assignment::get_course () {
-//     return learn::course (_course);
-// }
+learn::course assignment::get_course () {
+    return learn::course (_course);
+}
 
 double assignment::get_average_grade () {
     double total = 0;

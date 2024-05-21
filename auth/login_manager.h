@@ -1,7 +1,6 @@
 #pragma once
 #include "auth/user.h"
 #include "utils/vector.h"
-#include <iostream>
 #include <memory>
 namespace auth {
 class session;

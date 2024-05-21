@@ -54,9 +54,14 @@ bool login_manager::login (std::string username, std::string password) {
     if (!query.executeStep ())
         return false;
 
-    // auth::user::Role _role = auth::user::string_to_role ();
-    // TODO: Wait till the db is finished
-    // After being retrieved, create a session for them
+    auth::user::Role _role = auth::user::string_to_role (query.getColumn (6));
+    _current_user          = load_user (username, _role);
+
+    // Create a session for the user
+    auth::session session (_current_user, time (NULL));
+    session.save_session ();
+
+    return true;
 }
 
 bool login_manager::login (int session_id) {
@@ -64,7 +69,10 @@ bool login_manager::login (int session_id) {
         return false;
     auto session = _sessions[session_id];
     // TODO: handle when the session has expired
-    // _current_user          = std::shared_ptr<user> (&session.get_user ());
+
+    if (session.has_expired ())
+        return false;
+
     _current_user          = session.get_user ();
     _current_session_index = session_id;
 

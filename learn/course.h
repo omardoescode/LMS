@@ -40,6 +40,7 @@ public:
     // Search in database for assignments that have this course
     utils::vector<std::unique_ptr<learn::assignment>> get_assignments ();
     bool has_teaching_assistant (const auth::instructor& TA) const;
+    // double get_total_grades ();
 
     // Calculations
     double get_average_grade (learn::assignment& assignment) const {
