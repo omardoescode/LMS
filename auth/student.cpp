@@ -108,6 +108,40 @@ std::map<std::string, std::any> props) {
     return success;
 }
 
+utils::vector<std::unique_ptr<student>> student::getStudents (
+std::map<std::string, std::string> props) {
+    std::string query_string = "select students.id from students join users on "
+                               "users.id == students.user_id";
+
+    utils::vector<std::unique_ptr<student>> results;
+
+    SQLite::Statement query (db::database::get_db (), query_string);
+
+    if (!props.empty ()) {
+        int ind = props.size () - 1;
+        query_string += " where ";
+        for (auto const& p : props) {
+            query_string += p.first + " = ?" + (ind > 0 ? " and " : "");
+            ind--;
+        }
+
+        query = SQLite::Statement (db::database::get_db (), query_string);
+        int i = 1;
+
+        for (auto const& p : props) {
+            query.bind (i++, p.second);
+        }
+    }
+
+
+    while (query.executeStep ()) {
+        std::string student_id = (std::string)query.getColumn (0);
+        std::unique_ptr<student> s (new student (student_id));
+        results.push_back (std::move (s));
+    }
+
+    return results;
+}
 
 void student::get () {
     if (!saved_in_db ())

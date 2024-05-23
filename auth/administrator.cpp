@@ -15,6 +15,41 @@ administrator::administrator (std::string id) : user (id) {
     get ();
 }
 
+utils::vector<std::unique_ptr<administrator>> administrator::getAdministrators (
+std::map<std::string, std::string> props) {
+    std::string query_string =
+    "select administrators.id from administrators join "
+    "users on users.id == administrators.user_id";
+
+    utils::vector<std::unique_ptr<administrator>> results;
+
+    SQLite::Statement query (db::database::get_db (), query_string);
+
+    if (!props.empty ()) {
+        int ind = props.size () - 1;
+        query_string += " where ";
+        for (auto const& p : props) {
+            query_string += p.first + " = ?" + (ind > 0 ? " and " : "");
+            ind--;
+        }
+
+        query = SQLite::Statement (db::database::get_db (), query_string);
+        int i = 1;
+
+        for (auto const& p : props) {
+            query.bind (i++, p.second);
+        }
+    }
+
+
+    while (query.executeStep ()) {
+        std::string administrator_id = (std::string)query.getColumn (0);
+        std::unique_ptr<administrator> s (new administrator (administrator_id));
+        results.push_back (std::move (s));
+    }
+
+    return results;
+}
 
 void administrator::get () {
     if (!saved_in_db ())
@@ -125,7 +160,14 @@ bool administrator::add_course (learn::course& course) {
 }
 
 
-bool assign_course (learn::course&, auth::instructor&) {
-    // TODO DB: Assign a course to the instructor
+bool administrator::assign_course (learn::course& course, auth::instructor& instructor) {
+    SQLite::Statement query (db::database::get_db (),
+    "insert into Instructors_Courses (instructor_id, course_id) values(? , ?)");
+    query.bind (1, instructor.get_id ());
+    query.bind (2, course.get_id ());
+
+    int success = query.exec ();
+
+    return success;
 }
 } // namespace auth

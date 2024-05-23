@@ -9,8 +9,8 @@ class student : public user {
 public:
     // Constructors
     student (std::string name,
-    std::string email,
     std::string faculty,
+    std::string email,
     std::string password); // Create with empty ID to indicate
                            // it hasn't been added to the database yet
 
@@ -46,6 +46,8 @@ public:
     bool update_in_database (SQLite::Database& db,
     std::map<std::string, std::any> props) override;
     void get () override;
+    static utils::vector<std::unique_ptr<auth::student>> getStudents (
+    std::map<std::string, std::string> props);
 
 
 private:

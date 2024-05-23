@@ -81,7 +81,7 @@ bool instructor::add_student (auth::student& student, learn::course course) {
     return true; // Student successfully added to the course
 }
 
-bool instructor::add_teaching_assistant (std::string course_id, auth::instructor TA) {
+bool instructor::add_teaching_assistant (std::string course_id, auth::instructor& TA) {
     // Find the course with the given course_id
     auto course = learn::course (course_id);
 
@@ -96,9 +96,14 @@ bool instructor::add_teaching_assistant (std::string course_id, auth::instructor
     // add_teaching_assistant (_id, TA);
 
     // Update the database with the new teaching assistant assignment for the course
-    // TODO DB: Add teaching assistant to DB
+    SQLite::Statement query (db::database::get_db (),
+    "insert into Instructors_Courses (instructor_id, course_id) values(? , ?)");
+    query.bind (1, TA.get_id ());
+    query.bind (2, course_id);
 
-    return true; // Teaching assistant successfully added to the course
+    int success = query.exec ();
+
+    return success; // Teaching assistant successfully added to the course
 }
 
 // int instructor::get_maximum_grade (std::string course_id) {
@@ -169,6 +174,40 @@ bool instructor::modify_grade (auth::student& student, learn::assignment& assign
     return true;
 }
 
+utils::vector<std::unique_ptr<instructor>> instructor::getInstructors (
+std::map<std::string, std::string> props) {
+    std::string query_string = "select instructors.id from instructors join "
+                               "users on users.id == instructors.user_id";
+
+    utils::vector<std::unique_ptr<instructor>> results;
+
+    SQLite::Statement query (db::database::get_db (), query_string);
+
+    if (!props.empty ()) {
+        int ind = props.size () - 1;
+        query_string += " where ";
+        for (auto const& p : props) {
+            query_string += p.first + " = ?" + (ind > 0 ? " and " : "");
+            ind--;
+        }
+
+        query = SQLite::Statement (db::database::get_db (), query_string);
+        int i = 1;
+
+        for (auto const& p : props) {
+            query.bind (i++, p.second);
+        }
+    }
+
+
+    while (query.executeStep ()) {
+        std::string instructor_id = (std::string)query.getColumn (0);
+        std::unique_ptr<instructor> s (new instructor (instructor_id));
+        results.push_back (std::move (s));
+    }
+
+    return results;
+}
 
 void instructor::get () {
     if (!saved_in_db ())

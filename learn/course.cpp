@@ -169,10 +169,14 @@ bool course::update_in_database (SQLite::Database& db, std::map<std::string, std
 
 
 bool course::has_teaching_assistant (const auth::instructor& TA) const {
-    for (const auto& ta : _teaching_assistants)
-        if (ta == TA.get_id ())
-            return false;
-    return true;
+    for (const auto& ta : _teaching_assistants) {
+        std::cout << ta << " == " << TA.get_id () << std::endl;
+        if (ta == TA.get_id ()) {
+            std::cout << ta << " === " << TA.get_id () << std::endl;
+            return true;
+        }
+    }
+    return false;
 }
 
 
