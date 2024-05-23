@@ -56,6 +56,49 @@ utils::vector<std::unique_ptr<learn::assignment>> course::get_assignments () {
     return res;
 }
 
+utils::vector<std::unique_ptr<course>> course::getCourses (
+std::map<std::string, std::string> props) {
+    std::string query_string =
+    "select courses.* from courses left join instructors_courses on courses.id "
+    "= instructors_courses.course_id left join instructors on "
+    "instructors_courses.instructor_id = instructors.id left join "
+    "students_courses on courses.id = students_courses.course_id left join "
+    "students on students_courses.student_id = students.id";
+
+    utils::vector<std::unique_ptr<course>> results;
+
+    SQLite::Statement query (db::database::get_db (), query_string);
+
+    if (!props.empty ()) {
+        int ind = props.size () - 1;
+        query_string += " where ";
+        for (auto const& p : props) {
+            query_string += p.first + " = ?" + (ind > 0 ? " and " : "");
+            ind--;
+        }
+
+        query_string += " group by courses.id";
+
+        query = SQLite::Statement (db::database::get_db (), query_string);
+        int i = 1;
+
+        for (auto const& p : props) {
+            query.bind (i++, p.second);
+        }
+    } else {
+        query_string += " group by courses.id";
+        query = SQLite::Statement (db::database::get_db (), query_string);
+    }
+
+    while (query.executeStep ()) {
+        std::string course_id = (std::string)query.getColumn (0);
+        std::unique_ptr<course> s (new course (course_id));
+        results.push_back (std::move (s));
+    }
+
+    return results;
+}
+
 void course::get () {
     if (!saved_in_db ())
         throw utils::custom_exception{ "Item not saved in database;" };
@@ -105,7 +148,7 @@ void course::get () {
 
 #if PRINT_DATA_WHEN_RETRIEVED
         std::cout << "Course: " << _name << "\nID: " << _id
-                  << "\nCredit Hourse: " << _credit_hours << "\nText Book: " << _textbook
+                  << "\nCredit Hours: " << _credit_hours << "\nText Book: " << _textbook
                   << "\nInstructor: " << _professor << "\nCourse Code: " << _course_code
                   << "\nTeaching Assistants: " << teaching_assistants_ids
                   << "\nStudents: " << students_ids << std::endl

@@ -23,7 +23,36 @@ bool is_teaching_assistant)
   _is_teaching_assistant (is_teaching_assistant) {
 }
 
-bool instructor::add_course (std::string_view course_id) {
+// TODO DB: Integrate database handling with existing add_course and
+// remove_course DATABASE HANDLING FOR add_course and remove_course
+
+bool instructor::add_course_for_instructor (std::string course_id) {
+    SQLite::Statement query (db::database::get_instance ().get_db (),
+    "INSERT INTO Instructors_Courses(instructor_id, course_id) VALUES(?,?) "
+    "RETURNING id");
+
+    query.bindNoCopy (1, _id);
+    query.bindNoCopy (2, course_id);
+
+    query.executeStep ();
+    int course_reg_id = query.getColumn (0);
+
+    _id = course_reg_id;
+    return (course_reg_id != 0);
+}
+
+bool instructor::remove_course_for_instructor (std::string course_id) {
+    SQLite::Statement query (db::database::get_instance ().get_db (),
+    "DELETE FROM Instructors_Courses WHERE instructor_id = ?, course_id = ?");
+
+    query.bindNoCopy (1, _id);
+    query.bindNoCopy (2, course_id);
+
+    int success = query.exec ();
+    return success;
+}
+
+bool instructor::add_course (std::string course_id) {
     // Check if the course already exists in the instructor's list of courses
     for (const std::string& existing_course : _courses) {
         if (existing_course == std::string (course_id)) {
@@ -38,10 +67,10 @@ bool instructor::add_course (std::string_view course_id) {
     // Update the database with the new course assignment for the instructor
     // Still not sure how we're handling the DB but: EX. db::database::get_instance().add_course_for_instructor(_id, course_id);
 
-    return true; // Course successfully added
+    return add_course_for_instructor (course_id); // Course successfully added
 }
 
-bool instructor::remove_course (std::string_view course_id) {
+bool instructor::remove_course (std::string course_id) {
     bool courseRemoved = false;
 
     // Find the position of the course in the instructor's list of courses
@@ -54,7 +83,7 @@ bool instructor::remove_course (std::string_view course_id) {
         // Update the database to remove the course assignment for the instructor
         // Still not sure how we're handling the DB but: EX. db::database::get_instance().remove_course_for_instructor(_id, course_id);
 
-        courseRemoved = true;
+        courseRemoved = remove_course_for_instructor (course_id);
     }
 
     return courseRemoved;
@@ -161,17 +190,26 @@ bool modify_grade (learn::assignment_submission& submission, double grade) {
 
 bool instructor::modify_grade (auth::student& student, learn::assignment& assignment, double grade) {
     try {
-        // TODO DB: Find the submission that has this student and this
-        // assignment Do this by creating a static method in
-        // learn::assignment_submission If not found throw a
-        // utils::custom_exception then complete this part
-        // By just calling the other version of this function by giving that submission you got and the new grade
+        utils::vector<std::unique_ptr<learn::assignment_submission>> results =
+        learn::assignment_submission::getAssignmentSubmissions (
+        { { "student_id"s, student.get_id () }, { "assignment_id", assignment.get_id () } });
+
+        if (results.size () == 0) {
+            throw utils::custom_exception ("Assignment not found");
+        }
+
+        int success = db::database::get_instance ().update_item (
+        *results[0], { { "grade", grade } });
+
+        return success;
+
     } catch (utils::custom_exception&) {
         auto submission =
         learn::assignment_submission (assignment.get_id (), student.get_id (), grade);
-        db::database::get_instance ().add_item (submission);
+        int success = db::database::get_instance ().add_item (submission);
+
+        return success;
     }
-    return true;
 }
 
 utils::vector<std::unique_ptr<instructor>> instructor::getInstructors (
@@ -273,37 +311,6 @@ bool instructor::add_to_database (SQLite::Database& db) {
     _id         = id;
     return success;
 }
-
-// TODO DB: Integrate database handling with existing add_course and remove_course
-
-// DATABASE HANDLING FOR add_course and remove_course
-/*
-bool instructor::add_course (std::string course_id) {
-    SQLite::Statement query (db::database::get_instance ().get_db (),
-    "INSERT INTO Instructors_Courses(instructor_id, course_id) VALUES(?,?) "
-    "RETURNING id");
-
-    query.bindNoCopy (1, _id);
-    query.bindNoCopy (2, course_id);
-
-    query.executeStep ();
-    int course_reg_id = query.getColumn (0);
-
-    _id = course_reg_id;
-    return (course_reg_id != 0);
-}
-
-bool instructor::remove_course (std::string course_id) {
-    SQLite::Statement query (db::database::get_instance ().get_db (),
-    "DELETE FROM Instructors_Courses WHERE instructor_id = ?, course_id = ?");
-
-    query.bindNoCopy (1, _id);
-    query.bindNoCopy (2, course_id);
-
-    int success = query.exec ();
-    return success;
-}
-*/
 
 bool instructor::remove_from_database (SQLite::Database& db) {
     SQLite::Statement query (db,

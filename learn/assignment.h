@@ -40,10 +40,13 @@ public:
 
     void get () override;
 
-private:
-    AssignmentType enum_translate (std::string);
-    std::string enum_translate (AssignmentType);
+    // Static Functions
+    static utils::vector<std::unique_ptr<assignment>> getAssignments (
+    std::map<std::string, std::string> props);
+    static AssignmentType enum_translate (std::string);
+    static std::string enum_translate (AssignmentType);
 
+private:
     std::string _name, _course;
     AssignmentType _type;
     double _max_grade = 1;

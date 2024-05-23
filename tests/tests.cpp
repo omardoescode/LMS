@@ -11,7 +11,6 @@
 int main () {
     using namespace std::string_literals;
     Tester test;
-
     test (test_vector, "testing utils::vector");
     test (test_vector_insert_and_erase, "testing utils::vector insert and erase");
     test (test_sessions, "testing auth::sessions");
@@ -25,6 +24,5 @@ int main () {
     test (test_student_getter, "testing auth::student::getStudents");
     test (test_student_getter_with_filter,
     "testing auth::student::getStudents with filtering props");
-
     return 0;
 }

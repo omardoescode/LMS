@@ -128,6 +128,40 @@ std::string assignment::enum_translate (assignment::AssignmentType a) {
     }
 }
 
+utils::vector<std::unique_ptr<assignment>> assignment::getAssignments (
+std::map<std::string, std::string> props) {
+    std::string query_string = "select id from assignments";
+
+    utils::vector<std::unique_ptr<assignment>> results;
+
+    SQLite::Statement query (db::database::get_db (), query_string);
+
+    if (!props.empty ()) {
+        int ind = props.size () - 1;
+        query_string += " where ";
+        for (auto const& p : props) {
+            query_string += p.first + " = ?" + (ind > 0 ? " and " : "");
+            ind--;
+        }
+
+        query = SQLite::Statement (db::database::get_db (), query_string);
+        int i = 1;
+
+        for (auto const& p : props) {
+            query.bind (i++, p.second);
+        }
+    }
+
+
+    while (query.executeStep ()) {
+        std::string assignment_id = (std::string)query.getColumn (0);
+        std::unique_ptr<assignment> s (new assignment (assignment_id));
+        results.push_back (std::move (s));
+    }
+
+    return results;
+}
+
 void assignment ::get () {
     if (!saved_in_db ())
         throw utils::custom_exception{ "Item not saved in database;" };

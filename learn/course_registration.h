@@ -33,11 +33,14 @@ public:
     std::map<std::string, std::any> props) override;
     void get () override;
 
+    // Static Functions
+    static utils::vector<std::unique_ptr<course_registration>>
+    getCourseRegistrations (std::map<std::string, std::string> props);
+    static CourseRegistrationState enum_translate (std::string);
+    static std::string enum_translate (CourseRegistrationState);
+
 private:
     std::string _course, _student;
     CourseRegistrationState _state;
-
-    CourseRegistrationState enum_translate (std::string);
-    std::string enum_translate (CourseRegistrationState);
 };
 } // namespace learn

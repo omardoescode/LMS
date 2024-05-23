@@ -33,6 +33,10 @@ public:
     std::map<std::string, std::any> props) override;
     void get () override;
 
+    // Static Functions
+    static utils::vector<std::unique_ptr<assignment_submission>>
+    getAssignmentSubmissions (std::map<std::string, std::string> props);
+
 private:
     std::string _assignment, _student;
     time_t _submission_datetime;

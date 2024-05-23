@@ -136,21 +136,36 @@ std::map<std::string, std::any> props) {
 
 utils::vector<std::unique_ptr<learn::course_registration>>
 administrator::list_pending_registrations () {
-    // TODO DB: return all course registrations that returns all the registrations that have the same faculty
+    return learn::course_registration::getCourseRegistrations ({ { "users.faculty"s, _faculty },
+    { "students_courses.state"s,
+    learn::course_registration::enum_translate (
+    learn::course_registration::CourseRegistrationState::AWAITING_APPROVAL) } });
 }
 
 
 bool administrator::register_course_for_student (learn::course_registration& course_reg) {
-    return db::database::get_instance ().update_item (
-    course_reg, { { "state"s, "Enrolled"s } });
+    return db::database::get_instance ().update_item (course_reg,
+    { { "state"s,
+    learn::course_registration::enum_translate (
+    learn::course_registration::CourseRegistrationState::ENROLLED) } });
 }
 
 bool administrator::register_course_for_student (std::string course_id, std::string student_id) {
-    // TODO DB: Find if there are a course registration
-    // If there's any, change its state to Enrolled
-    // If not, use the following commands
-    learn::course_registration reg (course_id, student_id);
-    return register_course_for_student (reg);
+    utils::vector<std::unique_ptr<learn::course_registration>> results =
+    learn::course_registration::getCourseRegistrations (
+    { { "students.id"s, student_id }, { "courses.id"s, course_id } });
+
+    if (results.size () != 0) {
+        int success = db::database::get_instance ().update_item (*results[0],
+        { { "state"s,
+        learn::course_registration::enum_translate (
+        learn::course_registration::CourseRegistrationState::ENROLLED) } });
+        return success;
+    } else {
+        learn::course_registration reg (course_id, student_id,
+        learn::course_registration::CourseRegistrationState::ENROLLED);
+        return db::database::get_instance ().add_item (reg);
+    }
 }
 
 

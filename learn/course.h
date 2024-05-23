@@ -60,6 +60,8 @@ public:
 
     // Getter from db
     void get () override;
+    static utils::vector<std::unique_ptr<course>> getCourses (
+    std::map<std::string, std::string> props);
 
 
 private:

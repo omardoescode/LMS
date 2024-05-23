@@ -41,6 +41,42 @@ bool assignment_submission::set_grade (double new_grade) {
     }
     return false;
 }
+
+utils::vector<std::unique_ptr<assignment_submission>>
+assignment_submission::getAssignmentSubmissions (std::map<std::string, std::string> props) {
+    std::string query_string = "select id from assignmentsubmissions";
+
+    utils::vector<std::unique_ptr<assignment_submission>> results;
+
+    SQLite::Statement query (db::database::get_db (), query_string);
+
+    if (!props.empty ()) {
+        int ind = props.size () - 1;
+        query_string += " where ";
+        for (auto const& p : props) {
+            query_string += p.first + " = ?" + (ind > 0 ? " and " : "");
+            ind--;
+        }
+
+        query = SQLite::Statement (db::database::get_db (), query_string);
+        int i = 1;
+
+        for (auto const& p : props) {
+            query.bind (i++, p.second);
+        }
+    }
+
+
+    while (query.executeStep ()) {
+        std::string assignment_submission_id = (std::string)query.getColumn (0);
+        std::unique_ptr<assignment_submission> s (
+        new assignment_submission (assignment_submission_id));
+        results.push_back (std::move (s));
+    }
+
+    return results;
+}
+
 void assignment_submission ::get () {
     if (!saved_in_db ())
         throw utils::custom_exception{ "Item not saved in database;" };

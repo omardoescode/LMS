@@ -44,6 +44,44 @@ std::string course_registration::enum_translate (CourseRegistrationState r) {
         return "AwaitingApproval";
 }
 
+utils::vector<std::unique_ptr<course_registration>>
+course_registration::getCourseRegistrations (std::map<std::string, std::string> props) {
+    std::string query_string =
+    "select students_courses.id from students_courses join students on "
+    "students.id = students_courses.student_id  join users on users.id = "
+    "students.user_id join courses on courses.id = students_courses.course_id";
+
+    utils::vector<std::unique_ptr<course_registration>> results;
+
+    SQLite::Statement query (db::database::get_db (), query_string);
+
+    if (!props.empty ()) {
+        int ind = props.size () - 1;
+        query_string += " where ";
+        for (auto const& p : props) {
+            query_string += p.first + " = ?" + (ind > 0 ? " and " : "");
+            ind--;
+        }
+
+        query = SQLite::Statement (db::database::get_db (), query_string);
+        int i = 1;
+
+        for (auto const& p : props) {
+            query.bind (i++, p.second);
+        }
+    }
+
+    while (query.executeStep ()) {
+        std::string course_registration_id = (std::string)query.getColumn (0);
+        std::unique_ptr<course_registration> s (
+        new course_registration (course_registration_id));
+        results.push_back (std::move (s));
+    }
+
+    return results;
+}
+
+
 void course_registration::get () {
     if (!saved_in_db ())
         throw utils::custom_exception{ "Item not saved in database;" };
