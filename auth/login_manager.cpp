@@ -78,7 +78,6 @@ void login_manager::load_sessions () {
             infile.close ();
         }
     } catch (const std::filesystem::filesystem_error& ex) {
-        std::cerr << ex.what () << '\n';
     }
 }
 
@@ -92,7 +91,6 @@ bool login_manager::login (std::string user_id, std::string password) {
     query.bind (1, user_id);
 
     if (!query.executeStep ()) {
-        std::cout << "user_id " << user_id << " is not found in db" << std::endl;
         return false;
     }
 
@@ -111,17 +109,16 @@ bool login_manager::login (std::string user_id, std::string password) {
     return true;
 }
 
-bool login_manager::login (int session_id) {
-    if (!_sessions.valid_index (session_id))
+bool login_manager::login (int session_index) {
+    if (!_sessions.valid_index (session_index))
         return false;
-    auto session = _sessions[session_id];
-    // TODO: handle when the session has expired
+    auto session = _sessions[session_index];
 
     if (session.has_expired ())
         return false;
 
     _current_user          = session.get_user ();
-    _current_session_index = session_id;
+    _current_session_index = session_index;
 
     return true;
 }

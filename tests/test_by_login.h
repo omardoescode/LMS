@@ -1,3 +1,5 @@
+#include "auth/administrator.h"
+#include "auth/instructor.h"
 #include "auth/login_manager.h"
 #include "auth/student.h"
 #include <iostream>
@@ -26,8 +28,8 @@ bool test_login_by_username_student_version () {
 bool test_login_by_username_instructor_version () {
 
     // Create the student
-    auth::student instructor (
-    "Mohammad Mosalamy", "Computer Science", "foo@bar.com", "MohaIsCool");
+    auth::instructor instructor (
+    "Mohammad Mosalamy"s, "Computer Science"s, "foo@bar.com"s, "MohaIsCool"s);
 
     // Save Student
     if (!db::database::get_instance ().add_item (instructor)) {
@@ -38,7 +40,7 @@ bool test_login_by_username_instructor_version () {
     auto& lg = auth::login_manager::get_instance ();
     lg.logout (); // In case of any
     // std::cout << student.get_user_id () << std::endl;
-    lg.login (instructor.get_user_id (), "OmarRegins");
+    lg.login (instructor.get_user_id (), "MohaIsCool");
 
     // Check for current_user
     return lg.get_current_user () != nullptr &&
@@ -48,7 +50,7 @@ bool test_login_by_username_instructor_version () {
 
 bool test_login_by_username_administrator_version () {
     // Create the student
-    auth::student administrator (
+    auth::administrator administrator (
     "Mohammad Mosalamy", "Computer Science", "foo@bar.com", "MohaIsCool");
 
     // Save Student
@@ -60,7 +62,7 @@ bool test_login_by_username_administrator_version () {
     auto& lg = auth::login_manager::get_instance ();
     lg.logout (); // In case of any
     // std::cout << student.get_user_id () << std::endl;
-    lg.login (administrator.get_user_id (), "OmarRegins");
+    lg.login (administrator.get_user_id (), "MohaIsCool");
 
     // Check for current_user
     return lg.get_current_user () != nullptr &&

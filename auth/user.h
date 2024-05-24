@@ -1,5 +1,4 @@
 #pragma once
-#include "SQLiteCpp/Database.h"
 #include "db/database.h"
 #include "db/database_item.h"
 #include "utils/exceptions.h"
@@ -21,10 +20,13 @@ public:
 
     // Getters
     std::string get_username () const {
-        return _username;
+        return _id;
     }
     std::string get_email () const {
         return _email;
+    }
+    std::string get_name () const {
+        return _name;
     }
     Role get_role () const {
         return _role;
@@ -40,7 +42,6 @@ public:
     // Setters
     // When applied, we need to update in DB as well
     bool set_email (std::string new_email);
-    bool set_username (std::string new_username);
     // Helpful Functions
     bool check_password (std::string password) const {
         std::hash<std::string> hasher;
@@ -55,7 +56,7 @@ public:
     virtual void get ()                                      = 0;
 
 protected:
-    std::string _name, _username, _password_hash, _email, _faculty, _user_id;
+    std::string _name, _password_hash, _email, _faculty, _user_id;
     Role _role;
 };
 } // namespace auth

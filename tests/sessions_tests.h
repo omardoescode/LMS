@@ -19,6 +19,8 @@ bool test_sessions () {
 }
 
 bool test_sessions_getter () {
-    auto sessions = auth::login_manager::get_instance ().get_sessions ();
+    auto& lg = auth::login_manager::get_instance ();
+    lg.refresh_session ();
+    auto sessions = lg.get_sessions ();
     return sessions[0].get_user ()->get_id () != "";
 }

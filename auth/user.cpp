@@ -9,15 +9,15 @@ user::user (std::string name, std::string faculty, std::string email, std::strin
 }
 
 
-bool user::set_username (std::string new_username) {
-    if (new_username.empty ())
-        throw utils::custom_exception{ "Invalid username" };
-    if (db::database::get_instance ().update_item (*this, { { "username", new_username } })) {
-        _username = new_username;
-        return true;
-    }
-    return false;
-}
+// bool user::set_username (std::string new_username) {
+//     if (new_username.empty ())
+//         throw utils::custom_exception{ "Invalid username" };
+//     if (db::database::get_instance ().update_item (*this, { { "username", new_username } })) {
+//         _username = new_username;
+//         return true;
+//     }
+//     return false;
+// }
 
 bool user::set_email (std::string new_email) {
     if (new_email.empty ())

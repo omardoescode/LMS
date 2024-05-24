@@ -17,7 +17,7 @@ public:
     std::string email,
     std::string faculty,
     std::string password,
-    bool is_teaching_assistant);
+    bool is_teaching_assistant = false);
     // Given a course in the database, assign this course to this instructor
     bool add_course (learn::course& course);
     bool add_course (std::string course_id);

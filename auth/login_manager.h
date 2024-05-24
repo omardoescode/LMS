@@ -1,10 +1,9 @@
 #pragma once
+#include "auth/session.h"
 #include "auth/user.h"
 #include "utils/vector.h"
 #include <memory>
 namespace auth {
-class session;
-class session;
 class login_manager {
 
 private:
@@ -47,6 +46,11 @@ public:
     bool login (std::string username, std::string password);
     bool login (int session_id);
     bool logout ();
+    void refresh_session () {
+        _sessions.clear ();
+        load_sessions ();
+    }
+
 
 private:
     int _current_session_index;

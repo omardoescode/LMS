@@ -16,7 +16,7 @@ public:
 
     database_item () = default;
 
-    database_item (std::string_view id) : _id{ id } {
+    database_item (std::string id) : _id{ id } {
     }
 
     // Getters
