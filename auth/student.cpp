@@ -32,6 +32,7 @@ bool student::add_to_database (SQLite::Database& db) {
     query.executeStep ();
     int user_id = query.getColumn (0);
 
+
     query = SQLite::Statement (db, "SELECT id FROM Students ORDER BY id DESC LIMIT 1");
     query.executeStep ();
     std::string last_student_id = query.getColumn (0);
@@ -46,6 +47,7 @@ bool student::add_to_database (SQLite::Database& db) {
 
     int success = query.exec ();
     _id         = new_id;
+    _user_id    = std::to_string (user_id);
     return success;
 }
 void student::register_course (std::string course) {
@@ -158,6 +160,7 @@ void student::get () {
 
     if (!query.executeStep ())
         throw utils::custom_exception ("Invalid ID for student");
+    _user_id                                = (std::string)query.getColumn (0);
     _password_hash                          = (std::string)query.getColumn (1);
     _email                                  = (std::string)query.getColumn (2);
     _faculty                                = (std::string)query.getColumn (3);
@@ -175,12 +178,4 @@ void student::get () {
 #endif
 }
 
-// std::unique_ptr<student> student::get_by_username (std::string username) {
-//     return student::get_by_id (username); // username is id
-// }
-// std::unique_ptr<student> student::get_by_id (std::string id) {
-//     std::unique_ptr<student> s (new student (id));
-//     s.get ();
-//     return s;
-// }
 } // namespace auth

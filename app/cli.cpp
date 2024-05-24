@@ -6,17 +6,13 @@ void say_hi () {
     std::cout << "Welcome to Athena" << std::endl;
 }
 
-int choose_user_option () {
-    std::cout << "Please choose an option to log in: " << std::endl;
-    std::cout << "1. Administrator" << std::endl;
-    std::cout << "2. Instructor" << std::endl;
-    std::cout << "3. Student" << std::endl;
+int show_options () {
+    std::cout << "1. Load Sessions" << std::endl;
+    std::cout << "2. Login User" << std::endl;
 
     int option = 0;
-    while (std::cin >> option && option != 0) {
-        std::cout << "Please enter a valid option" << std::endl;
-    }
-
+    while (std::cin >> option && (option < 1 || option > 2))
+        std::cout << "Invalid Option" << std::endl;
     return option;
 }
 

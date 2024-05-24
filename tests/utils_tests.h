@@ -54,16 +54,19 @@ bool test_vector () {
     }
 }
 
-bool test_vector_insert_and_erase () {
+bool test_vector_insert_special_case () {
     utils::vector<std::string> strings = { "Shafiy"s, "Mohammad"s };
 
     strings.insert (3, "Omar");
     if (strings[2] != "")
         return false;
 
-    strings.erase (2, 100);
-    if (strings.size () != 2)
-        return false;
 
     return true;
+}
+
+bool test_vector_erase_special_case () {
+    utils::vector ints = { 1, 2, 3, 4, 5, 6 };
+    ints.erase (2, 3);
+    return ints.size () == 3;
 }

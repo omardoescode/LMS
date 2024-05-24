@@ -10,6 +10,7 @@ class login_manager {
 private:
     login_manager ();
     std::unique_ptr<user> load_user (std::string id, user::Role role);
+    std::unique_ptr<user> load_user_by_user_id (std::string id, user::Role role);
 
 public:
     // Default operations for singletons
@@ -25,7 +26,7 @@ public:
 
     // Helpful funcitons
     bool is_logged () const {
-        return _current_session_index != -1;
+        return _current_user != nullptr;
     }
     // Getters
     int get_current_session_id () const {

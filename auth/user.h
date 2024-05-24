@@ -29,6 +29,9 @@ public:
     Role get_role () const {
         return _role;
     }
+    std::string get_user_id () const {
+        return _user_id;
+    }
 
     static std::string role_to_string (Role role);
     static Role string_to_role (std::string role);
@@ -52,7 +55,7 @@ public:
     virtual void get ()                                      = 0;
 
 protected:
-    std::string _name, _username, _password_hash, _email, _faculty;
+    std::string _name, _username, _password_hash, _email, _faculty, _user_id;
     Role _role;
 };
 } // namespace auth

@@ -1,4 +1,5 @@
-#include "learn/course.h"
-
-int main (int argc, char* argv[]) {
+// #include <app/cli.h>
+int main () {
+    // cli::say_hi ();
+    // auto option = cli::choose_user_option ();
 }

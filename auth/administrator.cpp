@@ -64,6 +64,8 @@ void administrator::get () {
 
     if (!query.executeStep ())
         throw utils::custom_exception ("Invalid Id for administrator");
+
+    _user_id                = (std::string)query.getColumn (0);
     _password_hash          = (std::string)query.getColumn (1);
     _email                  = (std::string)query.getColumn (2);
     _faculty                = (std::string)query.getColumn (3);

@@ -182,14 +182,14 @@ template <typename T> void vector<T>::clear () {
 }
 
 template <typename T> void vector<T>::erase (int index, int count) {
-    if (count < 1)
+    if (count < 1 || index + count > _size)
         throw custom_exception{ "Invalid count option to vector::erase" };
-    int i = index, real_counter = 0;
-    while (count-- && valid_index (index + count)) {
+    // Check if the array have something after the part erased
+    // If any, shift it, then resize in all cases
+    for (int i = index; i < index + count && valid_index (i + count); i++) {
         _elems[i] = _elems[i + count];
-        i++, real_counter++;
     }
-    _size -= real_counter;
+    _size -= count;
 }
 
 template <typename T> void vector<T>::erase (int index) {

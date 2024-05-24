@@ -2,6 +2,7 @@
 #include "auth/administrator.h"
 #include "auth/instructor.h"
 #include "auth/session.h"
+#include "utils/exceptions.h"
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -13,6 +14,7 @@ login_manager::login_manager ()
 }
 
 std::unique_ptr<user> login_manager::load_user (std::string id, user::Role role) {
+
     switch (role) {
     case user::Role::ADMINISTRATOR:
         return std::unique_ptr<administrator> (new administrator (id));
@@ -25,6 +27,41 @@ std::unique_ptr<user> login_manager::load_user (std::string id, user::Role role)
     }
 }
 
+std::unique_ptr<user>
+login_manager::load_user_by_user_id (std::string user_id, user::Role role) {
+    switch (role) {
+    case user::Role::ADMINISTRATOR: {
+        std::string query_string =
+        "SELECT administrators.* from instructors WHERE user_id = ?";
+        SQLite::Statement query (db::database::get_db (), query_string);
+        query.bind (1, user_id);
+        if (!query.executeStep ())
+            throw utils::custom_exception{ "Invalid user_id" };
+        return std::unique_ptr<administrator> (
+        new administrator ((std::string)query.getColumn (0)));
+    }
+    case user::Role::INSTRUCTOR: {
+        std::string query_string =
+        "SELECT instructors.* from instructors WHERE user_id = ?";
+        SQLite::Statement query (db::database::get_db (), query_string);
+        query.bind (1, user_id);
+
+        if (!query.executeStep ())
+            throw utils::custom_exception{ "Invalid user_id" };
+        return std::unique_ptr<instructor> (
+        new instructor ((std::string)query.getColumn (0)));
+    }
+    case user::Role::STUDENT: {
+        std::string query_string =
+        "SELECT students.* from students WHERE user_id = ?";
+        SQLite::Statement query (db::database::get_db (), query_string);
+        query.bind (1, user_id);
+        if (!query.executeStep ())
+            throw utils::custom_exception{ "Invalid user_id" };
+        return std::unique_ptr<student> (new student ((std::string)query.getColumn (0)));
+    }
+    }
+}
 void login_manager::load_sessions () {
     try {
         std::string user_id, role_string;
@@ -45,17 +82,27 @@ void login_manager::load_sessions () {
     }
 }
 
-bool login_manager::login (std::string username, std::string password) {
+bool login_manager::login (std::string user_id, std::string password) {
+    if (is_logged ())
+        throw utils::custom_exception{ "You are already logged in" };
+
     // Get users info from database
-    std::string query_string = "SELECT * FROM users WHERE id = ?";
+    std::string query_string = "SELECT users.* from users WHERE id = ?";
     SQLite::Statement query (db::database::get_db (), query_string);
-    query.bind (1, username);
+    query.bind (1, user_id);
 
-    if (!query.executeStep ())
+    if (!query.executeStep ()) {
+        std::cout << "user_id " << user_id << " is not found in db" << std::endl;
         return false;
+    }
 
-    auth::user::Role _role = auth::user::string_to_role (query.getColumn (6));
-    _current_user          = load_user (username, _role);
+
+    auth::user::Role _role = auth::user::string_to_role (query.getColumn (5));
+    _current_user          = load_user_by_user_id (user_id, _role);
+
+    // Check a password
+    if (!_current_user->check_password (password))
+        return false;
 
     // Create a session for the user
     auth::session session (_current_user, time (NULL));
@@ -80,7 +127,7 @@ bool login_manager::login (int session_id) {
 }
 
 bool login_manager::logout () {
-    if (is_logged ())
+    if (!is_logged ())
         return false;
 
     _current_session_index = -1;
