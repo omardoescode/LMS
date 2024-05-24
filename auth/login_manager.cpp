@@ -16,14 +16,11 @@ login_manager::login_manager ()
 std::unique_ptr<user> login_manager::load_user (std::string id, user::Role role) {
 
     switch (role) {
-    case user::Role::ADMINISTRATOR:
-        return std::unique_ptr<administrator> (new administrator (id));
+    case user::Role::ADMINISTRATOR: return std::make_unique<administrator> (id);
 
-    case user::Role::INSTRUCTOR:
-        return std::unique_ptr<instructor> (new instructor (id));
+    case user::Role::INSTRUCTOR: return std::make_unique<instructor> (id);
 
-    case user::Role::STUDENT:
-        return std::unique_ptr<student> (new student (id));
+    case user::Role::STUDENT: return std::make_unique<student> (id);
     }
 }
 
@@ -31,37 +28,29 @@ std::unique_ptr<user>
 login_manager::load_user_by_user_id (std::string user_id, user::Role role) {
     switch (role) {
     case user::Role::ADMINISTRATOR: {
-        std::string query_string =
-        "SELECT administrators.* from instructors WHERE user_id = ?";
-        SQLite::Statement query (db::database::get_db (), query_string);
-        query.bind (1, user_id);
-        if (!query.executeStep ())
+        utils::vector<std::unique_ptr<administrator>> results =
+        administrator::getAdministrators ({ { "users.id"s, user_id } });
+        if (results.empty ())
             throw utils::custom_exception{ "Invalid user_id" };
-        return std::unique_ptr<administrator> (
-        new administrator ((std::string)query.getColumn (0)));
+        return std::move (results[0]);
     }
     case user::Role::INSTRUCTOR: {
-        std::string query_string =
-        "SELECT instructors.* from instructors WHERE user_id = ?";
-        SQLite::Statement query (db::database::get_db (), query_string);
-        query.bind (1, user_id);
-
-        if (!query.executeStep ())
+        utils::vector<std::unique_ptr<instructor>> results =
+        instructor::getInstructors ({ { "users.id"s, user_id } });
+        if (results.empty ())
             throw utils::custom_exception{ "Invalid user_id" };
-        return std::unique_ptr<instructor> (
-        new instructor ((std::string)query.getColumn (0)));
+        return std::move (results[0]);
     }
     case user::Role::STUDENT: {
-        std::string query_string =
-        "SELECT students.* from students WHERE user_id = ?";
-        SQLite::Statement query (db::database::get_db (), query_string);
-        query.bind (1, user_id);
-        if (!query.executeStep ())
+        utils::vector<std::unique_ptr<student>> results =
+        student::getStudents ({ { "users.id"s, user_id } });
+        if (results.empty ())
             throw utils::custom_exception{ "Invalid user_id" };
-        return std::unique_ptr<student> (new student ((std::string)query.getColumn (0)));
+        return std::move (results[0]);
     }
     }
 }
+
 void login_manager::load_sessions () {
     try {
         std::string user_id, role_string;
@@ -71,10 +60,9 @@ void login_manager::load_sessions () {
             std::ifstream infile (x.path ().string ());
             infile >> user_id >> role_string >> time;
 
-            std::shared_ptr<user> user =
+            std::unique_ptr<user> user =
             load_user (user_id, user::string_to_role (role_string));
-            _sessions.push_back (session (user, time));
-
+            _sessions.push_back (session (std::move (user), time));
             infile.close ();
         }
     } catch (const std::filesystem::filesystem_error& ex) {
