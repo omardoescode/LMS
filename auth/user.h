@@ -3,6 +3,8 @@
 #include "db/database_item.h"
 #include "utils/exceptions.h"
 #include "utils/vector.h"
+#include <iostream>
+#include <string>
 
 namespace auth {
 class user : public db::database_item {
@@ -43,9 +45,12 @@ public:
     // When applied, we need to update in DB as well
     bool set_email (std::string new_email);
     // Helpful Functions
-    bool check_password (std::string password) const {
+    bool is_correct_password (std::string password) const {
         std::hash<std::string> hasher;
-        return _password_hash == std::to_string (hasher (password));
+        std::string hashed = std::to_string (hasher (password));
+        std::cout << _password_hash << "vs. " << hashed << std::endl;
+
+        return _password_hash == hashed;
     }
 
     // Overriden Functions

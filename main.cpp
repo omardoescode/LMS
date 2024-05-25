@@ -1,6 +1,5 @@
 #include "auth/login_manager.h"
 #include <app/cli.h>
-#include <memory>
 int main () {
     auto& lg = auth::login_manager::get_instance ();
     cli::say_hi ();

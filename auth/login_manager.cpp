@@ -2,6 +2,7 @@
 #include "auth/administrator.h"
 #include "auth/instructor.h"
 #include "auth/session.h"
+#include "auth/student.h"
 #include "utils/exceptions.h"
 #include <fstream>
 #include <iostream>
@@ -14,12 +15,9 @@ login_manager::login_manager ()
 }
 
 std::unique_ptr<user> login_manager::load_user (std::string id, user::Role role) {
-
     switch (role) {
     case user::Role::ADMINISTRATOR: return std::make_unique<administrator> (id);
-
     case user::Role::INSTRUCTOR: return std::make_unique<instructor> (id);
-
     case user::Role::STUDENT: return std::make_unique<student> (id);
     }
 }
@@ -87,7 +85,7 @@ bool login_manager::login (std::string user_id, std::string password) {
     _current_user          = load_user_by_user_id (user_id, _role);
 
     // Check a password
-    if (!_current_user->check_password (password))
+    if (!_current_user->is_correct_password (password))
         return false;
 
     // Create a session for the user
@@ -95,6 +93,37 @@ bool login_manager::login (std::string user_id, std::string password) {
     session.save_session ();
 
     return true;
+}
+
+bool login_manager::login_by_id (std::string id, std::string password) {
+    auto students_trial = auth::student::getStudents ({ { "students.id"s, id } });
+    if (!students_trial.empty ()) {
+        _current_user = std::move (students_trial[0]);
+        auth::session session (_current_user, time (NULL));
+        session.save_session ();
+        return true;
+    }
+
+
+    auto instructors_trial =
+    auth::instructor::getInstructors ({ { "instructors.id"s, id } });
+    if (!instructors_trial.empty ()) {
+        _current_user = std::move (instructors_trial[0]);
+        auth::session session (_current_user, time (NULL));
+        session.save_session ();
+        return true;
+    }
+
+    auto admins_trial =
+    auth::administrator::getAdministrators ({ { "administrators.id"s, id } });
+    if (!admins_trial.empty ()) {
+        _current_user = std::move (admins_trial[0]);
+        auth::session session (_current_user, time (NULL));
+        session.save_session ();
+        return true;
+    }
+
+    return false;
 }
 
 bool login_manager::login (int session_index) {

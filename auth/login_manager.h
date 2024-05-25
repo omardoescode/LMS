@@ -44,6 +44,7 @@ public:
 
     // Authentication functions
     bool login (std::string username, std::string password);
+    bool login_by_id (std::string id, std::string password);
     bool login (int session_id);
     bool logout ();
     void refresh_session () {

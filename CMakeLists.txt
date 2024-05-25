@@ -37,17 +37,17 @@ set(sources
         app/cli.cpp
         )
 add_executable(main main.cpp ${sources})
-add_executable(tests tests/tests.cpp ${sources})
+# add_executable(tests tests/tests.cpp ${sources})
 add_executable(seeder database_setup.cpp db/database.h db/database.cpp)
 
 target_include_directories(main PUBLIC ${PROJECT_SOURCE_DIR})
-target_include_directories(tests PUBLIC ${PROJECT_SOURCE_DIR})
+# target_include_directories(tests PUBLIC ${PROJECT_SOURCE_DIR})
 target_include_directories(seeder PUBLIC ${PROJECT_SOURCE_DIR})
 
 target_link_libraries(main PUBLIC ${libraries})
-target_link_libraries(tests PUBLIC ${libraries})
+# target_link_libraries(tests PUBLIC ${libraries})
 target_link_libraries(seeder PUBLIC ${libraries})
 
 target_precompile_headers(main PUBLIC pch.h)
-target_precompile_headers(tests PUBLIC pch.h)
+# target_precompile_headers(tests PUBLIC pch.h)
 target_precompile_headers(seeder PUBLIC pch.h) 

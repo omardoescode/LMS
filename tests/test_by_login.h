@@ -7,7 +7,7 @@
 bool test_login_by_username_student_version () {
 
     // Create the student
-    auth::student student ("Omar mohammad", "Computer Science", "foo@bar.com", "OmarRegins");
+    auth::student student ("Omar mohammad", "Computer Science", "foo@bar.com", "OmarReigns");
 
     // Save Student
     if (!db::database::get_instance ().add_item (student)) {

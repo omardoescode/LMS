@@ -10,11 +10,12 @@ bool test_creating_user_by_admin () {
 
     if (!student.saved_in_db ())
         return false;
+
     auth::student same_student (student.get_id ());
 
 
     return student.get_email () == "omarmohammad@gmail.com" &&
-    student.check_password ("OmarReigns");
+    student.is_correct_password ("OmarReigns");
 }
 
 
