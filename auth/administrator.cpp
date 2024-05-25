@@ -197,7 +197,4 @@ utils::vector<std::unique_ptr<auth::instructor>> administrator::get_faculty_inst
     return auth::instructor::getInstructors ({ { "users.faculty"s, _faculty } });
 }
 
-utils::vector<std::unique_ptr<learn::course>> administrator::get_faculty_courses () {
-    return learn::course::getCourses ({});
-}
 } // namespace auth

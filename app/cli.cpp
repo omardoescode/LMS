@@ -3,8 +3,11 @@
 #include "auth/instructor.h"
 #include "auth/login_manager.h"
 #include "auth/session.h"
+#include "learn/assignment.h"
+#include "learn/assignment_submission.h"
 #include <cstdio>
 #include <iostream>
+#include <set>
 
 namespace cli {
 auto& lg = auth::login_manager::get_instance ();
@@ -44,8 +47,8 @@ void handle_login_successful () {
 
     switch (lg.get_current_user ()->get_role ()) {
     case auth::user::Role::ADMINISTRATOR: cli::administrator_menu ();
-    case auth::user::Role::INSTRUCTOR: cli::instructor_menu ();
-    case auth::user::Role::STUDENT: cli::student_menu ();
+    case auth::user::Role::INSTRUCTOR: cli::instructors_menu ();
+    case auth::user::Role::STUDENT: cli::students_menu ();
     }
 }
 void choose_session () {
@@ -63,6 +66,16 @@ void choose_session () {
         std::cout << "Invalid option" << std::endl;
 
     lg.login (option - 1);
+}
+
+void show_courses () {
+    auto courses = learn::course::getCourses ({});
+    if (courses.empty ())
+        std::cout << "No courses in faculty yet";
+    for (int i = 0; i < courses.size (); i++) {
+        auto& course = courses[i];
+        std::cout << i + 1 << ". " << course->get_name () << std::endl;
+    }
 }
 void login_user () {
     std::string user_id, password;
@@ -106,12 +119,13 @@ void show_menu () {
     case auth::user::Role::INSTRUCTOR:
         std::cout << "3. Show Courses" << std::endl;
         std::cout << "4. Show Students" << std::endl;
-        std::cout << "5. Show Maximum Grades of a course" << std::endl;
-        std::cout << "6. Show Minimum Grades of a course" << std::endl;
-        std::cout << "7. Show Average Grades of a course" << std::endl;
-        std::cout << "8. Show Course Submission" << std::endl;
-        std::cout << "9. Modify Course Submission" << std::endl;
-        std::cout << "10. Add Course Submission" << std::endl;
+        std::cout << "5. Show Assignments" << std::endl;
+        std::cout << "6. Show Maximum Grades of a course" << std::endl;
+        std::cout << "7. Show Minimum Grades of a course" << std::endl;
+        std::cout << "8. Show Average Grades of a course" << std::endl;
+        std::cout << "9. Create an assignment" << std::endl;
+        std::cout << "10. Show Assignment submission" << std::endl;
+        // std::cout << "11. Modify Course Submission" << std::endl;
         break;
     case auth::user::Role::STUDENT:
         std::cout << "3. Show Courses" << std::endl;
@@ -143,7 +157,7 @@ void administrator_menu () {
         case 2: logout (running);
         case 3: administrator::show_students (); break;
         case 4: administrator::show_instructors (); break;
-        case 5: administrator::show_courses (); break;
+        case 5: show_courses (); break;
         case 6: administrator::add_student (); break;
         case 7: administrator::add_instructor (); break;
         case 8: administrator::add_course (); break;
@@ -153,9 +167,33 @@ void administrator_menu () {
         }
     }
 }
-void instructor_menu () {
+void instructors_menu () {
+    bool running = true;
+    while (running) {
+        int option = 0;
+        std::cout << "Enter your option: ";
+        while (std::cin >> option && (option < 0 || option > 10))
+            std::cout << "Invalid option";
+
+        switch (option) {
+        case 0: running = false; break;
+        case 1: show_menu (); break;
+        case 2: logout (running);
+        case 3: instructor::show_courses (); break;
+        case 4: instructor::show_students (); break;
+        case 5: instructor::show_assignments (); break;
+        case 6: instructor::show_maximum_grade_of_a_assignment (); break;
+        case 7: instructor::show_minimum_grade_of_a_assignment (); break;
+        case 8: instructor::show_average_grade_of_a_assignment (); break;
+        case 9: instructor::create_assignment (); break;
+        case 10:
+            instructor::show_assignment_submission ();
+            break;
+            // case 11: instructor::modify_assignment_submission (); break;
+        }
+    }
 }
-void student_menu () {
+void students_menu () {
 }
 namespace administrator {
 auth::administrator& get_admin () {
@@ -180,15 +218,6 @@ void show_instructors () {
         auto& instructor = instructors[i];
         std::cout << i + 1 << ". ID: " << instructor->get_id ()
                   << " NAME: " << instructor->get_name () << std::endl;
-    }
-}
-void show_courses () {
-    auto courses = get_admin ().get_faculty_courses ();
-    if (courses.empty ())
-        std::cout << "No courses in faculty yet";
-    for (int i = 0; i < courses.size (); i++) {
-        auto& course = courses[i];
-        std::cout << i + 1 << ". " << course->get_name () << std::endl;
     }
 }
 void add_student () {
@@ -275,7 +304,10 @@ void assign_course_to_instructor () {
     std::cout << "Enter course number: ";
     std::cin >> course_number;
 
-    get_admin ().assign_course (*get_admin ().get_faculty_courses ()[course_number - 1],
+
+    utils::vector<std::unique_ptr<learn::course>> courses =
+    learn::course::getCourses ({});
+    get_admin ().assign_course (*courses[course_number - 1],
     *get_admin ().get_faculty_instructors ()[professor_number - 1]);
 }
 void show_pending_requests () {
@@ -298,4 +330,100 @@ void approve_requests () {
     *get_admin ().list_pending_registrations ()[request_num - 1]);
 }
 } // namespace administrator
+namespace instructor {
+auto get_instructor () {
+    return dynamic_cast<auth::instructor&> (*lg.get_current_user ());
+}
+void show_courses () {
+    auto courses = get_instructor ().get_courses ();
+    if (!courses.size ())
+        std::cout << "This instructor has no courses" << std::endl;
+    for (int i = 0; i < courses.size (); i++) {
+        std::cout << i + 1 << ". " << courses[i]->get_name () << std::endl;
+    }
+}
+void show_students () {
+    int i        = 0;
+    auto courses = get_instructor ().get_courses ();
+    std::cout << "Instuctor have " << courses.size () << " courses" << std::endl;
+    for (int j = 0; j < courses.size (); j++) {
+        std::cout << "Students for course " << courses[j]->get_name () << std::endl;
+        for (auto& student : courses[j]->get_students ())
+            std::cout << ++i << ". " << student->get_name () << std::endl;
+    }
+}
+
+void show_assignments () {
+    int i        = 0;
+    auto courses = get_instructor ().get_courses ();
+    std::cout << "Instuctor have " << courses.size () << " courses" << std::endl;
+    for (int j = 0; j < courses.size (); j++) {
+        std::cout << "Assignments for course " << courses[j]->get_name () << std::endl;
+        for (auto& assignment : courses[j]->get_assignments ())
+            std::cout << ++i << ". " << assignment->get_name () << std::endl;
+    }
+}
+void show_maximum_grade_of_a_assignment () {
+    int assignment_num;
+    std::cout << "Enter assignment number: " << std::endl;
+    std::cin >> assignment_num;
+
+    std::cout
+    << "The maximum grade is"
+    << get_instructor ().get_assignments ()[assignment_num - 1]->get_maximum_grade ();
+}
+void show_minimum_grade_of_a_assignment () {
+    int assignment_num;
+    std::cout << "Enter assignment number: " << std::endl;
+    std::cin >> assignment_num;
+
+    std::cout
+    << "The minimum grade is"
+    << get_instructor ().get_assignments ()[assignment_num - 1]->get_minimum_grade ();
+}
+void show_average_grade_of_a_assignment () {
+    int assignment_num;
+    std::cout << "Enter assignment number: " << std::endl;
+    std::cin >> assignment_num;
+
+    std::cout
+    << "The average grade is"
+    << get_instructor ().get_assignments ()[assignment_num - 1]->get_average_grade ();
+}
+void create_assignment () {
+    std::string name, type_string;
+    int course_number;
+    double maximum_grade;
+    std::cout << "Enter assignment name: ";
+    std::cin.ignore ();
+    getline (std::cin, name);
+
+    std::cout << "Enter course number: ";
+    std::cin >> course_number;
+
+    std::cout << "Enter maximum grade of the assignment: ";
+    std::cin >> maximum_grade;
+
+    std::cout << "Enter the type of the assignment [paper/online]: ";
+    std::cin >> type_string;
+    auto type = learn::assignment::enum_translate (type_string);
+
+    learn::assignment assignment (name,
+    get_instructor ().get_courses ()[course_number - 1]->get_id (),
+    maximum_grade, type, 0, 0, 0);
+    get_instructor ().add_assignment (assignment);
+}
+void show_assignment_submission () {
+    for (auto& assignment : get_instructor ().get_assignments ()) {
+        auto submissions = learn::assignment_submission::getAssignmentSubmissions (
+        { { "assignmentsubmissions.assignment_id", assignment->get_id () } });
+        int i = 0;
+        for (auto& submission : submissions) {
+            std::cout << ++i << ". Assignment" << assignment->get_name ()
+                      << " STUDENT: " << submission->get_student ().get_name ()
+                      << std::endl;
+        }
+    }
+}
+} // namespace instructor
 } // namespace cli

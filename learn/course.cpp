@@ -226,5 +226,4 @@ utils::vector<std::unique_ptr<learn::course_registration>> course::get_registrat
     return res;
 }
 
-
 } // namespace learn

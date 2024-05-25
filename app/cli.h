@@ -10,13 +10,13 @@ void choose_session ();
 void say_hi_after_login ();
 void show_menu ();
 void administrator_menu ();
-void instructor_menu ();
-void student_menu ();
+void instructors_menu ();
+void students_menu ();
 void logout ();
+void show_courses ();
 namespace administrator {
 void show_students ();
 void show_instructors ();
-void show_courses ();
 void add_student ();
 void add_instructor ();
 void add_course ();
@@ -24,4 +24,15 @@ void assign_course_to_instructor ();
 void show_pending_requests ();
 void approve_requests ();
 } // namespace administrator
+namespace instructor {
+void show_students ();
+void show_courses ();
+void show_assignments ();
+void show_maximum_grade_of_a_assignment ();
+void show_minimum_grade_of_a_assignment ();
+void show_average_grade_of_a_assignment ();
+void create_assignment ();
+void show_assignment_submission ();
+void modify_assignment_submission ();
+} // namespace instructor
 } // namespace cli
