@@ -78,13 +78,13 @@ void database::initialize_db () {
     "VARCHAR(255), type VARCHAR(255), start_date INTEGER "
     "DEFAULT(strftime('%s', 'now')), due_date INTEGER, available_until_date "
     "INTEGER, course_id INTEGER, max_grade REAL, FOREIGN KEY (course_id) "
-    "REFERENCES Courses(id))");
+    "REFERENCES Courses(id) ON DELETE CASCADE)");
     db::database::get_db ().exec (
     "CREATE TABLE IF NOT EXISTS AssignmentSubmissions (id INTEGER PRIMARY KEY, "
     "grade REAL DEFAULT -1, submission_date INTEGER DEFAULT(strftime('%s', "
     "'now')), assignment_id INTEGER, student_id VARCHAR(9), FOREIGN KEY "
     "(assignment_id) REFERENCES Assignments(id), FOREIGN KEY (student_id) "
-    "REFERENCES Students(id))");
+    "REFERENCES Students(id) ON DELETE CASCADE)");
 
     /*
     db::database::get_db ().exec ("INSERT INTO Users(password_hash, email)
