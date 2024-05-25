@@ -48,8 +48,6 @@ public:
     bool is_correct_password (std::string password) const {
         std::hash<std::string> hasher;
         std::string hashed = std::to_string (hasher (password));
-        std::cout << _password_hash << "vs. " << hashed << std::endl;
-
         return _password_hash == hashed;
     }
 

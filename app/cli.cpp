@@ -41,17 +41,18 @@ void login_user () {
     std::string user_id, password;
     while (true) {
         std::cout << "Enter your ID: ";
-        getline (std::cin, user_id);
+        std::cin >> user_id;
 
         std::cout << "Enter your password: ";
-        getline (std::cin, password);
+        std::cin.ignore ();
+        std::cin >> password;
 
         std::cout << "ID: " << user_id << std::endl;
         std::cout << "password: " << password << std::endl;
         if (lg.login_by_id (user_id, password))
             break;
 
-        std::cout << "Invalid ID or wrong password";
+        std::cout << "Invalid ID or wrong password" << std::endl;
     }
 }
 
