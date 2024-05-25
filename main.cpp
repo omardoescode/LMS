@@ -12,7 +12,9 @@ int main () {
 
 
     switch (option) {
-    case 1: cli::choose_session ();
-    case 2: cli::login_user ();
+    case 1: cli::choose_session (); break;
+    case 2: cli::login_user (); break;
     }
+
+    cli::say_hi_after_login ();
 }

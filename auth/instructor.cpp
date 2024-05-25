@@ -338,7 +338,6 @@ std::map<std::string, std::any> props) {
     SQLite::Statement query (db, query_string);
     query.bindNoCopy (1, _id);
 
-    int success = query.exec ();
-    return success;
+    return query.exec ();
 }
 } // namespace auth

@@ -46,6 +46,8 @@ void login_user () {
 
         if (lg.login (user_id, password))
             break;
+
+        std::cout << "Invalid ID or wrong password";
     }
 }
 

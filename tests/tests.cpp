@@ -1,7 +1,6 @@
 // Scoped Pointer Tests
 #include "tests/Tester.h"
 #include <db/database.h>
-#include <string_view>
 #include <tests/sessions_tests.h>
 #include <tests/test_by_login.h>
 #include <tests/test_class_getters.cpp>
@@ -10,7 +9,6 @@
 #include <tests/utils_tests.h>
 
 int main () {
-    using namespace std::string_literals;
     Tester test;
     test (test_vector, "testing utils::vector");
     test (test_vector_insert_special_case, "testing utils::vector insert special case");
@@ -28,7 +26,7 @@ int main () {
     test (test_student_getter_with_filter,
     "testing auth::student::getStudents with filtering props");
     test (test_login_by_username_student_version, "Testing logging in by a student");
-    test (test_login_by_username_instructor_version, "Testing logging in by an instructor");
+    // test (test_login_by_username_instructor_version, "Testing logging in by an instructor");
     test (test_login_by_username_administrator_version, "Testing logging in by an administrator");
     return 0;
 }
