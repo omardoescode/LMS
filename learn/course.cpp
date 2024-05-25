@@ -104,28 +104,20 @@ void course::get () {
         throw utils::custom_exception{ "Item not saved in database;" };
 
     std::string query_string =
-    "select "
-    "    courses.*, "
-    "    (select instructors.id from instructors join instructors_courses on "
-    "instructors.id = instructors_courses.instructor_id where "
-    "instructors_courses.course_id = courses.id and "
+    "select courses.*, (select instructors.id from instructors join "
+    "instructors_courses on instructors.id = instructors_courses.instructor_id "
+    "where instructors_courses.course_id = courses.id and "
     "instructors.is_teaching_assistant = 0 limit 1) as instructor, "
-    "    group_concat(distinct case when instructors.is_teaching_assistant = 1 "
-    "then instructors.id end) as teaching_assistants, "
-    "    group_concat(distinct students.id) as students "
-    "from "
-    "    courses "
-    "left join "
-    "    instructors_courses on courses.id = instructors_courses.course_id "
-    "left join "
-    "    instructors on instructors_courses.instructor_id = instructors.id "
-    "left join "
-    "    students_courses on courses.id = students_courses.course_id "
-    "left join "
-    "    students on students_courses.student_id = students.id "
-    "where courses.id = ? "
-    "group by "
-    "    courses.id";
+    "group_concat(distinct case when instructors.is_teaching_assistant = 1 "
+    "then instructors.id end) as teaching_assistants, group_concat(distinct "
+    "students.id) as students, group_concat(distinct assignments.id) as "
+    "assignments from courses left join instructors_courses on courses.id = "
+    "instructors_courses.course_id left join instructors on "
+    "instructors_courses.instructor_id = instructors.id left join "
+    "students_courses on courses.id = students_courses.course_id left join "
+    "students on students_courses.student_id = students.id left join "
+    "assignments on assignments.course_id = courses.id where courses.id = ? "
+    "group by courses.id ";
 
 
     SQLite::Statement query (db::database::get_db (), query_string);
@@ -146,12 +138,16 @@ void course::get () {
         std::string students_ids = query.getColumn (7);
         _students                = utils::split_string (students_ids, ',');
 
+        std::string assignments_ids = query.getColumn (8);
+        _assignments = utils::split_string (assignments_ids, ',');
+
 #if PRINT_DATA_WHEN_RETRIEVED
         std::cout << "Course: " << _name << "\nID: " << _id
                   << "\nCredit Hours: " << _credit_hours << "\nText Book: " << _textbook
                   << "\nInstructor: " << _professor << "\nCourse Code: " << _course_code
                   << "\nTeaching Assistants: " << teaching_assistants_ids
-                  << "\nStudents: " << students_ids << std::endl
+                  << "\nStudents: " << students_ids
+                  << "\nAssignments: " << assignments_ids << std::endl
                   << std::endl;
 #endif
     }

@@ -174,8 +174,7 @@ bool administrator::register_course_for_student (std::string course_id, std::str
 
 
 bool administrator::add_course (learn::course& course) {
-    db::database::get_instance ().add_item (course);
-    return db::database::get_instance ().update_item (course, { { "faculty", _faculty } });
+    return db::database::get_instance ().add_item (course);
 }
 
 
