@@ -308,6 +308,7 @@ bool instructor::add_to_database (SQLite::Database& db) {
 
     int success = query.exec ();
     _id         = id;
+    _user_id    = std::to_string (user_id);
     return success;
 }
 
