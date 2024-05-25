@@ -25,6 +25,9 @@ public:
     int get_credit_hours () const {
         return _credit_hours;
     }
+    std::string get_name () const {
+        return _name;
+    }
     auth::instructor get_professor ();
     utils::vector<std::unique_ptr<auth::instructor>> get_teaching_assistants ();
     utils::vector<std::unique_ptr<auth::student>> get_students ();

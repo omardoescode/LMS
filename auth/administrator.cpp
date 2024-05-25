@@ -1,4 +1,5 @@
 #include "auth/administrator.h"
+#include "auth/student.h"
 #include "db/database.h"
 #include "learn/course_registration.h"
 
@@ -187,5 +188,17 @@ bool administrator::assign_course (learn::course& course, auth::instructor& inst
     int success = query.exec ();
 
     return success;
+}
+
+utils::vector<std::unique_ptr<auth::student>> administrator::get_faculty_students () {
+    return auth::student::getStudents ({ { "users.faculty"s, _faculty } });
+}
+
+utils::vector<std::unique_ptr<auth::instructor>> administrator::get_faculty_instructors () {
+    return auth::instructor::getInstructors ({ { "users.faculty"s, _faculty } });
+}
+
+utils::vector<std::unique_ptr<learn::course>> administrator::get_faculty_courses () {
+    return learn::course::getCourses ({});
 }
 } // namespace auth

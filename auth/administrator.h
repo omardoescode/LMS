@@ -50,6 +50,9 @@ public:
     bool add_course (learn::course&);
 
 
+    utils::vector<std::unique_ptr<auth::student>> get_faculty_students ();
+    utils::vector<std::unique_ptr<auth::instructor>> get_faculty_instructors ();
+    utils::vector<std::unique_ptr<learn::course>> get_faculty_courses ();
     bool assign_course (learn::course&, auth::instructor&);
 
     // Overridden functions
