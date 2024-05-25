@@ -1,5 +1,6 @@
 
 #include "auth/user.h"
+#include <cwctype>
 namespace cli {
 void say_hi ();
 int choose_option ();
@@ -20,6 +21,9 @@ void show_instructors ();
 void add_student ();
 void add_instructor ();
 void add_course ();
+void remove_student ();
+void remove_instructor ();
+void remove_course ();
 void assign_course_to_instructor ();
 void show_pending_requests ();
 void approve_requests ();
@@ -35,4 +39,10 @@ void create_assignment ();
 void show_assignment_submission ();
 void modify_assignment_submission ();
 } // namespace instructor
+namespace student {
+void show_courses ();
+void show_grades_of_course ();
+void show_unregistered_courses ();
+void register_in_course ();
+} // namespace student
 } // namespace cli

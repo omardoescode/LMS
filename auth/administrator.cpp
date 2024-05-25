@@ -177,6 +177,9 @@ bool administrator::add_course (learn::course& course) {
     return db::database::get_instance ().add_item (course);
 }
 
+bool administrator::remove_course (learn::course& course) {
+    return db::database::get_instance ().remove_item (course);
+}
 
 bool administrator::assign_course (learn::course& course, auth::instructor& instructor) {
     SQLite::Statement query (db::database::get_db (),

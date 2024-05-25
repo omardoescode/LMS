@@ -112,9 +112,11 @@ void show_menu () {
         std::cout << "6. Add Student" << std::endl;
         std::cout << "7. Add Instructor" << std::endl;
         std::cout << "8. Add Course" << std::endl;
-        std::cout << "9. Assign course to instructor" << std::endl;
-        std::cout << "10. Show Pending Requests" << std::endl;
-        std::cout << "11. Approve Request" << std::endl;
+        std::cout << "9. Remove Student" << std::endl;
+        std::cout << "10. Remove Instructor" << std::endl;
+        std::cout << "12. Remove Course" << std::endl;
+        std::cout << "13. Show Pending Requests" << std::endl;
+        std::cout << "14. Approve Request" << std::endl;
         break;
     case auth::user::Role::INSTRUCTOR:
         std::cout << "3. Show Courses" << std::endl;
@@ -161,9 +163,12 @@ void administrator_menu () {
         case 6: administrator::add_student (); break;
         case 7: administrator::add_instructor (); break;
         case 8: administrator::add_course (); break;
-        case 9: administrator::assign_course_to_instructor (); break;
-        case 10: administrator::show_pending_requests (); break;
-        case 11: administrator::approve_requests (); break;
+        case 9: administrator::remove_student (); break;
+        case 10: administrator::remove_instructor (); break;
+        case 11: administrator::remove_course (); break;
+        case 12: administrator::assign_course_to_instructor (); break;
+        case 13: administrator::show_pending_requests (); break;
+        case 14: administrator::approve_requests (); break;
         }
     }
 }
@@ -194,6 +199,23 @@ void instructors_menu () {
     }
 }
 void students_menu () {
+    bool running = true;
+    while (running) {
+        int option = 0;
+        std::cout << "Enter your option: ";
+        while (std::cin >> option && (option < 0 || option > 10))
+            std::cout << "Invalid option";
+
+        switch (option) {
+        case 0: running = false; break;
+        case 1: show_menu (); break;
+        case 2: logout (running); break;
+        case 3: student::show_courses (); break;
+        case 4: student::show_grades_of_course (); break;
+        case 5: student::show_unregistered_courses (); break;
+        case 6: student::register_in_course ();
+        }
+    }
 }
 namespace administrator {
 auth::administrator& get_admin () {
@@ -209,7 +231,31 @@ void show_students () {
                   << " NAME: " << student->get_name () << std::endl;
     }
 }
+void remove_student () {
+    int student_num;
+    std::cout << "Enter student number";
+    std::cin >> student_num;
+    auto student = *get_admin ().get_faculty_students ()[student_num - 1];
+    get_admin ().remove_user (student);
+    std::cout << "Student removed successfully" << std::endl;
+}
 
+void remove_instructor () {
+    int instructor_num;
+    std::cout << "Enter instructor number";
+    std::cin >> instructor_num;
+    auto instructor = *get_admin ().get_faculty_instructors ()[instructor_num - 1];
+    get_admin ().remove_user (instructor);
+    std::cout << "Instructor removed successfully" << std::endl;
+}
+void remove_course () {
+    int course_num;
+    std::cout << "Enter course number";
+    std::cin >> course_num;
+    auto course = *learn::course::getCourses ({})[course_num - 1];
+    get_admin ().remove_course (course);
+    std::cout << "Course removed successfully" << std::endl;
+}
 void show_instructors () {
     auto instructors = get_admin ().get_faculty_instructors ();
     if (instructors.empty ())
@@ -426,4 +472,38 @@ void show_assignment_submission () {
     }
 }
 } // namespace instructor
+namespace student {
+auto get_student () {
+    return dynamic_cast<auth::student&> (*lg.get_current_user ());
+}
+void show_courses () {
+    auto courses = get_student ().get_courses ();
+    int i        = 0;
+    for (auto& course : courses) {
+        std::cout << ++i << ". NAME" << course->get_name () << std::endl;
+    }
+}
+void show_grades_of_course () {
+    int course_num = 0;
+    std::cout << course_num << std::endl;
+    std::cin >> course_num;
+    auto& course = get_student ().get_courses ()[course_num - 1];
+
+    for (auto& assignment : course->get_assignments ()) {
+        auto submissions = learn::assignment_submission::getAssignmentSubmissions (
+        { { "assignmentsubmission.assignment_id"s, assignment->get_id () },
+        { "assignmentsubmissions.student_id"s, get_student ().get_id () } });
+        if (submissions.empty ()) {
+            std::cout << assignment->get_name () << " N/A" << std::endl;
+        } else {
+            std::cout << assignment->get_name () << " "
+                      << submissions[0]->get_grade () << std::endl;
+        }
+    }
+}
+void show_unregistered_courses () {
+}
+void register_in_course () {
+}
+} // namespace student
 } // namespace cli

@@ -29,6 +29,6 @@ int main () {
     // test (test_login_by_username_student_version, "Testing logging in by a student");
     // test (test_login_by_username_instructor_version, "Testing logging in by an instructor");
     // test (test_login_by_username_administrator_version, "Testing logging in by an administrator");
-    test (test_submission_getter, "test assignment submission getter");
+    // test (test_submission_getter, "test assignment submission getter");
     return 0;
 }

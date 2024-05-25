@@ -5,9 +5,8 @@
 #include "utils/exceptions.h"
 #include "utils/split_string.h"
 #include "utils/vector.h"
-
-#include <filesystem>
 #include <iostream>
+#include <learn/course.h>
 
 namespace auth {
 student::student (std::string name, std::string faculty, std::string email, std::string password)
@@ -180,4 +179,14 @@ void student::get () {
 #endif
 }
 
+utils::vector<std::unique_ptr<learn::course>> student::get_courses () {
+    utils::vector<std::unique_ptr<learn::course>> courses;
+    for (auto& course_reg : _courses_registrations) {
+        auto reg = learn::course_registration (course_reg).get_course ();
+        std::unique_ptr<learn::course> course =
+        std::make_unique<learn::course> (learn::course (reg.get_name ()));
+        courses.push_back (std::move (course));
+    }
+    return courses;
+}
 } // namespace auth

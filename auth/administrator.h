@@ -48,6 +48,7 @@ public:
     // Given a course, add it to the same faculty as this administrator is and
     // add it to the DB
     bool add_course (learn::course&);
+    bool remove_course (learn::course&);
 
 
     utils::vector<std::unique_ptr<auth::student>> get_faculty_students ();

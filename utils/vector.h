@@ -210,7 +210,6 @@ template <typename T> void vector<T>::insert (int index, T value) {
             std::swap (_elems[i], _elems[i - 1]);
     }
 }
-
 // Operators Overloading
 template <typename T> T& vector<T>::operator[] (int value) {
     return at (value);
