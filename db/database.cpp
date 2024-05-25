@@ -83,7 +83,8 @@ void database::initialize_db () {
     "CREATE TABLE IF NOT EXISTS AssignmentSubmissions (id INTEGER PRIMARY KEY, "
     "grade REAL DEFAULT -1, submission_date INTEGER DEFAULT(strftime('%s', "
     "'now')), assignment_id INTEGER, student_id VARCHAR(9), FOREIGN KEY "
-    "(assignment_id) REFERENCES Assignments(id), FOREIGN KEY (student_id) "
+    "(assignment_id) REFERENCES Assignments(id) ON DELETE CASCADE, FOREIGN KEY "
+    "(student_id) "
     "REFERENCES Students(id) ON DELETE CASCADE)");
 
     /*
