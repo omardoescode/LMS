@@ -341,4 +341,25 @@ std::map<std::string, std::any> props) {
 
     return query.exec ();
 }
+utils::vector<std::unique_ptr<learn::course>> instructor::get_courses () {
+    utils::vector<std::unique_ptr<learn::course>> courses (_courses.size ());
+    for (auto& course : _courses) {
+        courses.push_back (std::make_unique<learn::course> (course));
+    }
+    return courses;
+}
+
+bool instructor::add_assignment (learn::assignment& assignment) {
+    return db::database::get_instance ().add_item (assignment);
+}
+
+utils::vector<std::unique_ptr<learn::assignment>> instructor::get_assignments () {
+    utils::vector<std::unique_ptr<learn::assignment>> assignments;
+    for (auto& course : get_courses ()) {
+        for (auto& assignment : course->get_assignments ()) {
+            assignments.push_back (std::move (assignment));
+        }
+    }
+    return assignments;
+}
 } // namespace auth

@@ -25,8 +25,8 @@ bool test_login_by_username_student_version () {
 
 bool test_login_by_username_instructor_version () {
     // Create the student
-    auth::instructor instructor (
-    "Mohammad Mosalamy"s, "Computer Science"s, "foo@bar.com"s, "MohaIsCool"s);
+    auth::instructor instructor ("Youssef Ihab"s, "Computer Science"s,
+    "youssef.ihab@eui.com"s, "CoolnessNeverEnds"s);
 
     // Save Student
     if (!db::database::get_instance ().add_item (instructor)) {

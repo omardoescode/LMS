@@ -18,6 +18,10 @@ public:
     std::string faculty,
     std::string password,
     bool is_teaching_assistant = false);
+
+
+    utils::vector<std::unique_ptr<learn::course>> get_courses ();
+    utils::vector<std::unique_ptr<learn::assignment>> get_assignments ();
     // Given a course in the database, assign this course to this instructor
     bool add_course (learn::course& course);
     bool add_course (std::string course_id);
@@ -47,8 +51,8 @@ public:
         return course.get_maximum_grade (assignment);
     };
 
-    // Members
 
+    // Members
     // If not saved, raise utils::custom_exception{"Instructor Not saved"}
     // Otherwise, add it to the list of TAs, and save this is db
     bool add_teaching_assistant (std::string course_id, auth::instructor& TA);
@@ -58,6 +62,7 @@ public:
     // in the database
     bool add_student (auth::student& student, learn::course);
 
+    bool add_assignment (learn::assignment& assignment);
     // Overriden Functions
     bool add_to_database (SQLite::Database& db) override;
     bool remove_from_database (SQLite::Database& db) override;

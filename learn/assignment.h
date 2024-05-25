@@ -19,6 +19,9 @@ public:
     explicit assignment (std::string id);
 
     // Getters
+    std::string get_name () const {
+        return _name;
+    }
     learn::course get_course ();
     AssignmentType get_type () const {
         return _type;

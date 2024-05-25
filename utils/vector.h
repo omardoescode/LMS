@@ -240,10 +240,10 @@ template <typename T> vector<T> vector<T>::operator= (vector<T>&& other) {
 
 // Iterators
 template <typename T> T* vector<T>::begin () const {
-    return &at (0);
+    return size () ? &at (0) : nullptr;
 };
 
 template <typename T> T* vector<T>::end () const {
-    return &at (_size - 1);
+    return size () ? &at (0) + size () : nullptr;
 };
 } // namespace utils

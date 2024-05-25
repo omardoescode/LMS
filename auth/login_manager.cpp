@@ -147,7 +147,6 @@ bool login_manager::logout () {
     _current_session_index = -1;
     _current_user          = nullptr;
 
-    std::cout << "made it here" << std::endl;
     return true;
 }
 } // namespace auth
