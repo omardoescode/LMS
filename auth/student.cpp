@@ -69,8 +69,8 @@ void student::drop_course (const std::string& course) {
     for (int i = 0; i < _courses_registrations.size (); i++) {
         if (course == _courses_registrations[i]) {
             _courses_registrations.erase (i);
-            // Todo
-            // db::database::get_instance().remove_item(*this);
+            auto reg = learn::course_registration (_courses_registrations[i]);
+            db::database::get_instance ().remove_item (reg);
             return;
         }
     }

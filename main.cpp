@@ -6,7 +6,6 @@ int main () {
     cli::handle_login ();
     cli::handle_login_successful ();
 
-
     std::cout << "Cya soon" << std::endl;
     return 0;
 }

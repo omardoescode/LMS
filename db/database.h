@@ -44,42 +44,9 @@ public:
     std::list<std::unique_ptr<database_item>>
     get (std::string table_name, std::map<std::string, std::string>& props);
 
-    // Write more functions that are more helpful in terms of the other one
-    // Template ones must be defined and declared in the same place
-    // template <typename T>
-    // T get_elem_by_id(std::string table_name, std::string_view _id) {
-    //   std::map<std::string, std::string> props;
-    //   props["_id"] = _id;
-    //   auto vals = db::database::get_instance().get(table_name, props);
-    //   if (vals.empty())
-    //     throw utils::custom_exception{"No professor has this id"};
-    //   if (auto casted = dynamic_cast<T>(vals.front()))
-    //     return casted;
-    //   throw utils::custom_exception{"Casting failed"};
-    // }
-    //
-    // template <typename T>
-    // T get_elems_by_id(std::string &table_name, std::vector<std::string> &ids) {
-    //   std::list<T> res;
-    //   for (auto &id : ids)
-    //     res.push_back(
-    //         db::database::get_instance().get_elem_by_id<T>(table_name, id));
-    //   return res;
-    // }
-    //
-    // template <typename T>
-    // T get_elems_by_id(std::string table_name, std::list<std::string> ids) {
-    //   std::list<T> res;
-    //   for (auto &id : ids)
-    //     res.push_back(
-    //         db::database::get_instance().get_elem_by_id<T>(table_name, id));
-    //   return res;
-    // }
-
     void refresh_and_seed_db ();
 
     static SQLite::Database& get_db () {
-
         return _db;
     }
 

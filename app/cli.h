@@ -42,7 +42,8 @@ void modify_assignment_submission ();
 namespace student {
 void show_courses ();
 void show_grades_of_course ();
-void show_unregistered_courses ();
+void view_all_courses ();
 void register_in_course ();
+void drop_course ();
 } // namespace student
 } // namespace cli

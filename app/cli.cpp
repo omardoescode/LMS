@@ -5,9 +5,7 @@
 #include "auth/session.h"
 #include "learn/assignment.h"
 #include "learn/assignment_submission.h"
-#include <cstdio>
 #include <iostream>
-#include <set>
 
 namespace cli {
 auto& lg = auth::login_manager::get_instance ();
@@ -114,7 +112,8 @@ void show_menu () {
         std::cout << "8. Add Course" << std::endl;
         std::cout << "9. Remove Student" << std::endl;
         std::cout << "10. Remove Instructor" << std::endl;
-        std::cout << "12. Remove Course" << std::endl;
+        std::cout << "11. Remove Course" << std::endl;
+        std::cout << "12. Assign an instructor to a course" << std::endl;
         std::cout << "13. Show Pending Requests" << std::endl;
         std::cout << "14. Approve Request" << std::endl;
         break;
@@ -127,7 +126,7 @@ void show_menu () {
         std::cout << "8. Show Average Grades of a course" << std::endl;
         std::cout << "9. Create an assignment" << std::endl;
         std::cout << "10. Show Assignment submission" << std::endl;
-        // std::cout << "11. Modify Course Submission" << std::endl;
+        std::cout << "11. Modify submission Submission" << std::endl;
         break;
     case auth::user::Role::STUDENT:
         std::cout << "3. Show Courses" << std::endl;
@@ -150,7 +149,7 @@ void administrator_menu () {
     while (running) {
         int option = 0;
         std::cout << "Enter your option: ";
-        while (std::cin >> option && (option < 0 || option > 11))
+        while (std::cin >> option && (option < 0 || option > 14))
             std::cout << "Invalid option";
 
         switch (option) {
@@ -177,7 +176,7 @@ void instructors_menu () {
     while (running) {
         int option = 0;
         std::cout << "Enter your option: ";
-        while (std::cin >> option && (option < 0 || option > 10))
+        while (std::cin >> option && (option < 0 || option > 11))
             std::cout << "Invalid option";
 
         switch (option) {
@@ -191,10 +190,8 @@ void instructors_menu () {
         case 7: instructor::show_minimum_grade_of_a_assignment (); break;
         case 8: instructor::show_average_grade_of_a_assignment (); break;
         case 9: instructor::create_assignment (); break;
-        case 10:
-            instructor::show_assignment_submission ();
-            break;
-            // case 11: instructor::modify_assignment_submission (); break;
+        case 10: instructor::show_assignment_submission (); break;
+        case 11: instructor::modify_assignment_submission (); break;
         }
     }
 }
@@ -212,8 +209,9 @@ void students_menu () {
         case 2: logout (running); break;
         case 3: student::show_courses (); break;
         case 4: student::show_grades_of_course (); break;
-        case 5: student::show_unregistered_courses (); break;
+        case 5: student::view_all_courses (); break;
         case 6: student::register_in_course ();
+        case 7: student::drop_course ();
         }
     }
 }
@@ -233,7 +231,7 @@ void show_students () {
 }
 void remove_student () {
     int student_num;
-    std::cout << "Enter student number";
+    std::cout << "Enter student number: ";
     std::cin >> student_num;
     auto student = *get_admin ().get_faculty_students ()[student_num - 1];
     get_admin ().remove_user (student);
@@ -471,6 +469,29 @@ void show_assignment_submission () {
         }
     }
 }
+void modify_assignment_submission () {
+    int assignment_number = 0;
+    std::cout << "Enter assignment number: ";
+    std::cin >> assignment_number;
+
+    assignment_number--;
+
+    double new_grade = 0;
+    std::cout << "Enter the new grade: ";
+    std::cin >> new_grade;
+
+    for (auto& assignment : get_instructor ().get_assignments ()) {
+        auto submissions = learn::assignment_submission::getAssignmentSubmissions (
+        { { "assignmentsubmissions.assignment_id", assignment->get_id () } });
+        for (auto& submission : submissions) {
+            if (assignment_number == 0) {
+                submission->set_grade (new_grade);
+                return;
+            }
+            assignment_number--;
+        }
+    }
+}
 } // namespace instructor
 namespace student {
 auto get_student () {
@@ -501,9 +522,25 @@ void show_grades_of_course () {
         }
     }
 }
-void show_unregistered_courses () {
+void view_all_courses () {
+    cli::show_courses ();
 }
 void register_in_course () {
+    int course_num = 0;
+    std::cout << "Enter course number: " << std::endl;
+    std::cin >> course_num;
+
+    auto course = *learn::course::getCourses ({})[course_num - 1];
+    get_student ().register_course (course.get_id ());
+    std::cout << "Course registration is awaiting approval." << std::endl;
+}
+void drop_course () {
+
+    int course_num = 0;
+    std::cout << course_num << std::endl;
+    std::cin >> course_num;
+    get_student ().drop_course (get_student ().get_courses ()[course_num - 1]->get_id ());
+    std::cout << "Course dropped successfully" << std::endl;
 }
 } // namespace student
 } // namespace cli
