@@ -7,6 +7,16 @@
 #include "learn/assignment_submission.h"
 #include <iostream>
 
+template <typename T>
+void handle_input (T& value, bool (*func) (T), std::string wrong_message) {
+    while (std::cin >> value && !func (value))
+        std::cout << wrong_message << std::endl;
+}
+
+void handle_input (std::string& value, bool (*func) (std::string), std::string wrong_message) {
+    while (getline (std::cin, value) && !func (value))
+        std::cout << wrong_message << std::endl;
+}
 namespace cli {
 auto& lg = auth::login_manager::get_instance ();
 void say_hi () {
@@ -19,9 +29,8 @@ int choose_option () {
     std::cout << "3. Quit" << std::endl;
 
     int option = 0;
-    std::cout << "Enter your option: ";
-    while (std::cin >> option && (option < 1 || option > 3))
-        std::cout << "Invalid Option" << std::endl;
+    handle_input<int> (
+    option, [] (int value) { return value > 0 && value < 4; }, "Invalid option");
     return option;
 }
 void handle_login () {
@@ -30,7 +39,6 @@ void handle_login () {
         option = cli::choose_option ();
     else
         option = 2;
-
 
     switch (option) {
     case 1: cli::choose_session (); break;
@@ -60,9 +68,11 @@ void choose_session () {
     }
     int option = 0;
     std::cout << "Enter your option: ";
-    while (std::cin >> option && (option < 1 || option > sessions.size ()))
-        std::cout << "Invalid option" << std::endl;
 
+    handle_input<int> (
+    option,
+    [] (int value) { return value > 0 && value <= lg.get_sessions ().size (); },
+    "Invalid option");
     lg.login (option - 1);
 }
 
@@ -121,9 +131,9 @@ void show_menu () {
         std::cout << "3. Show Courses" << std::endl;
         std::cout << "4. Show Students" << std::endl;
         std::cout << "5. Show Assignments" << std::endl;
-        std::cout << "6. Show Maximum Grades of a course" << std::endl;
-        std::cout << "7. Show Minimum Grades of a course" << std::endl;
-        std::cout << "8. Show Average Grades of a course" << std::endl;
+        std::cout << "6. Show Maximum Grades of an assignment" << std::endl;
+        std::cout << "7. Show Minimum Grades of an assignment" << std::endl;
+        std::cout << "8. Show Average Grades of an assignment" << std::endl;
         std::cout << "9. Create an assignment" << std::endl;
         std::cout << "10. Show Assignment submission" << std::endl;
         std::cout << "11. Modify submission Submission" << std::endl;
@@ -149,9 +159,9 @@ void administrator_menu () {
     while (running) {
         int option = 0;
         std::cout << "Enter your option: ";
-        while (std::cin >> option && (option < 0 || option > 14))
-            std::cout << "Invalid option";
 
+        handle_input<int> (
+        option, [] (int value) { return value >= 0 && value < 15; }, "Invalid option");
         switch (option) {
         case 0: running = false; break;
         case 1: show_menu (); break;
@@ -176,8 +186,8 @@ void instructors_menu () {
     while (running) {
         int option = 0;
         std::cout << "Enter your option: ";
-        while (std::cin >> option && (option < 0 || option > 11))
-            std::cout << "Invalid option";
+        handle_input<int> (
+        option, [] (int value) { return value >= 0 && value < 12; }, "Invalid option");
 
         switch (option) {
         case 0: running = false; break;
@@ -200,8 +210,8 @@ void students_menu () {
     while (running) {
         int option = 0;
         std::cout << "Enter your option: ";
-        while (std::cin >> option && (option < 0 || option > 10))
-            std::cout << "Invalid option";
+        handle_input<int> (
+        option, [] (int value) { return value >= 0 && value < 11; }, "Invalid option");
 
         switch (option) {
         case 0: running = false; break;
@@ -232,7 +242,12 @@ void show_students () {
 void remove_student () {
     int student_num;
     std::cout << "Enter student number: ";
-    std::cin >> student_num;
+    handle_input<int> (
+    student_num,
+    [] (int value) {
+        return value > 0 && value <= get_admin ().get_faculty_students ().size ();
+    },
+    "Invalid Student number");
     auto student = *get_admin ().get_faculty_students ()[student_num - 1];
     get_admin ().remove_user (student);
     std::cout << "Student removed successfully" << std::endl;
@@ -241,7 +256,12 @@ void remove_student () {
 void remove_instructor () {
     int instructor_num;
     std::cout << "Enter instructor number";
-    std::cin >> instructor_num;
+    handle_input<int> (
+    instructor_num,
+    [] (int value) {
+        return value > 0 && value <= get_admin ().get_faculty_instructors ().size ();
+    },
+    "Invalid instructor number");
     auto instructor = *get_admin ().get_faculty_instructors ()[instructor_num - 1];
     get_admin ().remove_user (instructor);
     std::cout << "Instructor removed successfully" << std::endl;
@@ -249,7 +269,12 @@ void remove_instructor () {
 void remove_course () {
     int course_num;
     std::cout << "Enter course number";
-    std::cin >> course_num;
+    handle_input<int> (
+    course_num,
+    [] (int value) {
+        return value > 0 && value <= learn::course::getCourses ({}).size ();
+    },
+    "Invalid course number");
     auto course = *learn::course::getCourses ({})[course_num - 1];
     get_admin ().remove_course (course);
     std::cout << "Course removed successfully" << std::endl;
@@ -273,7 +298,6 @@ void add_student () {
     std::cout << "Enter faculty: ";
     getline (std::cin, faculty);
 
-
     std::cout << "Enter email: ";
     getline (std::cin, email);
 
@@ -294,7 +318,6 @@ void add_instructor () {
     std::cout << "Enter faculty: ";
     getline (std::cin, faculty);
 
-
     std::cout << "Enter email: ";
     getline (std::cin, email);
 
@@ -302,14 +325,14 @@ void add_instructor () {
     getline (std::cin, password);
 
     std::cout << "Is they a teaching assistant? [y/n]";
-    getline (std::cin, is_teaching_assistant);
-
+    handle_input (
+    is_teaching_assistant,
+    [] (std::string value) { return value == "y" || value == "n"; }, "Invalid option");
     auth::instructor instructor (
     name, faculty, email, password, is_teaching_assistant == "y");
     get_admin ().add_user (instructor);
     std::cout << "Instructor added successfully" << std::endl;
 }
-
 
 void add_course () {
     std::string name, textbook_title, course_code;
@@ -317,7 +340,6 @@ void add_course () {
     std::cin.ignore ();
     std::cout << "Enter name: ";
     getline (std::cin, name);
-
 
     std::cout << "Enter professor number in list: ";
     std::cin >> professor_number;
@@ -347,7 +369,6 @@ void assign_course_to_instructor () {
 
     std::cout << "Enter course number: ";
     std::cin >> course_number;
-
 
     utils::vector<std::unique_ptr<learn::course>> courses =
     learn::course::getCourses ({});
@@ -409,30 +430,72 @@ void show_assignments () {
 }
 void show_maximum_grade_of_a_assignment () {
     int assignment_num;
-    std::cout << "Enter assignment number: " << std::endl;
-    std::cin >> assignment_num;
+    std::cout << "Enter assignment number: ";
+    handle_input<int> (
+    assignment_num,
+    [] (int value) {
+        int count = 0;
+        for (auto& assignment : get_instructor ().get_assignments ()) {
+            count += learn::assignment_submission::getAssignmentSubmissions (
+            { { "assignmentsubmissions.assignment_id", assignment->get_id () } })
+                     .size ();
+        }
+        return value > 0 && value <= count;
+    },
+    "Invalid assignment number");
 
     std::cout
     << "The maximum grade is"
-    << get_instructor ().get_assignments ()[assignment_num - 1]->get_maximum_grade ();
+    << get_instructor ().get_assignments ()[assignment_num - 1]->get_maximum_grade ()
+    << std::endl;
 }
 void show_minimum_grade_of_a_assignment () {
     int assignment_num;
-    std::cout << "Enter assignment number: " << std::endl;
-    std::cin >> assignment_num;
+    std::cout << "Enter assignment number: ";
+    handle_input<int> (
+    assignment_num,
+    [] (int value) {
+        int count = 0;
+        for (auto& assignment : get_instructor ().get_assignments ()) {
+            count += learn::assignment_submission::getAssignmentSubmissions (
+            { { "assignmentsubmissions.assignment_id", assignment->get_id () } })
+                     .size ();
+        }
+        return value > 0 && value <= count;
+    },
+    "Invalid assignment number");
 
     std::cout
     << "The minimum grade is"
-    << get_instructor ().get_assignments ()[assignment_num - 1]->get_minimum_grade ();
+    << get_instructor ().get_assignments ()[assignment_num - 1]->get_minimum_grade ()
+    << std::endl;
 }
 void show_average_grade_of_a_assignment () {
     int assignment_num;
-    std::cout << "Enter assignment number: " << std::endl;
-    std::cin >> assignment_num;
+    std::cout << "Enter assignment number: ";
+    handle_input<int> (
+    assignment_num,
+    [] (int value) {
+        int count = 0;
+        for (auto& assignment : get_instructor ().get_assignments ()) {
+            count += learn::assignment_submission::getAssignmentSubmissions (
+            { { "assignmentsubmissions.assignment_id", assignment->get_id () } })
+                     .size ();
+        }
+        return value > 0 && value <= count;
+    },
+    "Invalid assignment number");
+    handle_input<int> (
+    assignment_num,
+    [] (int value) {
+        return value > 0 && value <= get_instructor ().get_assignments ().size ();
+    },
+    "Invalid assignment number"s);
 
     std::cout
     << "The average grade is"
-    << get_instructor ().get_assignments ()[assignment_num - 1]->get_average_grade ();
+    << get_instructor ().get_assignments ()[assignment_num - 1]->get_average_grade ()
+    << std::endl;
 }
 void create_assignment () {
     std::string name, type_string;
@@ -443,13 +506,22 @@ void create_assignment () {
     getline (std::cin, name);
 
     std::cout << "Enter course number: ";
-    std::cin >> course_number;
+    handle_input<int> (
+    course_number,
+    [] (int value) {
+        return value > 0 && value <= get_instructor ().get_courses ().size ();
+    },
+    "Invalid course number"s);
 
     std::cout << "Enter maximum grade of the assignment: ";
-    std::cin >> maximum_grade;
+    handle_input<double> (
+    maximum_grade, [] (double value) { return value > 0; }, "Invalid grade"s);
 
     std::cout << "Enter the type of the assignment [paper/online]: ";
-    std::cin >> type_string;
+    handle_input (
+    type_string,
+    [] (std::string value) { return value == "online"s || value == "paper"s; },
+    "Invalid type"s);
     auto type = learn::assignment::enum_translate (type_string);
 
     learn::assignment assignment (name,
@@ -463,7 +535,7 @@ void show_assignment_submission () {
         { { "assignmentsubmissions.assignment_id", assignment->get_id () } });
         int i = 0;
         for (auto& submission : submissions) {
-            std::cout << ++i << ". Assignment" << assignment->get_name ()
+            std::cout << ++i << ". Assignment: " << assignment->get_name ()
                       << " STUDENT: " << submission->get_student ().get_name ()
                       << std::endl;
         }
@@ -472,13 +544,24 @@ void show_assignment_submission () {
 void modify_assignment_submission () {
     int assignment_number = 0;
     std::cout << "Enter assignment number: ";
-    std::cin >> assignment_number;
+    handle_input<int> (
+    assignment_number,
+    [] (int value) {
+        int count = 0;
+        for (auto& assignment : get_instructor ().get_assignments ()) {
+            count += learn::assignment_submission::getAssignmentSubmissions (
+            { { "assignmentsubmissions.assignment_id", assignment->get_id () } })
+                     .size ();
+        }
+        return value > 0 && value <= count;
+    },
+    "Invalid assignment number");
 
     assignment_number--;
 
     double new_grade = 0;
     std::cout << "Enter the new grade: ";
-    std::cin >> new_grade;
+    handle_input<double> (new_grade, [] (double grade) { return grade > 0; }, "Invalid grade");
 
     for (auto& assignment : get_instructor ().get_assignments ()) {
         auto submissions = learn::assignment_submission::getAssignmentSubmissions (
@@ -507,7 +590,13 @@ void show_courses () {
 void show_grades_of_course () {
     int course_num = 0;
     std::cout << course_num << std::endl;
-    std::cin >> course_num;
+
+    handle_input<int> (
+    course_num,
+    [] (int value) {
+        return value > 0 && value <= get_student ().get_courses ().size ();
+    },
+    "Invalid course number");
     auto& course = get_student ().get_courses ()[course_num - 1];
 
     for (auto& assignment : course->get_assignments ()) {
@@ -528,17 +617,26 @@ void view_all_courses () {
 void register_in_course () {
     int course_num = 0;
     std::cout << "Enter course number: " << std::endl;
-    std::cin >> course_num;
+    handle_input<int> (
+    course_num,
+    [] (int value) {
+        return value > 0 && value <= learn::course ::getCourses ({}).size ();
+    },
+    "Invaild course number");
 
     auto course = *learn::course::getCourses ({})[course_num - 1];
     get_student ().register_course (course.get_id ());
     std::cout << "Course registration is awaiting approval." << std::endl;
 }
 void drop_course () {
-
     int course_num = 0;
     std::cout << course_num << std::endl;
-    std::cin >> course_num;
+    handle_input<int> (
+    course_num,
+    [] (int value) {
+        return value > 0 && value <= get_student ().get_courses ().size ();
+    },
+    "Invalid course number");
     get_student ().drop_course (get_student ().get_courses ()[course_num - 1]->get_id ());
     std::cout << "Course dropped successfully" << std::endl;
 }

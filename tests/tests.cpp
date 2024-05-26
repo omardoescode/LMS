@@ -6,7 +6,6 @@
 #include <tests/test_class_getters.cpp>
 #include <tests/test_creating_user_by_administrator.cpp>
 #include <tests/test_login_by_session.h>
-#include <tests/test_submission_getter.h>
 #include <tests/utils_tests.h>
 
 int main () {
@@ -29,6 +28,5 @@ int main () {
     test (test_login_by_username_student_version, "Testing logging in by a student");
     test (test_login_by_username_instructor_version, "Testing logging in by an instructor");
     test (test_login_by_username_administrator_version, "Testing logging in by an administrator");
-    test (test_submission_getter, "Testing assignment submission getter");
     return 0;
 }

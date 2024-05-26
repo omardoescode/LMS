@@ -1,3 +1,22 @@
+# Team Members
+
+The team is called 'Byte Busters Evolved' (a long story why the name is big and
+funny)
+
+Members:
+
+- Omar Mohammad: 23-101288
+- Mohammd Mosalamy: 23-101283
+- Omar Hesham: 23-101302
+- Omar Shafiy: 23-201356
+
+# Intro
+
+Welcome to Athena, A library that provides a complete design of a student
+management system. It handles authentication using sessions and loggin ing using
+IDs and passwords, learn components like courses, assignments, submissions,
+grades, etc...
+
 # Running the project
 
 1. First things first, make sure you have CMake Installed

@@ -34,8 +34,7 @@ auth::student assignment_submission::get_student () {
 
 
 bool assignment_submission::set_grade (double new_grade) {
-    if (db::database::get_instance ().update_item (
-        *this, { { "grade", std::to_string (new_grade) } })) {
+    if (db::database::get_instance ().update_item (*this, { { "grade"s, new_grade } })) {
         _grade = new_grade;
         return true;
     }

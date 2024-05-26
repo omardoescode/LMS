@@ -2,7 +2,6 @@
 #include "db/database.h"
 #include "db/database_item.h"
 #include "utils/split_string.h"
-
 #include <algorithm>
 #include <any>
 #include <iostream>
@@ -47,7 +46,7 @@ bool course::set_credit_hours (int new_value) {
 
     _credit_hours = new_value;
     return db::database::get_instance ().update_item (
-    *this, { { "credit_hours"s, std::to_string (new_value) } });
+    *this, { { "credit_hours"s, new_value } });
 }
 utils::vector<std::unique_ptr<learn::assignment>> course::get_assignments () {
     utils::vector<std::unique_ptr<learn::assignment>> res;

@@ -3,7 +3,6 @@
 #include "learn/course.h"
 namespace learn {
 class course_registration : public db::database_item {
-
 public:
     enum class CourseRegistrationState {
         ENROLLED,
@@ -22,7 +21,6 @@ public:
     CourseRegistrationState get_state () const {
         return _state;
     }
-
     // Setters (save in db)
     bool set_state (CourseRegistrationState state);
 

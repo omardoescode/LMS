@@ -187,9 +187,7 @@ bool administrator::assign_course (learn::course& course, auth::instructor& inst
     query.bind (1, instructor.get_id ());
     query.bind (2, course.get_id ());
 
-    int success = query.exec ();
-
-    return success;
+    return query.exec (); // Success
 }
 
 utils::vector<std::unique_ptr<auth::student>> administrator::get_faculty_students () {
