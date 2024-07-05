@@ -5,6 +5,7 @@
 #include <ctime>
 namespace learn {
 class course;
+
 class assignment : public db::database_item {
 public:
     enum class AssignmentType { PAPER, ONLINE };

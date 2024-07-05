@@ -1,4 +1,3 @@
-
 #include "auth/user.h"
 #include <cwctype>
 namespace cli {
